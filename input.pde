@@ -16,11 +16,11 @@ void keyPressed() {
       break;
     case LEFT: // To prevent sticky movement, left and write override eachother
       lfkey = true;
-      rtKey = false;
+      rtkey = false;
       break;
     case RIGHT: 
       rtkey = true;
-      lfKey = false;
+      lfkey = false;
       break;
     } else if (key == '1') { // When 1 is pressed, changes redWing to a regular plane
     Vehicle tempv = new Plane(world.redWing.pos.x, world.redWing.pos.y);
