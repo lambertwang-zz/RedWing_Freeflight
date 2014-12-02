@@ -22,22 +22,8 @@ void keyPressed() {
       rtkey = true;
       lfkey = false;
       break;
-    } else if (key == '1') { // When 1 is pressed, changes redWing to a regular plane
-    Vehicle tempv = new Plane(world.redWing.pos.x, world.redWing.pos.y);
-    tempv.last = world.redWing.last; // I should really be using a copyFrom method here
-    tempv.dir = world.redWing.dir;
-    tempv.roll = world.redWing.roll;
-    world.redWing = tempv;
-    world.actors = new ArrayList();
-    world.actors.add(new Player(world.redWing));
-  } else if (key == '2') { // Changes redWing to a jet
-    Vehicle tempv = new Jet(world.redWing.pos.x, world.redWing.pos.y);
-    tempv.last = world.redWing.last;
-    tempv.dir = world.redWing.dir;
-    tempv.roll = world.redWing.roll;
-    world.redWing = tempv;
-    world.actors = new ArrayList();
-    world.actors.add(new Player(world.redWing));
+    } else if (key == 'f' || key == 'F') {
+    fkey = true;
   } else if (key == 'o' || key == 'O') {
     screenShot();
   }
@@ -58,6 +44,8 @@ void keyReleased() {
     case RIGHT:
       rtkey = false;
       break;
-    }
+    } else if (key == 'f' || key == 'F') {
+    fkey = false;
+  }
 }
 

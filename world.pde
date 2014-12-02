@@ -8,8 +8,10 @@ final int SCREENFOLLOW = 8; // Amount to shift the screen by to follow RedWing
 class World {
   Cell[][] cells;
   PVector screenPos; // Location of the screen
-  Vehicle redWing; // The star of the show
+  Object redWing; // The star of the show
   ArrayList<Controller> actors; // List of redWing. Literally contains nothing except redWing for now
+  ArrayList<Controller> addition; // list of objects to be added in the next frame
+  ArrayList<Controller> removal; // List of objects to be removed from actors this tick
 
   World() {
     cells = new Cell[FIELDX][FIELDY]; // Initiliazes cells
@@ -20,23 +22,40 @@ class World {
     screenPos = new PVector(0, 0);
     redWing = new Plane(0, 0);
     actors = new ArrayList();
+    addition = new ArrayList();
+    removal = new ArrayList();
+
     actors.add(new Player(redWing));
+    actors.add(new Computer(new Plane(0, 0)));
   }
 
   void render() {
     background(0);
+    for (Controller c : removal) {
+      actors.remove(c);
+      for (Cell l : c.location) {
+        l.occupants.remove(c);
+      }
+    }
+    removal.clear();
+
+    for (Controller c : addition)
+      actors.add(0, c);
+
+    addition.clear();
+
     for (Controller c : actors)
       c.tick(); // Magic happens
 
     PVector target = new PVector(); // Offset vector based off of redWing's position and velocity for the screen position
     target.set((SCREENFOLLOW+1)*redWing.pos.x - width/2 - SCREENFOLLOW*redWing.last.x, (SCREENFOLLOW+1)*redWing.pos.y - height/2 - SCREENFOLLOW*redWing.last.y);
-    
+
     screenPos.x = target.x;
     screenPos.y = target.y;
 
     pushMatrix();
     translate(-screenPos.x, -screenPos.y);
-    
+
     // i and j are set to only retrieve relevant cells
     for (int i = floor (screenPos.x/CELLSIZE); i <= ceil((screenPos.x+width)/CELLSIZE); i++) {
       pushMatrix();
@@ -58,7 +77,7 @@ class World {
     //minimap();
     //fps();
   }
-  
+
   // Gets a cell with a specific index
   // Also checks boundaries
   Cell getCell(int x, int y) {
@@ -96,9 +115,9 @@ class World {
     rect(0, 0, FIELDX, FIELDY);
     popMatrix();
   }
-  
+
   // Displays the active framerate
-  void fps(){
+  void fps() {
     fill(75, 255, 64);
     pushMatrix();
     translate(width-128, height-16);
@@ -115,16 +134,16 @@ class Cell {
   Cell(int x, int y) {
     xi = x;
     yi = y;
-    col = color(random(1*y, 16+1*y)%255, 176+80*sin(2*PI*x/FIELDX), random(240, 256)%256);
+    col = color(random(1*y, 16+1*y)%255, 176+64*sin(2*PI*x/FIELDX), random(208, 224));
     occupants = new ArrayList();
   }
 
   void render() {
     noStroke();
     /*if (occupants.size() != 0) {
-      strokeWeight(2);
-      stroke(75, 255, 255);
-    }*/
+     strokeWeight(2);
+     stroke(75, 255, 255);
+     }*/
     fill(col);
     rect(0, 0, CELLSIZE+1, CELLSIZE+1);
   }

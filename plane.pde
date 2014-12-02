@@ -2,11 +2,11 @@ final float FRICTION = .9375; // 15 16ths
 final float GRAVITY = .6;
 
 // Plane is a standard plane with average turning and speed
-class Plane extends Vehicle {
+class Plane extends Object {
   Plane(float x, float y) {
     pos = new PVector(x, y);
     last = new PVector(x, y);
-    
+
     sizex = 32;
     sizey = 16;
     sizez = 32;
@@ -18,6 +18,11 @@ class Plane extends Vehicle {
     terminal = new PVector(FRICTION/(1-FRICTION)*speed, FRICTION/(1-FRICTION)*GRAVITY);
 
     controller = null;
+
+    firerate = 10;
+    cooldown = 0;
+    
+    col = color(0, 0, 0);
   }
 
   void render() {
@@ -25,13 +30,13 @@ class Plane extends Vehicle {
     translate(pos.x, pos.y);
     rotate(dir);
     noStroke();
-    fill(255, 255, 255);
+    fill(col);
     /*
     For rendering the planes, two shapes are drawn:
-    one for the wings and one for the body.
-    The height of the shapes is scaled based off of the roll in order to 
-    give the illusion that the planes are 2d silhouettes of 3d objects.
-    */
+     one for the wings and one for the body.
+     The height of the shapes is scaled based off of the roll in order to 
+     give the illusion that the planes are 2d silhouettes of 3d objects.
+     */
     float xplane = sin(roll);
     float yplane = cos(roll);
 
@@ -67,7 +72,7 @@ class Plane extends Vehicle {
 }
 
 // The jet turns slowly and flies fast. It turns even slower when accelerating
-class Jet extends Vehicle {
+class Jet extends Object {
   Jet(float x, float y) {
     pos = new PVector(x, y);
     last = new PVector(x, y);
@@ -83,6 +88,11 @@ class Jet extends Vehicle {
     terminal = new PVector(FRICTION/(1-FRICTION)*speed, FRICTION/(1-FRICTION)*GRAVITY);
 
     controller = null;
+
+    firerate = 10;
+    cooldown = 0;
+    
+    col = color(0, 0, 0);
   }
 
   void render() {
@@ -90,7 +100,7 @@ class Jet extends Vehicle {
     translate(pos.x, pos.y);
     rotate(dir);
     noStroke();
-    fill(255, 255, 255);
+    fill(col);
 
     float xplane = sin(roll);
     float yplane = cos(roll);

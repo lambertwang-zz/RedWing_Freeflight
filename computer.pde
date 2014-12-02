@@ -1,7 +1,11 @@
-// This is you
-class Player extends Controller {
+// This is the enemy
+class Computer extends Controller {
 
-  Player(Object v) {
+  Object target;
+  boolean up, left, right, fire;
+
+
+  Computer(Object v) {
     vehicle = v;
     location = new ArrayList();
     // Sets a static check size
@@ -9,13 +13,52 @@ class Player extends Controller {
     checky = checkx;
 
     v.controller = this;
+
+    target = null;
+
+    up = true;
+    left = false;
+    right = false;
+    fire = false;
     
-    v.col = color(0, 255, 255);
+    v.col = color(160, 255, 128);
   }
 
   void tick() {
-    vehicle.controls(lfkey, rtkey, upkey, dnkey, fkey);
-    
+    if (world.redWing != null)
+      target = world.redWing;
+    if (target != null) {
+      float tempx = target.pos.x-vehicle.pos.x;
+      float tempy = target.pos.y-vehicle.pos.y;
+
+      if (tempx > FIELDX*CELLSIZE/2)
+        tempx -= FIELDX*CELLSIZE;
+      else if (tempx < -FIELDX*CELLSIZE/2)
+        tempx += FIELDX*CELLSIZE;
+
+      if (tempy > FIELDY*CELLSIZE/2)
+        tempy -= FIELDY*CELLSIZE;
+      else if (tempy < -FIELDY*CELLSIZE/2)
+        tempy += FIELDY*CELLSIZE;
+
+      float tempa = atan2(tempy, tempx);
+      tempa -= vehicle.dir;
+      if (tempa > PI)
+        tempa -= 2*PI;
+      else if (tempa < -PI)
+        tempa += 2*PI;
+
+      if (tempa < -0.1)
+        left = true;
+      else if (tempa > 0.1)
+        right = true;
+
+
+      vehicle.controls(left, right, up, false, false);
+      vehicle.controls(left, right, false, false, false);
+      left = false;
+      right = false;
+    }
     // Changes the hitbox to match the profile of the plane
     recheck();
 
@@ -34,7 +77,7 @@ class Player extends Controller {
       translate(0, FIELDY*CELLSIZE);
     else if (vehicle.pos.y > world.screenPos.y+height)
       translate(0, -FIELDY*CELLSIZE);
-      
+
     vehicle.render();
     
     popMatrix();
