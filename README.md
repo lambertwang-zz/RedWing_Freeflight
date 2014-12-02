@@ -1,8 +1,8 @@
 RedWing-Freeflight
 ==================
-Version: Beta 0.1
-Author: Lambert Wang
-A processing project that occupied my spare time
+Version: Beta 0.1  
+Author: Lambert Wang  
+A processing project that occupied my spare time  
 
 # Screenshots
 ![](screenshots/screenshot-1122014-103138.png)
