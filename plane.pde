@@ -1,6 +1,7 @@
 final float FRICTION = .9375; // 15 16ths
 final float GRAVITY = .6;
 
+
 // Plane is a standard plane with average turning and speed
 class Plane extends Object {
   Plane(float x, float y) {
@@ -21,7 +22,7 @@ class Plane extends Object {
 
     firerate = 10;
     cooldown = 0;
-    
+
     col = color(0, 0, 0);
   }
 
@@ -91,7 +92,7 @@ class Jet extends Object {
 
     firerate = 10;
     cooldown = 0;
-    
+
     col = color(0, 0, 0);
   }
 
@@ -131,11 +132,31 @@ class Jet extends Object {
 
   void controls(boolean left, boolean right, boolean up, boolean down, boolean fire) {
     // Override in order to change turn speed when accelerating
+    float tempturn;
     if (up)
-      turnspd = PI/180;
+      tempturn = turnspd/3;
     else
-      turnspd = PI/60;
-    super.controls(left, right, up, down, fire);
+      tempturn = turnspd;
+    // Turning (or technically, changing pitch)
+    if (left) {
+      dir -= tempturn;
+      roll -= turnspd;
+    }
+    if (right) {
+      dir += tempturn;
+      roll += turnspd;
+    } // Accelerating
+    if (up) {
+      last.add(cos(dir)*-speed, sin(dir)*-speed, 0);
+    }
+    if (fire) {
+      if (cooldown == 0) {
+        fire();
+        cooldown = firerate;
+      }
+    }
+    if (cooldown != 0)
+      cooldown --;
   }
 }
 

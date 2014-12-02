@@ -13,6 +13,13 @@ class World {
   ArrayList<Controller> addition; // list of objects to be added in the next frame
   ArrayList<Controller> removal; // List of objects to be removed from actors this tick
 
+  int enemies;
+
+  ArrayList<Particle> effects;
+  PVector shake;
+
+  color bleed;
+
   World() {
     cells = new Cell[FIELDX][FIELDY]; // Initiliazes cells
     for (int i = 0; i < FIELDX; i++)
@@ -26,7 +33,15 @@ class World {
     removal = new ArrayList();
 
     actors.add(new Player(redWing));
-    actors.add(new Computer(new Plane(0, 0)));
+
+    enemies = 0;
+    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE))));
+    enemies++;
+
+    effects = new ArrayList();
+    shake = new PVector(0, 0);
+    
+    bleed = color(160, 255, 255, 0);
   }
 
   void render() {
@@ -50,11 +65,12 @@ class World {
     PVector target = new PVector(); // Offset vector based off of redWing's position and velocity for the screen position
     target.set((SCREENFOLLOW+1)*redWing.pos.x - width/2 - SCREENFOLLOW*redWing.last.x, (SCREENFOLLOW+1)*redWing.pos.y - height/2 - SCREENFOLLOW*redWing.last.y);
 
-    screenPos.x = target.x;
-    screenPos.y = target.y;
+    screenPos.x = target.x+shake.x;
+    screenPos.y = target.y+shake.y;
 
     pushMatrix();
     translate(-screenPos.x, -screenPos.y);
+    shake.mult(shakeReduction);
 
     // i and j are set to only retrieve relevant cells
     for (int i = floor (screenPos.x/CELLSIZE); i <= ceil((screenPos.x+width)/CELLSIZE); i++) {
@@ -69,13 +85,25 @@ class World {
       popMatrix();
     }
 
+    // Renders all of the special effects
+    for (Particle p : effects)
+      p.render();
+
+    for (int i = effects.size ()-1; i >= 0; i--) // When effects time out, they are removed
+      if (effects.get(i).remaining < 0)
+        effects.remove(i);
+
     for (Controller c : actors)
       c.render(); // renders redWing
 
     popMatrix();
 
+    noStroke();
+    fill(bleed);
+    rect(-1, -1, width+2, height+2);
+
     //minimap();
-    //fps();
+    fps();
   }
 
   // Gets a cell with a specific index
@@ -124,6 +152,19 @@ class World {
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     popMatrix();
   }
+
+  ArrayList<Controller> collide(Controller obj) {
+    ArrayList<Controller> ret = new ArrayList();
+    for (Cell c : obj.location) {
+      for (Controller n : c.occupants) {
+        if (!ret.contains(n)) {
+          ret.add(n);
+        }
+      }
+    }
+    ret.remove(obj);
+    return ret;
+  }
 }
 
 class Cell {
@@ -146,19 +187,6 @@ class Cell {
      }*/
     fill(col);
     rect(0, 0, CELLSIZE+1, CELLSIZE+1);
-  }
-
-  ArrayList<Controller> collide(Controller obj) {
-    ArrayList<Controller> ret = new ArrayList();
-    for (Cell c : obj.location) {
-      for (Controller n : c.occupants) {
-        if (!ret.contains(n)) {
-          ret.add(n);
-        }
-      }
-    }
-    ret.remove(obj);
-    return ret;
   }
 }
 

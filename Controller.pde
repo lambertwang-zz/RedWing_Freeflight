@@ -6,6 +6,7 @@ abstract class Controller {
   int checkx, checky; // Number of cells to check in each direction for collision
 
   int life;
+  Controller origin;
 
   Controller() {
   }

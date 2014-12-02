@@ -44,8 +44,8 @@ class Bullet extends Object {
   }
 }
 
-class BulletController extends Controller {
-  BulletController(Bullet b) {
+class BulletController extends Controller {  
+  BulletController(Bullet b, Controller c) {
     vehicle = b;
     life = 120;
 
@@ -56,6 +56,8 @@ class BulletController extends Controller {
     checky = 0;
 
     b.controller = this;
+    
+    origin = c;
   }
 
   void tick() {

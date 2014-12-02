@@ -20,7 +20,7 @@ abstract class Object {
 
   int firerate;
   int cooldown;
-  
+
   color col;
 
   Object() {
@@ -89,6 +89,8 @@ abstract class Object {
     } // Accelerating
     if (up) {
       last.add(cos(dir)*-speed, sin(dir)*-speed, 0);
+
+      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), random(4, 8)));
     }
     if (fire) {
       if (cooldown == 0) {
@@ -103,7 +105,7 @@ abstract class Object {
   // Not implemented yet, game is currently peaceful
   void fire() {
     Bullet b = new Bullet(this);
-    world.addition.add(new BulletController(b));
+    world.addition.add(new BulletController(b, controller));
   }
 }
 
