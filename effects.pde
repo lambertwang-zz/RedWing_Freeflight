@@ -130,12 +130,12 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
 
     parts = new ArrayList();
 
-    for (int i = 0; i < size/6; i++)
-      parts.add(new Smoke(xpos+random(-size, size), ypos+random(-size, size), random(size/4, size/2), color(0, 0, int(random(0, 255))), int(random(30, 60))));
     for (int i = 0; i < size/8; i++)
-      parts.add(new Eclipse(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size/4, size/2), color(int(random(0, 256)), 255, 255), int(random(10, 40))));
-    for (int i = 0; i < size/2; i++)
-      parts.add(new Spark(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size, 2*size), color(int(random(0, 255)), 255, 255), int(random(20, 30)), random(0, 2*PI)));
+      parts.add(new Smoke(xpos+random(-size, size), ypos+random(-size, size), random(size/4, size/2), color(0, 0, int(random(0, 255))), int(random(40, 60))));
+    for (int i = 0; i < size/12; i++)
+      parts.add(new Eclipse(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size/4, size/2), color(int(random(0, 256)), 255, 255), int(random(30, 45))));
+    for (int i = 0; i < size/6; i++)
+      parts.add(new Spark(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size, 2*size), color(int(random(0, 255)), 255, 255), int(random(30, 45)), random(0, 2*PI)));
     remaining = parts.size(); // Lifetime is number of particles remaining in the explosion
   }
 

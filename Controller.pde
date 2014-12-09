@@ -1,13 +1,16 @@
 // Contoller superclass refers to input method for manipulating the movement of vehicles
 abstract class Controller {
-
-  Object vehicle;
+  Object vehicle; // Object being controlled
   ArrayList<Cell> location; // List of cells occupied by the vehicle
   int checkx, checky; // Number of cells to check in each direction for collision
 
-  int life;
-  Controller origin;
+  float life; // Life or hitpoints remaining of the object
+  float maxLife;
 
+  Controller origin; // The controller that spawned this controller (Not always required)
+
+
+  // Constructor
   Controller() {
   }
 
@@ -31,10 +34,15 @@ abstract class Controller {
   void tick() {
   }
 
+  // Draws the object
   void render() {
   }
 
+  // Resets the hitbox
   void recheck() {
+  }
+
+  void collide(Controller c) {
   }
 }
 

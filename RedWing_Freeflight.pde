@@ -1,18 +1,44 @@
 
 /* RedWing */
-// A 2d side-scrolling flying adventure
 // Coded by Lambert Wang
-// Controls: Arrow Keys
+
+
+/* 
+ RedWing is a colorful 2d side-scrolling flying adventure.
+ 
+ Heavily inspired by the game Luftrausers.
+ */
+
+/*
+  How to play:
+ Shoot enemies and avoid getting shot. 
+ 
+ Controls:
+ Left/Right Arrow Keys: Turn
+ Up Arrow Key: Accelerate
+ f Key: FIre
+ */
 
 World world;
 
 void setup() {
+  // Drawing parameters
   colorMode(HSB);
   smooth();
+  // Optimized for 60 fps
   frameRate(60);
-  //size(640, 360);
+
+  // 4:3
+  //size(800, 600);
+  //size(1024, 768);
+  //size(1280, 960);
+
+  // 16:9
+  //size(800, 450);
   //size(1280, 720);
-  size(1440, 800);
+  //size(1266, 768);
+  size(1440, 810);
+
   world = new World();
 }
 

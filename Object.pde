@@ -1,8 +1,8 @@
 // Superclass Object is a body which exist in the world. 
 // They must exist with a controller
 abstract class Object {
-  // Current position and previous frame position
-  PVector pos;
+
+  PVector pos; // Current position and previous frame position
   PVector last; // Last is used for verlet integration. See wikipedia for more information
 
   // Radii
@@ -12,17 +12,16 @@ abstract class Object {
   float dir; // Direction plane is facing in radians
   float roll; // The roll of the plane in radians (aka rotation about the local x axis)
 
-  float turnspd; // Amount of radians the vehicle is capable of changing its facing direction by in each frame
-  float speed; // Name is misleading, actually refers to the change in velocity each frame while the plane is accelerating
-  PVector terminal; // Terminal velocities in the x direction based off of speed and in the y direction based off of gravity
+  Controller controller; // Controller related to the object
 
-  Controller controller; 
+  color col; // Color of the object
+  
+  // Plane specific fields
+  Gun gun;
+  Body body;
+  Engine engine;
 
-  int firerate;
-  int cooldown;
-
-  color col;
-
+  // Constructor
   Object() {
   }
 
@@ -46,9 +45,9 @@ abstract class Object {
       roll = PI + (roll - PI)*.98; // Roll will approach PI
     }
 
-    if (pos.y < 0) { // Allows infinite translationg from ceiling to floor and side to side
-      pos.y += FIELDY*CELLSIZE;
-      last.y += FIELDY*CELLSIZE;
+    if (pos.y < 0) { // Allows infinite translation from ceiling to floor and side to side
+      pos.y += FIELDY*CELLSIZE; // IE you can fly off one side of the screen and re-appear on the other
+      last.y += FIELDY*CELLSIZE; // There is no visual feedback when this happens due to the screen scrolling and rendering with the plane
     }
     if (pos.y >= FIELDY*CELLSIZE) {
       pos.y -= FIELDY*CELLSIZE;
@@ -64,7 +63,7 @@ abstract class Object {
     }
 
     // Gravity
-    last.add(0, -GRAVITY*(1-abs(pos.x - last.x)/terminal.x), 0); // As the x velocity increases, the plane generates lift, and gravity has less of an effect
+    last.add(0, -body.gravity*(1-abs(pos.x - last.x)/body.terminal.x), 0); // As the x velocity increases, the plane generates lift, and gravity has less of an effect
 
     // Simple verlet integration for movement
     // Velocity is calculated from the delta of the last position and current position. 
@@ -80,32 +79,19 @@ abstract class Object {
   void controls(boolean left, boolean right, boolean up, boolean down, boolean fire) {
     // Turning (or technically, changing pitch)
     if (left) {
-      dir -= turnspd;
-      roll -= turnspd;
+      engine.turn(-1, up);
     }
     if (right) {
-      dir += turnspd;
-      roll += turnspd;
-    } // Accelerating
+      engine.turn(1, up);
+    } 
+
+    // Accelerating
     if (up) {
-      last.add(cos(dir)*-speed, sin(dir)*-speed, 0);
-
-      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), random(4, 8)));
+      last.add(cos(dir)*-engine.speed, sin(dir)*-engine.speed, 0);
+      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), random(4, 8))); // Contrails
     }
-    if (fire) {
-      if (cooldown == 0) {
-        fire();
-        cooldown = firerate;
-      }
-    }
-    if (cooldown != 0)
-      cooldown --;
-  }
 
-  // Not implemented yet, game is currently peaceful
-  void fire() {
-    Bullet b = new Bullet(this);
-    world.addition.add(new BulletController(b, controller));
+    gun.shoot(fire);
   }
 }
 

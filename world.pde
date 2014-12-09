@@ -3,6 +3,7 @@
 final int FIELDX = 768; // Number of cells in the x and y directions of the field
 final int FIELDY = 256;
 final int CELLSIZE = 16; // Pixel size of each cell
+
 final int SCREENFOLLOW = 8; // Amount to shift the screen by to follow RedWing
 
 class World {
@@ -14,11 +15,15 @@ class World {
   ArrayList<Controller> removal; // List of objects to be removed from actors this tick
 
   int enemies;
+  int difficulty;
+
 
   ArrayList<Particle> effects;
   PVector shake;
 
   color bleed;
+
+  boolean showHitboxes;
 
   World() {
     cells = new Cell[FIELDX][FIELDY]; // Initiliazes cells
@@ -27,7 +32,7 @@ class World {
         cells[i][j] = new Cell(i, j);
 
     screenPos = new PVector(0, 0);
-    redWing = new Plane(0, 0);
+    redWing = new Plane(0, 0, 1, 1, 1);
     actors = new ArrayList();
     addition = new ArrayList();
     removal = new ArrayList();
@@ -35,13 +40,16 @@ class World {
     actors.add(new Player(redWing));
 
     enemies = 0;
-    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE))));
+    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), 1, 1, 1)));
     enemies++;
+    difficulty = 1;
 
     effects = new ArrayList();
     shake = new PVector(0, 0);
-    
+
     bleed = color(160, 255, 255, 0);
+
+    showHitboxes = false;
   }
 
   void render() {
@@ -84,7 +92,15 @@ class World {
       }
       popMatrix();
     }
-
+    noStroke();
+    if (screenPos.x > 0 && screenPos.x < 27*400.0/7+width && screenPos.y > 0 && screenPos.y < 400+height) {
+      fill(0, 255, 255);
+      redWing(width, height, 400);
+    }
+    if (screenPos.x > FIELDX*CELLSIZE/2 && screenPos.x < 27*400.0/7+width+FIELDX*CELLSIZE/2 && screenPos.y > 0 && screenPos.y < 400+height) {
+      fill(128, 255, 255);
+      redWing(width+FIELDX*CELLSIZE/2, height, 400);
+    }
     // Renders all of the special effects
     for (Particle p : effects)
       p.render();
@@ -100,9 +116,8 @@ class World {
 
     noStroke();
     fill(bleed);
-    rect(-1, -1, width+2, height+2);
+    rect(0, 0, width, height);
 
-    //minimap();
     fps();
   }
 
@@ -181,10 +196,11 @@ class Cell {
 
   void render() {
     noStroke();
-    /*if (occupants.size() != 0) {
-     strokeWeight(2);
-     stroke(75, 255, 255);
-     }*/
+    if (world.showHitboxes)
+      if (occupants.size() != 0) {
+        strokeWeight(2);
+        stroke(75, 255, 255);
+      }
     fill(col);
     rect(0, 0, CELLSIZE+1, CELLSIZE+1);
   }
