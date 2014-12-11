@@ -114,7 +114,7 @@ class Computer extends Controller {
             }
           }
           for(Cell e: location){
-            e.col = new color(e.col.hue(), e.col.saturation() + min(255-e.col.saturation, random(48, 64)), e.col.brightness());
+            e.col = new color(e.col.hue(), e.col.saturation() + min(255-e.col.saturation, int(random(48, 64))), e.col.brightness());
             
           }
         }
