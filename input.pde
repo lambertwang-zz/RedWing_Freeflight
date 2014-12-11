@@ -44,7 +44,7 @@ void keyReleased() {
     case RIGHT:
       rtkey = false;
       break;
-    } else if (key == 'f' || key == 'F') {
+    } else if (key == 'z' || key == 'Z') {
     fkey = false;
   }
 }

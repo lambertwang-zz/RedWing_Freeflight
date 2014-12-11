@@ -113,6 +113,10 @@ class Computer extends Controller {
               world.enemies++;
             }
           }
+          for(Cell e: location){
+            e.col = (e.col & 0xff00ffff) | (((e.col >> 16 ) + min(int(random(32, 64)), 0xff - ((e.col << 16) & 0xff))) << 16);
+            
+          }
         }
       }
     }

@@ -198,7 +198,7 @@ class Cell {
   Cell(int x, int y) {
     xi = x;
     yi = y;
-    col = color(random(1*y, 16+1*y)%255, 176+64*sin(2*PI*x/FIELDX), random(208, 224));
+    col = color(random(1*y, 16+1*y)%255, random(0, 32), random(208, 224));
     occupants = new ArrayList();
   }
 
