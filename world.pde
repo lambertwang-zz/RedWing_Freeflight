@@ -32,7 +32,7 @@ class World {
         cells[i][j] = new Cell(i, j);
 
     screenPos = new PVector(0, 0);
-    redWing = new Plane(0, 0, 1, 1, 1);
+    redWing = new Plane(0, 0, floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)));
     actors = new ArrayList();
     addition = new ArrayList();
     removal = new ArrayList();
@@ -40,9 +40,9 @@ class World {
     actors.add(new Player(redWing));
 
     enemies = 0;
-    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), 1, 1, 1)));
+    difficulty = 2;
+    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)))));
     enemies++;
-    difficulty = 1;
 
     effects = new ArrayList();
     shake = new PVector(0, 0);
@@ -164,7 +164,15 @@ class World {
     fill(75, 255, 64);
     pushMatrix();
     translate(width-128, height-16);
+    textSize(12);
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    
+    translate(-80, -128);
+    textSize(18);
+    text("Instructions:", 0, 0);
+    text("'Z' : Fire", 0, 24);
+    text("Up : Accelerate", 0, 48);
+    text("Left/Right : Turn", 0, 72);
     popMatrix();
   }
 

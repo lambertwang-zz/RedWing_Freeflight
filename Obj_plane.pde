@@ -20,7 +20,7 @@ class Plane extends Object {
 
     switch(g) {
     case 1: 
-      gun = new MachineGun(12, this);
+      gun = new MachineGun(10, this);
       break;
     case 2:
       gun = new LaserBeam(this);

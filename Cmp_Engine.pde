@@ -21,7 +21,7 @@ abstract class Engine {
 class Prop extends Engine {
   Prop(Object p) {
     platform = p;
-    turnspd = PI/45;
+    turnspd = PI/30;
     speed = 1.2;
   }
 
@@ -48,7 +48,7 @@ class Prop extends Engine {
 class Jet extends Engine {
   Jet(Object p) {
     platform = p;
-    turnspd = PI/60;
+    turnspd = PI/45;
     speed = 1.6;
   }
 

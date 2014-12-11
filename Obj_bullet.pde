@@ -46,9 +46,12 @@ class Bullet extends Object {
 }
 
 class BulletController extends Controller {  
-  BulletController(Bullet b, Controller c) {
+  float damage;
+
+  BulletController(Bullet b, Controller c, float d) {
     vehicle = b;
     life = 120;
+    damage = d;
 
     location = new ArrayList();
 
@@ -88,7 +91,7 @@ class BulletController extends Controller {
   }
 
   void collide(Controller c) {
-    c.life -= 1;
+    c.life -= 1.8*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
     world.removal.add(this);
@@ -114,11 +117,11 @@ class Beam extends Object {
     strokeWeight(2+sizex/200);
     stroke(frameCount%256, 255, 255);
     line(24, 0, sizex, 0);
-    
+
     float xi = cos(dir);
     float yi = sin(dir);
-    
-    for(int i = 32; i < sizex; i+= 32){
+
+    for (int i = 32; i < sizex; i+= 32) {
       world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(8, 16), color(int(random(0, 255)), 255, 255), int(random(6, 8)), random(0, 2*PI)));
     }
 
@@ -129,10 +132,12 @@ class Beam extends Object {
 
 class BeamController extends Controller {  
   float len;
+  float damage;
 
-  BeamController(Beam b, Controller c, float l) {
+  BeamController(Beam b, Controller c, float l, float d) {
     vehicle = b;
     life = l/4;
+    damage = d;
 
     location = new ArrayList();
 
@@ -180,7 +185,7 @@ class BeamController extends Controller {
   }
 
   void collide(Controller c) {
-    c.life -= len/1024;
+    c.life -= damage*len/1024;
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
   }
 }

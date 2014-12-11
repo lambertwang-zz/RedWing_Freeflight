@@ -22,7 +22,7 @@ void keyPressed() {
       rtkey = true;
       lfkey = false;
       break;
-    } else if (key == 'f' || key == 'F') {
+    } else if (key == 'z' || key == 'Z') {
     fkey = true;
   } else if (key == 'o' || key == 'O') {
     screenShot();

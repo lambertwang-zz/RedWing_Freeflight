@@ -2,6 +2,7 @@ abstract class Gun {
   Object platform;
   int firerate; // The minimum number of frames between shots
   int cooldown; // The number of frames remaining before a shot can be made
+  float multiplier;
 
 
   Gun() {
@@ -20,6 +21,7 @@ class MachineGun extends Gun {
     firerate = fire;
     cooldown = 0;
     platform = p;
+    multiplier = 1;
   }
 
 
@@ -27,7 +29,7 @@ class MachineGun extends Gun {
     if (fire)
       if (cooldown == 0) {
         Bullet b = new Bullet(platform);
-        world.addition.add(new BulletController(b, platform.controller));
+        world.addition.add(new BulletController(b, platform.controller, multiplier));
         cooldown = firerate;
       }
 
@@ -41,6 +43,7 @@ class LaserBeam extends Gun {
 
   LaserBeam(Object p) {
     platform = p;
+    multiplier = 1;
   }
 
 
@@ -50,7 +53,7 @@ class LaserBeam extends Gun {
         charge ++;
     } else if (charge > 5) {
       Beam b = new Beam(platform);
-      world.addition.add(new BeamController(b, platform.controller, charge));
+      world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
       charge = 0;
     }
   }

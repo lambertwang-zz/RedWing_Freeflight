@@ -32,6 +32,7 @@ class Computer extends Controller {
     v.engine.turnspd *= random(1.6, 2.4);
     v.engine.speed *= random(0.6, 0.8);
     v.gun.firerate *= random(1.6, 2.4);
+    v.gun.multiplier *= random(0.6, 0.8);
   }
 
   void tick() {
@@ -107,7 +108,7 @@ class Computer extends Controller {
             for (int i = 0; i < world.difficulty; i++) {
               Object p;
               p = new Plane(random(world.redWing.pos.x+width/2, world.redWing.pos.x-width/2+FIELDX*CELLSIZE), 
-              random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), 1, 1, 1);
+              random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)));
               world.addition.add(new Computer(p));
               world.enemies++;
             }
