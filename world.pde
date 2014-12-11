@@ -105,9 +105,24 @@ class World {
     for (Particle p : effects)
       p.render();
 
-    for (int i = effects.size ()-1; i >= 0; i--) // When effects time out, they are removed
-      if (effects.get(i).remaining < 0)
+    for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
+      if (effects.get(i).remaining < 0) {
+        Cell e = getCell(floor(effects.get(i).xpos/CELLSIZE), floor(effects.get(i).ypos/CELLSIZE));
+        println(floor(effects.get(i).xpos/CELLSIZE));
+        float magnitude = 32;
+        if (effects.get(i) instanceof Smoke) {
+          magnitude = 4;
+        } else if (effects.get(i) instanceof Spark) {
+          magnitude = 4;
+        } else if (effects.get(i) instanceof Eclipse) {
+          magnitude = 16;
+        } else if (effects.get(i) instanceof Explosion) {
+          magnitude = 32;
+        }
+        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.5))), brightness(e.col));
         effects.remove(i);
+      }
+    }
 
     for (Controller c : actors)
       c.render(); // renders redWing
@@ -166,7 +181,7 @@ class World {
     translate(width-128, height-16);
     textSize(12);
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
-    
+
     translate(-80, -128);
     textSize(18);
     text("Instructions:", 0, 0);
@@ -198,7 +213,7 @@ class Cell {
   Cell(int x, int y) {
     xi = x;
     yi = y;
-    col = color(random(1*y, 16+1*y)%255, random(32, 48), random(208, 224));
+    col = color(random(1*y, 16+1*y)%255, 160+96*sin(2*PI*x/FIELDX), random(208, 224));
     occupants = new ArrayList();
   }
 

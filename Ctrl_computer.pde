@@ -18,7 +18,7 @@ class Computer extends Controller {
     v.controller = this;
     v.body.init(this);
     v.body.terminal = new PVector(FRICTION/(1-FRICTION)*v.engine.speed, FRICTION/(1-FRICTION)*v.body.gravity);
-    
+
     origin = null;
 
     target = null;
@@ -32,7 +32,11 @@ class Computer extends Controller {
     v.engine.turnspd *= random(1.6, 2.4);
     v.engine.speed *= random(0.6, 0.8);
     v.gun.firerate *= random(1.6, 2.4);
-    v.gun.multiplier *= random(0.6, 0.8);
+    if (v.gun instanceof MachineGun) {
+      v.gun.multiplier = random(0.6, 0.8);
+    } else if (v.gun instanceof LaserBeam) {
+      v.gun.multiplier = random(0.15, 0.2);
+    }
   }
 
   void tick() {
@@ -112,10 +116,6 @@ class Computer extends Controller {
               world.addition.add(new Computer(p));
               world.enemies++;
             }
-          }
-          for(Cell e: location){
-            e.col = new color(e.col.hue(), e.col.saturation() + min(255-e.col.saturation(), int(random(48, 64))), e.col.brightness());
-            
           }
         }
       }
