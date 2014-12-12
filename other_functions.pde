@@ -1,7 +1,8 @@
 // Saves precious memories
 void screenShot() {
-  save("screenshots/screenshot-"+day()+month()+year()+"-"+hour()+minute()+second()+".png");
-  println("Screenshot saved: "+"screenshots/screenshot-"+day()+month()+year()+"-"+hour()+minute()+second()+".png");
+  String name = "screenshots/screenshot-D"+day()+"M"+month()+"Y"+year()+"-H"+hour()+"M"+minute()+"S"+second()+".png";
+  save(name);
+  println("Screenshot saved: "+name);
 }
 
 int signum(float n){
