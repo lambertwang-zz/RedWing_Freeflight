@@ -1,51 +1,74 @@
 // Stored values of whether or not keys are held down
-boolean upkey = false;
-boolean dnkey = false;
-boolean lfkey = false;
-boolean rtkey = false;
-boolean fkey = false;
+class Input {
+  boolean upkey = false;
+  boolean dnkey = false;
+  boolean lfkey = false;
+  boolean rtkey = false;
+  boolean zkey = false;
+  boolean xkey = false;
+
+  Input() {
+  }
+
+  void reset() {
+    upkey = false;
+    dnkey = false;
+    lfkey = false;
+    rtkey = false;
+    zkey = false;
+    xkey = false;
+  }
+}
+
 
 void keyPressed() {
   if (key == CODED) // Arrow keys are referred to by a keyCode enum
     switch(keyCode) {
     case UP:
-      upkey = true;
+      keyboard.upkey = true;
       break;
     case DOWN:
-      dnkey = true;
+      keyboard.dnkey = true;
       break;
     case LEFT: // To prevent sticky movement, left and write override eachother
-      lfkey = true;
-      rtkey = false;
+      keyboard.lfkey = true;
+      keyboard.rtkey = false;
       break;
     case RIGHT: 
-      rtkey = true;
-      lfkey = false;
+      keyboard.rtkey = true;
+      keyboard.lfkey = false;
       break;
     } else if (key == 'z' || key == 'Z') {
-    fkey = true;
+    keyboard.zkey = true;
+  } else if (key == 'x' || key == 'X') {
+    keyboard.xkey = true;
   } else if (key == 'o' || key == 'O') {
     screenShot();
+  } else if (key == 'r' || key == 'R') {
+    world = new World();
   }
 }
+
 
 void keyReleased() {
   if (key == CODED)
     switch(keyCode) {
     case UP:
-      upkey = false;
+      keyboard.upkey = false;
       break;
     case DOWN:
-      dnkey = false;
+      keyboard.dnkey = false;
       break;
     case LEFT:
-      lfkey = false;
+      keyboard.lfkey = false;
       break;
     case RIGHT:
-      rtkey = false;
+      keyboard.rtkey = false;
       break;
     } else if (key == 'z' || key == 'Z') {
-    fkey = false;
+    keyboard.zkey = false;
+  } else if (key == 'x' || key == 'X') {
+    keyboard.xkey = false;
   }
 }
 

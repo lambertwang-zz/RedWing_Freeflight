@@ -46,6 +46,9 @@ class Plane extends Object {
     case 2:
       engine = new Jet(this);
       break;
+    case 3:
+      engine = new Chaos(this);
+      break;
     }
   }
 

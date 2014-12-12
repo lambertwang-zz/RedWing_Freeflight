@@ -132,7 +132,7 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
 
     for (int i = 0; i < size/8; i++)
       parts.add(new Smoke(xpos+random(-size, size), ypos+random(-size, size), random(size/4, size/2), color(0, 0, int(random(0, 255))), int(random(40, 60))));
-    for (int i = 0; i < size/12; i++)
+    for (int i = 0; i < size/10; i++)
       parts.add(new Eclipse(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size/4, size/2), color(int(random(0, 256)), 255, 255), int(random(30, 45))));
     for (int i = 0; i < size/6; i++)
       parts.add(new Spark(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size, 2*size), color(int(random(0, 255)), 255, 255), int(random(30, 45)), random(0, 2*PI)));
@@ -143,9 +143,21 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
     for (Particle p : parts)
       p.render(); // Boom (Add "Sound effects" to ToDo list
 
-    for (int i = parts.size ()-1; i >= 0; i--)
-      if (parts.get(i).remaining == 0)
+    for (int i = parts.size ()-1; i >= 0; i--) { // When effects time out, they are removed
+      if (parts.get(i).remaining < 0) {
+        Cell e = world.getCell(floor(parts.get(i).xpos/CELLSIZE), floor(parts.get(i).ypos/CELLSIZE));
+        float magnitude = 32;
+        if (parts.get(i) instanceof Smoke) {
+          magnitude = size/3;
+        } else if (parts.get(i) instanceof Spark) {
+          magnitude = size/2;
+        } else if (parts.get(i) instanceof Eclipse) {
+          magnitude = 2*size;
+        }
+        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
         parts.remove(i);
+      }
+    }
 
     remaining = parts.size();
   }

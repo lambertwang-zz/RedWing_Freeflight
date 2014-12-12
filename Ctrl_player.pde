@@ -15,12 +15,13 @@ class Player extends Controller {
     v.controller = this;
     v.body.init(this);
     origin = null;
+    v.body.terminal = new PVector(FRICTION/(1-FRICTION)*v.engine.speed, FRICTION/(1-FRICTION)*v.body.gravity);
 
     v.col = color(0, 255, 255);
   }
 
   void tick() {
-    vehicle.controls(lfkey, rtkey, upkey, dnkey, fkey);
+    vehicle.controls(keyboard);
 
     // Changes the hitbox to match the profile of the plane
     recheck();

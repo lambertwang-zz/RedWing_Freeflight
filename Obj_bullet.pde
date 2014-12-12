@@ -1,5 +1,5 @@
 // Simple projectile 
-final float BULLETVEL = 12;
+final float BULLETVEL = 16;
 
 class Bullet extends Object {
 
@@ -50,7 +50,7 @@ class BulletController extends Controller {
 
   BulletController(Bullet b, Controller c, float d) {
     vehicle = b;
-    life = 120;
+    life = 180;
     damage = d;
 
     location = new ArrayList();

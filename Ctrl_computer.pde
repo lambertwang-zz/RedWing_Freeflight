@@ -1,9 +1,10 @@
+final float COMPLIFE = 4;
+
 // This is the enemy
 class Computer extends Controller {
 
   Object target;
-  boolean up, left, right, fire;
-
+  Input comp;
 
   Computer(Object v) {
     vehicle = v;
@@ -12,7 +13,7 @@ class Computer extends Controller {
     checkx = ceil(max(v.sizex, v.sizey, v.sizez)/CELLSIZE);
     checky = checkx;
 
-    maxLife = 4;
+    maxLife = COMPLIFE;
     life = maxLife;
 
     v.controller = this;
@@ -23,19 +24,15 @@ class Computer extends Controller {
 
     target = null;
 
-    up = false;
-    left = false;
-    right = false;
-    fire = false;
+    comp = new Input();
 
     v.col = color(160, 255, 128);
-    v.engine.turnspd *= random(1.6, 2.4);
     v.engine.speed *= random(0.6, 0.8);
-    v.gun.firerate *= random(1.6, 2.4);
+    v.gun.firerate *= random(2.4, 3.2);
     if (v.gun instanceof MachineGun) {
       v.gun.multiplier = random(0.6, 0.8);
     } else if (v.gun instanceof LaserBeam) {
-      v.gun.multiplier = random(0.15, 0.2);
+      v.gun.multiplier = random(0.3, 0.4);
     }
   }
 
@@ -64,26 +61,23 @@ class Computer extends Controller {
         tempa += 2*PI;
 
       if (tempa < -vehicle.engine.turnspd/2)
-        left = true;
+        comp.lfkey = true;
       else if (tempa > vehicle.engine.turnspd/2)
-        right = true;
+        comp.rtkey = true;
 
       if (abs(tempa) < 0.1)
-        fire = true;
+        comp.zkey = true;
 
       if (dist(0, 0, tempx, tempy) > width+height) {
         if (abs(tempa) > 1)
-          up = false;
-        else up = true;
+          comp.upkey = false;
+        else comp.upkey = true;
       } else
-        up = true;
+        comp.upkey = true;
 
-      vehicle.controls(left, right, up, false, fire);
+      vehicle.controls(comp);
 
-      left = false;
-      right = false;
-      up = false;
-      fire = false;
+      comp.reset();
     }
     // Changes the hitbox to match the profile of the plane
     recheck();

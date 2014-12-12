@@ -20,6 +20,7 @@
  */
 
 World world;
+Input keyboard;
 
 void setup() {
   // Drawing parameters
@@ -39,6 +40,7 @@ void setup() {
   //size(1266, 768);
   size(1440, 810);
 
+  keyboard = new Input();
   world = new World();
 }
 
