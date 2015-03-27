@@ -2,3 +2,5 @@
 ###########
 *.windows32
 *.windows64
+build-tmp
+
