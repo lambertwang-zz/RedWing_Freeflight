@@ -25,9 +25,6 @@ class Plane extends Object {
     case 2:
       gun = new LaserBeam(this);
       break;
-    case 3:
-      gun = new GrenadeLauncher(40, this);
-      break;
     }
 
     switch(b) {
@@ -48,9 +45,6 @@ class Plane extends Object {
       break;
     case 2:
       engine = new Jet(this);
-      break;
-    case 3:
-      engine = new Chaos(this);
       break;
     }
   }

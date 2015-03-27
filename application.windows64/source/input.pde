@@ -1,43 +1,29 @@
 // Stored values of whether or not keys are held down
-class Input {
-  float upkey = 0;
-  float dnkey = 0;
-  float dirkey = 0;
-  boolean zkey = false;
-  boolean xkey = false;
-
-  Input() {
-  }
-
-  void reset() {
-    upkey = 0;
-    dnkey = 0;
-    dirkey = 0;
-    zkey = false;
-    xkey = false;
-  }
-}
-
+boolean upkey = false;
+boolean dnkey = false;
+boolean lfkey = false;
+boolean rtkey = false;
+boolean fkey = false;
 
 void keyPressed() {
   if (key == CODED) // Arrow keys are referred to by a keyCode enum
     switch(keyCode) {
     case UP:
-      keyboard.upkey = 1;
+      upkey = true;
       break;
     case DOWN:
-      keyboard.dnkey = 1;
+      dnkey = true;
       break;
     case LEFT: // To prevent sticky movement, left and write override eachother
-      keyboard.dirkey = -1;
+      lfkey = true;
+      rtkey = false;
       break;
     case RIGHT: 
-      keyboard.dirkey = 1;
+      rtkey = true;
+      lfkey = false;
       break;
     } else if (key == 'z' || key == 'Z') {
-    keyboard.zkey = true;
-  } else if (key == 'x' || key == 'X') {
-    keyboard.xkey = true;
+    fkey = true;
   } else if (key == 'o' || key == 'O') {
     screenShot();
   } else if (key == 'r' || key == 'R') {
@@ -45,28 +31,23 @@ void keyPressed() {
   }
 }
 
-
 void keyReleased() {
   if (key == CODED)
     switch(keyCode) {
     case UP:
-      keyboard.upkey = 0;
+      upkey = false;
       break;
     case DOWN:
-      keyboard.dnkey = 0;
+      dnkey = false;
       break;
     case LEFT:
-      if (keyboard.dirkey == -1)
-        keyboard.dirkey = 0;
+      lfkey = false;
       break;
     case RIGHT:
-      if (keyboard.dirkey == 1)
-        keyboard.dirkey = 0;
+      rtkey = false;
       break;
     } else if (key == 'z' || key == 'Z') {
-    keyboard.zkey = false;
-  } else if (key == 'x' || key == 'X') {
-    keyboard.xkey = false;
+    fkey = false;
   }
 }
 

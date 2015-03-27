@@ -1,10 +1,9 @@
-final float COMPLIFE = 4;
-
 // This is the enemy
 class Computer extends Controller {
 
   Object target;
-  Input comp;
+  boolean up, left, right, fire;
+
 
   Computer(Object v) {
     vehicle = v;
@@ -13,7 +12,7 @@ class Computer extends Controller {
     checkx = ceil(max(v.sizex, v.sizey, v.sizez)/CELLSIZE);
     checky = checkx;
 
-    maxLife = COMPLIFE;
+    maxLife = 4;
     life = maxLife;
 
     v.controller = this;
@@ -24,15 +23,19 @@ class Computer extends Controller {
 
     target = null;
 
-    comp = new Input();
+    up = false;
+    left = false;
+    right = false;
+    fire = false;
 
     v.col = color(160, 255, 128);
+    v.engine.turnspd *= random(1.6, 2.4);
     v.engine.speed *= random(0.6, 0.8);
-    v.gun.firerate *= random(2.4, 3.2);
+    v.gun.firerate *= random(1.6, 2.4);
     if (v.gun instanceof MachineGun) {
       v.gun.multiplier = random(0.6, 0.8);
     } else if (v.gun instanceof LaserBeam) {
-      v.gun.multiplier = random(0.3, 0.4);
+      v.gun.multiplier = random(0.15, 0.2);
     }
   }
 
@@ -61,23 +64,26 @@ class Computer extends Controller {
         tempa += 2*PI;
 
       if (tempa < -vehicle.engine.turnspd/2)
-        comp.dirkey = -1;
+        left = true;
       else if (tempa > vehicle.engine.turnspd/2)
-        comp.dirkey = 1;
+        right = true;
 
       if (abs(tempa) < 0.1)
-        comp.zkey = true;
+        fire = true;
 
       if (dist(0, 0, tempx, tempy) > width+height) {
         if (abs(tempa) > 1)
-          comp.upkey = 0;
-        else comp.upkey = 1;
+          up = false;
+        else up = true;
       } else
-        comp.upkey = 1;
+        up = true;
 
-      vehicle.controls(comp);
+      vehicle.controls(left, right, up, false, fire);
 
-      comp.reset();
+      left = false;
+      right = false;
+      up = false;
+      fire = false;
     }
     // Changes the hitbox to match the profile of the plane
     recheck();
@@ -106,7 +112,7 @@ class Computer extends Controller {
             for (int i = 0; i < world.difficulty; i++) {
               Object p;
               p = new Plane(random(world.redWing.pos.x+width/2, world.redWing.pos.x-width/2+FIELDX*CELLSIZE), 
-              random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
+              random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)));
               world.addition.add(new Computer(p));
               world.enemies++;
             }

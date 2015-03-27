@@ -32,7 +32,7 @@ class World {
         cells[i][j] = new Cell(i, j);
 
     screenPos = new PVector(0, 0);
-    redWing = new Plane(0, 0, floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
+    redWing = new Plane(0, 0, floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)));
     actors = new ArrayList();
     addition = new ArrayList();
     removal = new ArrayList();
@@ -41,7 +41,7 @@ class World {
 
     enemies = 0;
     difficulty = 2;
-    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)))));
+    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), floor(random(1, 3)), floor(random(1, 4)), floor(random(1, 3)))));
     enemies++;
 
     effects = new ArrayList();
@@ -73,41 +73,25 @@ class World {
     PVector target = new PVector(); // Offset vector based off of redWing's position and velocity for the screen position
     target.set((SCREENFOLLOW+1)*redWing.pos.x - width/2 - SCREENFOLLOW*redWing.last.x, (SCREENFOLLOW+1)*redWing.pos.y - height/2 - SCREENFOLLOW*redWing.last.y);
 
-    if (screenPos.x - redWing.pos.x > FIELDX*CELLSIZE/2) {
-      screenPos.x -= FIELDX*CELLSIZE;
-    } else if (screenPos.x - redWing.pos.x < -FIELDX*CELLSIZE/2) {
-      screenPos.x += FIELDX*CELLSIZE;
-    }
-
-    if (screenPos.y - redWing.pos.y > FIELDY*CELLSIZE/2) {
-      screenPos.y -= FIELDY*CELLSIZE;
-    } else if (screenPos.y - redWing.pos.y < -FIELDY*CELLSIZE/2) {
-      screenPos.y += FIELDY*CELLSIZE;
-    }
-
-    screenPos.x -= (screenPos.x-target.x)/16;
-    screenPos.y -= (screenPos.y-target.y)/16;
-
+    screenPos.x = target.x+shake.x;
+    screenPos.y = target.y+shake.y;
 
     pushMatrix();
     translate(-screenPos.x, -screenPos.y);
-    translate(shake.x, shake.y);
     shake.mult(shakeReduction);
 
     // i and j are set to only retrieve relevant cells
-    for (int i = floor (screenPos.x/CELLSIZE)-1; i <= ceil((screenPos.x+width)/CELLSIZE); i++) {
+    for (int i = floor (screenPos.x/CELLSIZE); i <= ceil((screenPos.x+width)/CELLSIZE); i++) {
       pushMatrix();
-      translate((i)*CELLSIZE, 0);
-      for (int j = floor (screenPos.y/CELLSIZE)-1; j <= ceil((screenPos.y+height)/CELLSIZE); j++) {
+      translate(i*CELLSIZE, 0);
+      for (int j = floor (screenPos.y/CELLSIZE); j <= ceil((screenPos.y+height)/CELLSIZE); j++) {
         pushMatrix();
-        translate(0, (j)*CELLSIZE);
+        translate(0, j*CELLSIZE);
         getCell(i, j).render();
         popMatrix();
       }
       popMatrix();
     }
-    
-    // Renders the logo
     noStroke();
     if (screenPos.x > 0 && screenPos.x < 27*400.0/7+width && screenPos.y > 0 && screenPos.y < 400+height) {
       fill(0, 255, 255);
@@ -117,7 +101,6 @@ class World {
       fill(128, 255, 255);
       redWing(width+FIELDX*CELLSIZE/2, height, 400);
     }
-    
     // Renders all of the special effects
     for (Particle p : effects)
       p.render();
@@ -125,15 +108,18 @@ class World {
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
         Cell e = getCell(floor(effects.get(i).xpos/CELLSIZE), floor(effects.get(i).ypos/CELLSIZE));
+        println(floor(effects.get(i).xpos/CELLSIZE));
         float magnitude = 32;
         if (effects.get(i) instanceof Smoke) {
           magnitude = 4;
         } else if (effects.get(i) instanceof Spark) {
           magnitude = 4;
         } else if (effects.get(i) instanceof Eclipse) {
+          magnitude = 16;
+        } else if (effects.get(i) instanceof Explosion) {
           magnitude = 32;
         }
-        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
+        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.5))), brightness(e.col));
         effects.remove(i);
       }
     }
@@ -228,7 +214,7 @@ class Cell {
   Cell(int x, int y) {
     xi = x;
     yi = y;
-    col = color(random(1*y, 16+1*y)%255, 64+64*sin(2*PI*x/FIELDX), random(208, 224));
+    col = color(random(1*y, 16+1*y)%255, 160+96*sin(2*PI*x/FIELDX), random(208, 224));
     occupants = new ArrayList();
   }
 

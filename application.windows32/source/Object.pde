@@ -15,7 +15,7 @@ abstract class Object {
   Controller controller; // Controller related to the object
 
   color col; // Color of the object
-
+  
   // Plane specific fields
   Gun gun;
   Body body;
@@ -76,18 +76,22 @@ abstract class Object {
   }
 
   // input sent from the controller
-  void controls(Input i) {
-    engine.boost(i.xkey);
+  void controls(boolean left, boolean right, boolean up, boolean down, boolean fire) {
     // Turning (or technically, changing pitch)
-    engine.turn(i.dirkey, i.upkey);
+    if (left) {
+      engine.turn(-1, up);
+    }
+    if (right) {
+      engine.turn(1, up);
+    } 
 
     // Accelerating
-    if (i.upkey > 0) {
-      last.add(cos(dir)*-engine.speed*i.upkey, sin(dir)*-engine.speed*i.upkey, 0);
-      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), i.upkey*random(4, 8))); // Contrails
+    if (up) {
+      last.add(cos(dir)*-engine.speed, sin(dir)*-engine.speed, 0);
+      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), random(4, 8))); // Contrails
     }
 
-    gun.shoot(i.zkey);
+    gun.shoot(fire);
   }
 }
 

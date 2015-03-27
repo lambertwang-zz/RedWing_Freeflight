@@ -1,5 +1,3 @@
-final int NUMGUN = 2;
-
 abstract class Gun {
   Object platform;
   int firerate; // The minimum number of frames between shots
@@ -53,7 +51,7 @@ class LaserBeam extends Gun {
     if (fire) {
       if (charge < 100)
         charge ++;
-    } else if (charge > 20) {
+    } else if (charge > 5) {
       Beam b = new Beam(platform);
       world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
       charge = 0;
@@ -65,29 +63,6 @@ class LaserBeam extends Gun {
       fill(frameCount%256, 255, 255);
       ellipse(32, 0, 5+charge/5, 5+charge/5);
     }
-  }
-}
-
-class GrenadeLauncher extends Gun {
-
-  GrenadeLauncher(int fire, Object p) {
-    firerate = fire;
-    cooldown = 0;
-    platform = p;
-    multiplier = 1;
-  }
-
-
-  void shoot(boolean fire) {
-    if (fire)
-      if (cooldown == 0) {
-        Grenade b = new Grenade(platform);
-        world.addition.add(new GrenadeController(b, platform.controller, multiplier));
-        cooldown = firerate;
-      }
-
-    if (cooldown != 0)
-      cooldown --;
   }
 }
 

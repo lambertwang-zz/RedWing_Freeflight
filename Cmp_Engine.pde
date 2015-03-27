@@ -1,3 +1,5 @@
+final int NUMENG = 3;
+
 abstract class Engine {
   float turnspd; // Amount of radians the vehicle is capable of changing its facing direction by in each frame
   float speed; // Name is misleading, actually refers to the change in velocity each frame while the plane is accelerating
@@ -12,7 +14,7 @@ abstract class Engine {
   void render(float yplane) {
   }
 
-  void turn(int d, boolean b) {
+  void turn(float d, float b) {
     platform.dir += d*turnspd;
     platform.roll += d*turnspd;
   }
@@ -22,10 +24,13 @@ abstract class Engine {
 }
 
 class Prop extends Engine {
+  float fspeed;
+
   Prop(Object p) {
     platform = p;
     turnspd = PI/60;
     speed = 1.2;
+    fspeed = speed;
   }
 
   void render(float xplane) {
@@ -47,13 +52,17 @@ class Prop extends Engine {
     endShape();
   }
 
-  void turn(int d, boolean b) {
+  void turn(float d, float b) {
+    platform.dir += d*turnspd*(1.5*b+1);
+    platform.roll += d*turnspd*(1.5*b+1);
+  }
+
+  void boost(boolean b) {
     if (b) {
-      platform.dir += d*turnspd*2.5;
-      platform.roll += d*turnspd*2.5;
+      speed = -fspeed*.75;
+      world.effects.add(new Spark(platform.last.x, platform.last.y, random(48, 64), color(int(random(0, 256)), 255, 255), random(80, 100), random(0, 2*PI)));
     } else {
-      platform.dir += d*turnspd;
-      platform.roll += d*turnspd;
+      speed = fspeed;
     }
   }
 }
@@ -63,7 +72,7 @@ class Jet extends Engine {
   float turnMult;
   float fturnspd; // Amount to multiply turnspeed
 
-  Jet(Object p) {
+    Jet(Object p) {
     platform = p;
     turnspd = PI/105;
     fturnspd = turnspd;
@@ -86,21 +95,16 @@ class Jet extends Engine {
     endShape();
   }
 
-  void turn(int d, boolean b) {
-    if (b) {
-      platform.dir += d*turnspd*4;
-      platform.roll += d*turnspd*4;
-    } else {
-      platform.dir += d*turnspd;
-      platform.roll += d*turnspd;
-    }
+  void turn(float d, float b) {
+    platform.dir += d*turnspd*(3*b+1);
+    platform.roll += d*turnspd*(3*b+1);
   }
 
   void boost(boolean b) {
     if (b) {
       speed = 2;
       turnspd = fturnspd/4;
-      world.effects.add(new Smoke(platform.pos.x+random(-8, 8), platform.pos.y+random(-8, 8), random(8, 12), color(int(random(0, 255)), 255, 255), int(random(20, 30))));
+      world.effects.add(new Smoke(platform.last.x, platform.last.y, random(8, 12), color(int(random(0, 255)), 255, 255), int(random(20, 30))));
     } else {
       speed = fspeed;
       turnspd = fturnspd;
@@ -118,7 +122,7 @@ class Chaos extends Engine {
     platform = p;
     turnspd = PI/30;
     fturnspd = turnspd;
-    speed = 1.1;
+    speed = 1.2;
 
     boostrate = 180;
     cooldown = 0;
@@ -139,14 +143,9 @@ class Chaos extends Engine {
     endShape();
   }
 
-  void turn(int d, boolean b) {
-    if (b) {
-      platform.dir += d*turnspd;
-      platform.roll += d*turnspd;
-    } else {
-      platform.dir += d*turnspd;
-      platform.roll += d*turnspd;
-    }
+  void turn(float d, float b) {
+    platform.dir += d*turnspd;
+    platform.roll += d*turnspd;
   }
 
   void boost(boolean b) {
@@ -156,7 +155,7 @@ class Chaos extends Engine {
         world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(24, 32)));
         float cosd = cos(platform.dir);
         float sind = sin(platform.dir);
-        for(int i = 0; i < 512; i+=32) {
+        for (int i = 0; i < 512; i+=32) {
           world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(10, 16)));
         }
         platform.pos.set(platform.pos.x+cosd*512, platform.pos.y+sind*512);
@@ -168,8 +167,11 @@ class Chaos extends Engine {
     }
     if (cooldown != 0) {
       cooldown--;
-    } else {
-      turnspd = fturnspd;
+      world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(2, 4), color(int(random(0, 256)), 255, 255), int(random(30, 45))));
+      if (cooldown == 0) {
+        turnspd = fturnspd;
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, 64));
+      }
     }
   }
 }

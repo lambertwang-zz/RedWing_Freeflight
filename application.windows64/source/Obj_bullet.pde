@@ -1,10 +1,5 @@
 // Simple projectile 
-final float BULLETVEL = 16;
-final float BULLETDAM = 1.8;
-
-final float GRENADEVEL = 12;
-final float GRENADEGRAV = .2;
-final float GRENADEDAM = 3;
+final float BULLETVEL = 12;
 
 class Bullet extends Object {
 
@@ -55,7 +50,7 @@ class BulletController extends Controller {
 
   BulletController(Bullet b, Controller c, float d) {
     vehicle = b;
-    life = 180;
+    life = 120;
     damage = d;
 
     location = new ArrayList();
@@ -96,7 +91,7 @@ class BulletController extends Controller {
   }
 
   void collide(Controller c) {
-    c.life -= BULLETDAM*damage;
+    c.life -= 1.8*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
     world.removal.add(this);
@@ -192,110 +187,6 @@ class BeamController extends Controller {
   void collide(Controller c) {
     c.life -= damage*len/1024;
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
-  }
-}
-
-class Grenade extends Object {
-
-  Grenade(Object origin) {
-    pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir;
-    roll = 0;
-    last = new PVector(origin.last.x-cos(dir)*GRENADEVEL, origin.last.y-sin(dir)*GRENADEVEL);
-  }
-
-  void tick() {
-    if (pos.y < 0) { // Allows infinite translationg from ceiling to floor and side to side
-      pos.y += FIELDY*CELLSIZE;
-      last.y += FIELDY*CELLSIZE;
-    }
-    if (pos.y >= FIELDY*CELLSIZE) {
-      pos.y -= FIELDY*CELLSIZE;
-      last.y -= FIELDY*CELLSIZE;
-    }
-    if (pos.x < 0) {
-      pos.x += FIELDX*CELLSIZE;
-      last.x += FIELDX*CELLSIZE;
-    }
-    if (pos.x > FIELDX*CELLSIZE) {
-      pos.x -= FIELDX*CELLSIZE;
-      last.x -= FIELDX*CELLSIZE;
-    }
-
-    last.add(0, -GRENADEGRAV, 0);
-
-
-    // Simple verlet integration for movement
-    // Velocity is calculated from the delta of the last position and current position. 
-    PVector temp = new PVector(pos.x, pos.y);
-    pos.add(pos.x - last.x, pos.y - last.y, 0);
-    last.set(temp.x, temp.y);
-  }
-
-  void render() {
-    pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(roll);
-    noStroke();
-    fill(60, 255, 96);
-    ellipse(0, 0, 16, 16);
-    popMatrix();
-  }
-}
-
-class GrenadeController extends Controller {  
-  float damage;
-
-  GrenadeController(Grenade b, Controller c, float d) {
-    vehicle = b;
-    life = 180;
-    damage = d;
-
-    location = new ArrayList();
-
-    // Sets a static check size
-    checkx = 0;
-    checky = 0;
-
-    b.controller = this;
-
-    origin = c;
-  }
-
-  void tick() {
-    life--;
-    if (life <= 0) {
-      world.removal.add(this);
-    }
-    vehicle.tick();
-    update();
-  }
-
-  void render() {
-    pushMatrix();
-    if (vehicle.pos.x < world.screenPos.x)
-      translate(FIELDX*CELLSIZE, 0);
-    else if (vehicle.pos.x > world.screenPos.x+width)
-      translate(-FIELDX*CELLSIZE, 0);
-
-    if (vehicle.pos.y < world.screenPos.y)
-      translate(0, FIELDY*CELLSIZE);
-    else if (vehicle.pos.y > world.screenPos.y+height)
-      translate(0, -FIELDY*CELLSIZE);
-
-    vehicle.render();
-
-    popMatrix();
-  }
-
-  void collide(Controller c) {
-    c.life -= GRENADEDAM*damage;
-    world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
-    world.removal.add(this);
-  }
-
-  void detonate() {
   }
 }
 

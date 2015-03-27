@@ -1,5 +1,3 @@
-final int NUMBODY = 3;
-
 abstract class Body {
   Object platform;
   float life;
