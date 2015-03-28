@@ -65,7 +65,7 @@ class Prop extends Engine {
       speed = fspeed;
     }
   }
-}
+};
 
 class Jet extends Engine {
   float fspeed; // Speed (does not vary)
@@ -110,7 +110,7 @@ class Jet extends Engine {
       turnspd = fturnspd;
     }
   }
-}
+};
 
 class Chaos extends Engine {
   int boostrate;
@@ -130,15 +130,15 @@ class Chaos extends Engine {
 
   void render(float xplane) {
     beginShape();
-    vertex(64, 0*xplane);
+    vertex(32, 0*xplane);
     vertex(8, 4*xplane);
-    vertex(-16, 32*xplane);
-    vertex(-24, 32*xplane);
-    vertex(-16, 4*xplane);
+    vertex(20, 24*xplane);
+    vertex(0, 20*xplane);
+    vertex(-12, 4*xplane);
     vertex(-32, 0);
-    vertex(-16, -4*xplane);
-    vertex(-24, -32*xplane);
-    vertex(-16, -32*xplane);
+    vertex(-12, -4*xplane);
+    vertex(0, -20*xplane);
+    vertex(20, -24*xplane);
     vertex(8, -4*xplane);
     endShape();
   }
@@ -174,5 +174,5 @@ class Chaos extends Engine {
       }
     }
   }
-}
+};
 

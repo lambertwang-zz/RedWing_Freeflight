@@ -29,6 +29,9 @@ void setup() {
   // Optimized for 60 fps
   frameRate(60);
 
+
+  textFont(loadFont("Fixed_12.vlw"));
+
   // 4:3
   //size(800, 600);
   //size(1024, 768);

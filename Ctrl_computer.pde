@@ -65,8 +65,13 @@ class Computer extends Controller {
       else if (tempa > vehicle.engine.turnspd/2)
         comp.dirkey = 1;
 
-      if (abs(tempa) < 0.1)
+      if (abs(tempa) < 0.1){
         comp.zkey = true;
+        if(vehicle.gun instanceof LaserBeam){
+          if(vehicle.gun.max())
+            comp.zkey = false;
+        }
+      }
 
       if (dist(0, 0, tempx, tempy) > width+height) {
         if (abs(tempa) > 1)

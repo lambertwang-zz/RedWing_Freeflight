@@ -190,9 +190,10 @@ class World {
 
   // Displays the active framerate
   void fps() {
+    noSmooth();
     fill(75, 255, 64);
     pushMatrix();
-    translate(width-128, height-16);
+    translate(width-160, height-16);
     textSize(12);
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
 
@@ -204,6 +205,7 @@ class World {
     text("Left/Right : Turn", 0, 72);
     text("'R' : Restart", 0, 96);
     popMatrix();
+    smooth();
   }
 
   ArrayList<Controller> collide(Controller obj) {

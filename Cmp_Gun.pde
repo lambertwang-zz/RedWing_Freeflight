@@ -15,6 +15,10 @@ abstract class Gun {
 
   void render() {
   }
+
+  boolean max() {
+    return false;
+  }
 }
 
 class MachineGun extends Gun {
@@ -38,10 +42,12 @@ class MachineGun extends Gun {
     if (cooldown != 0)
       cooldown --;
   }
-}
+};
 
 class LaserBeam extends Gun {
   float charge;
+  boolean lastCharged = false;
+  int cmax = 100;
 
   LaserBeam(Object p) {
     platform = p;
@@ -51,11 +57,13 @@ class LaserBeam extends Gun {
 
   void shoot(boolean fire) {
     if (fire) {
-      if (charge < 100)
+      if (charge < cmax)
         charge ++;
-    } else if (charge > 20) {
-      Beam b = new Beam(platform);
-      world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
+    } else {
+      if (charge > 20) {
+        Beam b = new Beam(platform);
+        world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
+      }
       charge = 0;
     }
   }
@@ -66,7 +74,11 @@ class LaserBeam extends Gun {
       ellipse(32, 0, 5+charge/5, 5+charge/5);
     }
   }
-}
+
+  boolean max(){
+    return charge == cmax;
+  }
+};
 
 class GrenadeLauncher extends Gun {
 
@@ -89,5 +101,5 @@ class GrenadeLauncher extends Gun {
     if (cooldown != 0)
       cooldown --;
   }
-}
+};
 
