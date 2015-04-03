@@ -5,6 +5,7 @@ final int FIELDY = 256;
 final int CELLSIZE = 16; // Pixel size of each cell
 
 final int SCREENFOLLOW = 8; // Amount to shift the screen by to follow RedWing
+final int MAXEFFECTSIZE = 192;
 
 class World {
   Cell[][] cells;
@@ -17,13 +18,19 @@ class World {
   int enemies;
   int difficulty;
 
+  int x = FIELDX*CELLSIZE;
+  int y = FIELDY*CELLSIZE;
+  int hx = x/2;
+  int hy =  y/2;
 
   ArrayList<Particle> effects;
   PVector shake;
+  boolean xsplit, ysplit;
 
   color bleed;
 
   boolean showHitboxes;
+
 
   World() {
     cells = new Cell[FIELDX][FIELDY]; // Initiliazes cells
@@ -41,10 +48,12 @@ class World {
 
     enemies = 0;
     difficulty = 2;
-    actors.add(new Computer(new Plane(random(FIELDX*CELLSIZE), random(FIELDY*CELLSIZE), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)))));
+    actors.add(new Computer(new Plane(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)))));
     enemies++;
 
     effects = new ArrayList();
+    for(int i = 0; i < 64; i++)
+      effects.add(new Cloud(random(x), random(y), random(4, 10), random(120, 180)));
     shake = new PVector(0, 0);
 
     bleed = color(160, 255, 255, 0);
@@ -73,16 +82,16 @@ class World {
     PVector target = new PVector(); // Offset vector based off of redWing's position and velocity for the screen position
     target.set((SCREENFOLLOW+1)*redWing.pos.x - width/2 - SCREENFOLLOW*redWing.last.x, (SCREENFOLLOW+1)*redWing.pos.y - height/2 - SCREENFOLLOW*redWing.last.y);
 
-    if (screenPos.x - redWing.pos.x > FIELDX*CELLSIZE/2) {
-      screenPos.x -= FIELDX*CELLSIZE;
-    } else if (screenPos.x - redWing.pos.x < -FIELDX*CELLSIZE/2) {
-      screenPos.x += FIELDX*CELLSIZE;
+    if (screenPos.x - redWing.pos.x > hx) {
+      screenPos.x -= x;
+    } else if (screenPos.x - redWing.pos.x < -hx) {
+      screenPos.x += x;
     }
 
-    if (screenPos.y - redWing.pos.y > FIELDY*CELLSIZE/2) {
-      screenPos.y -= FIELDY*CELLSIZE;
-    } else if (screenPos.y - redWing.pos.y < -FIELDY*CELLSIZE/2) {
-      screenPos.y += FIELDY*CELLSIZE;
+    if (screenPos.y - redWing.pos.y > hy) {
+      screenPos.y -= y;
+    } else if (screenPos.y - redWing.pos.y < -hy) {
+      screenPos.y += y;
     }
 
     screenPos.x -= (screenPos.x-target.x)/16;
@@ -113,14 +122,21 @@ class World {
       fill(0, 255, 255);
       redWing(width, height, 400);
     }
-    if (screenPos.x > FIELDX*CELLSIZE/2 && screenPos.x < 27*400.0/7+width+FIELDX*CELLSIZE/2 && screenPos.y > 0 && screenPos.y < 400+height) {
+    if (screenPos.x > hx && screenPos.x < 27*400.0/7+width+hx && screenPos.y > 0 && screenPos.y < 400+height) {
       fill(128, 255, 255);
-      redWing(width+FIELDX*CELLSIZE/2, height, 400);
+      redWing(width+hx, height, 400);
     }
     
+    xsplit = false;
+    ysplit = false;
+    if (world.screenPos.x < MAXEFFECTSIZE || world.screenPos.x+width > x)
+      xsplit = true;
+    if(world.screenPos.y < MAXEFFECTSIZE || world.screenPos.y+height > y)
+      ysplit = true;
+
     // Renders all of the special effects
     for (Particle p : effects)
-      p.render();
+      p.render(xsplit, ysplit);
 
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
@@ -148,6 +164,8 @@ class World {
     rect(0, 0, width, height);
 
     fps();
+
+    //minimap();
   }
 
   // Gets a cell with a specific index
@@ -196,14 +214,19 @@ class World {
     translate(width-160, height-16);
     textSize(12);
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
+    //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
 
-    translate(-80, -128);
+
+
+    translate(-80, -160);
     textSize(18);
     text("Instructions:", 0, 0);
     text("'Z' : Fire", 0, 24);
-    text("Up : Accelerate", 0, 48);
-    text("Left/Right : Turn", 0, 72);
-    text("'R' : Restart", 0, 96);
+    text("'X' : Special", 0, 48);
+    text("Up : Accelerate", 0, 72);
+    text("Left/Right : Turn", 0, 96);
+    text("'R' : Restart", 0, 120);
     popMatrix();
     smooth();
   }
@@ -220,7 +243,7 @@ class World {
     ret.remove(obj);
     return ret;
   }
-}
+};
 
 class Cell {
   int xi, yi; // Index of Cell in the World.cells array
@@ -244,5 +267,5 @@ class Cell {
     fill(col);
     rect(0, 0, CELLSIZE+1, CELLSIZE+1);
   }
-}
+};
 

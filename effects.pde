@@ -22,12 +22,50 @@ abstract class Particle {
   Particle() {
   }
 
-  void render() {
-    if (xpos > world.screenPos.x-size && xpos < world.screenPos.x+size+width &&
-      ypos > world.screenPos.y-size && ypos < world.screenPos.y+size+height)
-      show();
+  void render(boolean xsplit, boolean ysplit) {
+    if (xsplit) {
+      if (xpos > world.screenPos.x-size || xpos < world.screenPos.x+size+width){
+        if(ysplit) {
+          if(ypos > world.screenPos.y-size || ypos < world.screenPos.y+size+height){
+            transShow(xsplit, ysplit);
+          }
+        } else if (ypos > world.screenPos.y-size && ypos < world.screenPos.y+size+height){
+          transShow(xsplit, ysplit);
+        }
+      }
+    } else {
+      if(xpos > world.screenPos.x-size && xpos < world.screenPos.x+size+width){
+        if(ysplit) {
+          if(ypos > world.screenPos.y-size || ypos < world.screenPos.y+size+height){
+            transShow(xsplit, ysplit);
+          }
+        } else if (ypos > world.screenPos.y-size && ypos < world.screenPos.y+size+height){
+          transShow(xsplit, ysplit);
+        }
+      }
+    }
 
     remaining--;
+  }
+
+  void transShow(boolean xsplit, boolean ysplit){
+    pushMatrix();
+    if(xsplit){
+      if(world.screenPos.x-xpos > world.hx){
+        translate(world.x, 0);
+      } else if(world.screenPos.x-xpos < -world.hx){
+        translate(-world.x, 0);
+      }
+    }
+    if(ysplit){
+      if(world.screenPos.y-ypos > world.hy){
+        translate(0, world.y);
+      } else if(world.screenPos.y-ypos < -world.hy){
+        translate(0, -world.y);
+      }
+    }
+    show();
+    popMatrix();
   }
 
   void show() {
@@ -56,15 +94,13 @@ class Spark extends Particle { // Sparks are circles that fly some distance then
     float temp = remaining/lifetime; // Slightly reduce computatuions
     stroke(col, 255*temp);
     strokeWeight(1.5);
-    pushMatrix();
     translate(xpos, ypos);
     rotate(ang);
     translate(size*(1-temp), 0);
     noFill();
     ellipse(0, 0, 3, 3);
-    popMatrix();
   }
-}
+};
 
 class Smoke extends Particle { // Smoke is a circle that fades
 
@@ -82,12 +118,10 @@ class Smoke extends Particle { // Smoke is a circle that fades
   void show() {
     noStroke();
     fill(col, 255*remaining/lifetime);
-    pushMatrix();
     translate(xpos, ypos);
     ellipse(0, 0, size, size);
-    popMatrix();
   }
-}
+};
 
 class Eclipse extends Particle { // Eclipse is a circle that dissolves into a crescent
   float ang;
@@ -110,16 +144,14 @@ class Eclipse extends Particle { // Eclipse is a circle that dissolves into a cr
     float temp = remaining/lifetime;
     noStroke();
     fill(col, 255*temp);
-    pushMatrix();
     translate(xpos, ypos);
     rotate(ang);
     beginShape();
     bezierCircle(0, 0, size); 
     bezierCircleInv(0, size*temp, size*(1-temp)); // That's no moon
     endShape();
-    popMatrix();
   }
-}
+};
 
 class Explosion extends Particle { // Explosions are complex particles IE they solely consist of primitive particles
   ArrayList<Particle> parts;
@@ -140,9 +172,9 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
     remaining = parts.size(); // Lifetime is number of particles remaining in the explosion
   }
 
-  void render() { // Essentially same as renderEffects();
+  void render(boolean xsplit, boolean ysplit) { // Essentially same as renderEffects();
     for (Particle p : parts)
-      p.render(); // Boom (Add "Sound effects" to ToDo list
+      p.render(xsplit, ysplit); // Boom (Add "Sound effects" to ToDo list
 
     for (int i = parts.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (parts.get(i).remaining < 0) {
@@ -162,7 +194,80 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
 
     remaining = parts.size();
   }
-}
+};
+
+class Cloud extends Particle { // Cloud is a series of boxes that fade in and out
+  PGraphics g;
+  boolean fading = true;
+  float[][] vertices;
+  Cloud(float tx, float ty, float ts, float tl) {
+    xpos = tx;
+    ypos = ty;
+    size = ts*32;
+
+    lifetime = tl;
+    remaining = lifetime*random(.1, .9);
+    float sizeX = size, sizeY = size*3/4;
+    
+    vertices = new float[6][2];
+    vertices[0][0] = random(0, sizeX/4);
+    vertices[0][1] = random(0, sizeY/4);
+    vertices[1][0] = random(sizeX*3/4, sizeX)  -vertices[0][0];
+    vertices[1][1] = random(sizeY/2, sizeY*3/4)-vertices[0][1];
+    vertices[2][0] = random(0, sizeX/4);
+    vertices[2][1] = random(sizeY/4, sizeY/2);
+    vertices[3][0] = random(sizeX/2, sizeX*3/4) -vertices[2][0];
+    vertices[3][1] = random(sizeY*3/4, sizeY)   -vertices[2][1];
+    vertices[4][0] = random(sizeX/4, sizeX/2);
+    vertices[4][1] = random(sizeY/4, sizeY/2);
+    vertices[5][0] = random(sizeX*3/4, sizeX)-vertices[4][0];
+    vertices[5][1] = random(sizeY*3/4, sizeY)-vertices[4][1];
+  }
+
+  void show() {
+    noStroke();
+    translate(xpos, ypos);
+    fill(255, 192*remaining/lifetime);
+    rect(vertices[0][0], vertices[0][1], vertices[1][0], vertices[1][1]);
+    rect(vertices[2][0], vertices[2][1], vertices[3][0], vertices[3][1]);
+    rect(vertices[4][0], vertices[4][1], vertices[5][0], vertices[5][1]);
+  }
+
+  void render(boolean xsplit, boolean ysplit) {
+    if (xsplit) {
+      if (xpos > world.screenPos.x-size || xpos < world.screenPos.x+size+width){
+        if(ysplit) {
+          if(ypos > world.screenPos.y-size || ypos < world.screenPos.y+size+height){
+            transShow(xsplit, ysplit);
+          }
+        } else if (ypos > world.screenPos.y-size && ypos < world.screenPos.y+size+height){
+          transShow(xsplit, ysplit);
+        }
+      }
+    } else {
+      if(xpos > world.screenPos.x-size && xpos < world.screenPos.x+size+width){
+        if(ysplit) {
+          if(ypos > world.screenPos.y-size || ypos < world.screenPos.y+size+height){
+            transShow(xsplit, ysplit);
+          }
+        } else if (ypos > world.screenPos.y-size && ypos < world.screenPos.y+size+height){
+          transShow(xsplit, ysplit);
+        }
+      }
+    }
+    if(remaining < 1 || remaining > lifetime){
+      fading = !fading;
+    }
+    remaining += fading? -1: 1;
+    /*
+    pushMatrix();
+    translate(xpos, ypos);
+    fill(0);
+    text("X: "+xpos, 0, 0);
+    text("Y: "+ypos, 0, 16);
+    popMatrix();*/
+  }
+};
 
 final float c = 4*(sqrt(2)-1)/3; // Constant to make circles with bezier curves
 

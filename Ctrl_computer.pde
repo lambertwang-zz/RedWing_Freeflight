@@ -29,10 +29,10 @@ class Computer extends Controller {
     v.col = color(160, 255, 128);
     v.engine.speed *= random(0.6, 0.8);
     v.gun.firerate *= random(2.4, 3.2);
-    if (v.gun instanceof MachineGun) {
+    if (v.gun instanceof MachineGun || v.gun instanceof ChainGun) {
       v.gun.multiplier = random(0.6, 0.8);
     } else if (v.gun instanceof LaserBeam) {
-      v.gun.multiplier = random(0.3, 0.4);
+      v.gun.multiplier = random(0.1, 0.13);
     }
   }
 
@@ -67,7 +67,7 @@ class Computer extends Controller {
 
       if (abs(tempa) < 0.1){
         comp.zkey = true;
-        if(vehicle.gun instanceof LaserBeam){
+        if(vehicle.gun instanceof LaserBeam || vehicle.gun instanceof ChainGun){
           if(vehicle.gun.max())
             comp.zkey = false;
         }
@@ -151,5 +151,5 @@ class Computer extends Controller {
     checkx = ceil(max(tempax*vehicle.sizex, tempay*tempy)/CELLSIZE);
     checky = ceil(max(tempay*vehicle.sizex, tempax*tempy)/CELLSIZE);
   }
-}
+};
 

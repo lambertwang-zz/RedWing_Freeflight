@@ -41,7 +41,7 @@ class Standard extends Body {
     vertex(-32, 0);
     endShape();
   }
-}
+};
 
 class Heavy extends Body {
   Heavy(Object p) {
@@ -72,7 +72,7 @@ class Heavy extends Body {
     c.maxLife *= 1.25;
     c.life = c.maxLife;
   }
-}
+};
 
 class Slim extends Body {
   Slim(Object p) {
@@ -94,7 +94,7 @@ class Slim extends Body {
     c.maxLife *= .8;
     c.life = c.maxLife;
   }
-}
+};
 
 class Mellee extends Body {
   Mellee(Object p) {
@@ -112,7 +112,7 @@ class Mellee extends Body {
     vertex(-24, 0);
     endShape();
   }
-}
+};
 
 class Reflector extends Body {
   Reflector(Object p) {
@@ -130,5 +130,5 @@ class Reflector extends Body {
     vertex(-24, 0);
     endShape();
   }
-}
+};
 

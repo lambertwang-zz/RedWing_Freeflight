@@ -1,6 +1,9 @@
 // Simple projectile 
 final float BULLETVEL = 16;
-final float BULLETDAM = 1.8;
+final float BULLETDAM = 2;
+
+final float CHAINVEL = 32;
+final float CHAINDAM = 2.2;
 
 final float GRENADEVEL = 12;
 final float GRENADEGRAV = .2;
@@ -44,11 +47,11 @@ class Bullet extends Object {
     translate(pos.x, pos.y);
     rotate(dir);
     strokeWeight(2);
-    stroke(255, 192+64*controller.life/120);
+    stroke(255);
     line(0, 0, 16, 0);
     popMatrix();
   }
-}
+};
 
 class BulletController extends Controller {  
   float damage;
@@ -101,7 +104,7 @@ class BulletController extends Controller {
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
     world.removal.add(this);
   }
-}
+};
 
 // Laser Beam
 
@@ -133,7 +136,7 @@ class Beam extends Object {
 
     popMatrix();
   }
-}
+};
 
 class BeamController extends Controller {  
   float len;
@@ -193,7 +196,7 @@ class BeamController extends Controller {
     c.life -= damage*len/1024;
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
   }
-}
+};
 
 class Grenade extends Object {
 
@@ -241,7 +244,7 @@ class Grenade extends Object {
     ellipse(0, 0, 16, 16);
     popMatrix();
   }
-}
+};
 
 class GrenadeController extends Controller {  
   float damage;
@@ -297,5 +300,102 @@ class GrenadeController extends Controller {
 
   void detonate() {
   }
-}
+};
+
+class Chain extends Object {
+
+  Chain(Object origin) {
+    pos = new PVector(origin.pos.x, origin.pos.y);
+    dir = origin.dir+random(-0.1, 0.1);
+    last = new PVector(origin.last.x-cos(dir)*CHAINVEL, origin.last.y-sin(dir)*CHAINVEL);
+  }
+
+  void tick() {
+    if (pos.y < 0) { // Allows infinite translationg from ceiling to floor and side to side
+      pos.y += FIELDY*CELLSIZE;
+      last.y += FIELDY*CELLSIZE;
+    }
+    if (pos.y >= FIELDY*CELLSIZE) {
+      pos.y -= FIELDY*CELLSIZE;
+      last.y -= FIELDY*CELLSIZE;
+    }
+    if (pos.x < 0) {
+      pos.x += FIELDX*CELLSIZE;
+      last.x += FIELDX*CELLSIZE;
+    }
+    if (pos.x > FIELDX*CELLSIZE) {
+      pos.x -= FIELDX*CELLSIZE;
+      last.x -= FIELDX*CELLSIZE;
+    }
+
+    // Simple verlet integration for movement
+    // Velocity is calculated from the delta of the last position and current position. 
+    PVector temp = new PVector(pos.x, pos.y);
+    pos.add(pos.x - last.x, pos.y - last.y, 0);
+    last.set(temp.x, temp.y);
+  }
+
+  void render() {
+    pushMatrix();
+    translate(pos.x, pos.y);
+    rotate(dir);
+    strokeWeight(3);
+    stroke(30, 255, 255, 192+64*controller.life/120);
+    line(0, 0, CHAINVEL, 0);
+    popMatrix();
+  }
+};
+
+class ChainController extends Controller {  
+  float damage;
+
+  ChainController(Chain b, Controller c, float d) {
+    vehicle = b;
+    life = 120;
+    damage = d;
+
+    location = new ArrayList();
+
+    // Sets a static check size
+    checkx = 0;
+    checky = 0;
+
+    b.controller = this;
+
+    origin = c;
+  }
+
+  void tick() {
+    life--;
+    if (life <= 0) {
+      world.removal.add(this);
+    }
+    vehicle.tick();
+    update();
+  }
+
+  void render() {
+    pushMatrix();
+    if (vehicle.pos.x < world.screenPos.x)
+      translate(FIELDX*CELLSIZE, 0);
+    else if (vehicle.pos.x > world.screenPos.x+width)
+      translate(-FIELDX*CELLSIZE, 0);
+
+    if (vehicle.pos.y < world.screenPos.y)
+      translate(0, FIELDY*CELLSIZE);
+    else if (vehicle.pos.y > world.screenPos.y+height)
+      translate(0, -FIELDY*CELLSIZE);
+
+    vehicle.render();
+
+    popMatrix();
+  }
+
+  void collide(Controller c) {
+    c.life -= CHAINDAM*damage;
+    world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 16)));
+    world.removal.add(this);
+  }
+};
 

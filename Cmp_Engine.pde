@@ -59,7 +59,7 @@ class Prop extends Engine {
 
   void boost(boolean b) {
     if (b) {
-      speed = -fspeed*.75;
+      speed = -fspeed*.5;
       world.effects.add(new Spark(platform.last.x, platform.last.y, random(48, 64), color(int(random(0, 256)), 255, 255), random(80, 100), random(0, 2*PI)));
     } else {
       speed = fspeed;

@@ -87,5 +87,5 @@ class Player extends Controller {
     checkx = ceil(max(tempax*vehicle.sizex, tempay*tempy)/CELLSIZE);
     checky = ceil(max(tempay*vehicle.sizex, tempax*tempy)/CELLSIZE);
   }
-}
+};
 

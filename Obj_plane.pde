@@ -26,7 +26,7 @@ class Plane extends Object {
       gun = new LaserBeam(this);
       break;
     case 3:
-      gun = new GrenadeLauncher(40, this);
+      gun = new ChainGun(2, this);
       break;
     }
 
@@ -75,5 +75,5 @@ class Plane extends Object {
 
     popMatrix();
   }
-}
+};
 
