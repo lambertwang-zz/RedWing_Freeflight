@@ -12,4 +12,7 @@ A processing project that occupied my spare time
 # Version Log:
 	Beta 0.1:
 		Initial Commit
-	
+    Beta 0.11:
+        Bug fixes, additional effects
+    Beta 0.2:
+        Added Menu

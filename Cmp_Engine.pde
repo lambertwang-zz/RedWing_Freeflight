@@ -1,9 +1,13 @@
+// Number of engine components (used for randomly generating planes)
 final int NUMENG = 3;
 
 abstract class Engine {
-  float turnspd; // Amount of radians the vehicle is capable of changing its facing direction by in each frame
-  float speed; // Name is misleading, actually refers to the change in velocity each frame while the plane is accelerating
+  // Amount of radians the vehicle is capable of changing its facing direction by in each frame
+  float turnspd;
+  // speed is misleading, this actually refers to the change in velocity each frame while the plane is accelerating
+  float speed;
 
+  // Vehicle the engine is tied to
   Object platform;
 
   Engine() {
@@ -19,11 +23,19 @@ abstract class Engine {
     platform.roll += d*turnspd;
   }
 
+  // Special move by the plane
   void boost(boolean b) {
   }
 }
 
+/**
+ * Propeller
+ * Turning  : ***
+ * Speed    : ***
+ * Special  : ***
+ */
 class Prop extends Engine {
+  // Stored variable for base speed
   float fspeed;
 
   Prop(Object p) {
@@ -57,6 +69,7 @@ class Prop extends Engine {
     platform.roll += d*turnspd*(1.5*b+1);
   }
 
+  // Boost allows the plane to accelerate backwards
   void boost(boolean b) {
     if (b) {
       speed = -fspeed*.5;
@@ -67,12 +80,18 @@ class Prop extends Engine {
   }
 };
 
+/**
+ * Jet Engine
+ * Turning  : **
+ * Speed    : *****
+ * Special  : **
+ */
 class Jet extends Engine {
   float fspeed; // Speed (does not vary)
   float turnMult;
   float fturnspd; // Amount to multiply turnspeed
 
-    Jet(Object p) {
+  Jet(Object p) {
     platform = p;
     turnspd = PI/105;
     fturnspd = turnspd;
@@ -100,6 +119,7 @@ class Jet extends Engine {
     platform.roll += d*turnspd*(3*b+1);
   }
 
+  // Boost is an afterburner that increases acceleration
   void boost(boolean b) {
     if (b) {
       speed = 2;
@@ -112,6 +132,12 @@ class Jet extends Engine {
   }
 };
 
+/**
+ * Chaos Engine
+ * Turning  : **
+ * Speed    : ***
+ * Special  : ****
+ */
 class Chaos extends Engine {
   int boostrate;
   int cooldown;
@@ -148,13 +174,16 @@ class Chaos extends Engine {
     platform.roll += d*turnspd;
   }
 
+  // Boost teleports the plane forwards and the plane lands facing the opposite direction
   void boost(boolean b) {
     if (b) {
       if (cooldown == 0) {
+        // Turnspeed is halved while teleport is recharging
         turnspd /= 2;
         world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(24, 32)));
         float cosd = cos(platform.dir);
         float sind = sin(platform.dir);
+        // Explosions
         for (int i = 0; i < 512; i+=32) {
           world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(10, 16)));
         }
@@ -166,6 +195,7 @@ class Chaos extends Engine {
       }
     }
     if (cooldown != 0) {
+      // Teleport requires some time to charge. 
       cooldown--;
       world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(2, 4), color(int(random(0, 256)), 255, 255), int(random(30, 45))));
       if (cooldown == 0) {

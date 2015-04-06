@@ -16,7 +16,7 @@ class Input {
     zkey = false;
     xkey = false;
   }
-}
+};
 
 
 void keyPressed() {
@@ -70,3 +70,8 @@ void keyReleased() {
   }
 }
 
+void mouseReleased(){
+  if(screen == 1)
+    if(menu.target != null)
+      menu.target.click();
+}

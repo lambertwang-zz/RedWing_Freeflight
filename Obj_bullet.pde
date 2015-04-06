@@ -340,7 +340,7 @@ class Chain extends Object {
     translate(pos.x, pos.y);
     rotate(dir);
     strokeWeight(3);
-    stroke(30, 255, 255, 192+64*controller.life/120);
+    stroke(30, 128, 255, 192+64*controller.life/120);
     line(0, 0, CHAINVEL, 0);
     popMatrix();
   }

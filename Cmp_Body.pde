@@ -1,10 +1,15 @@
+// Number of body components (used for randomly generating planes)
 final int NUMBODY = 3;
 
 abstract class Body {
+  // The vehicle the body is tied to
   Object platform;
+  // The hitpoints of the vehicle
   float life;
 
-  PVector terminal = new PVector(100, 100); // Terminal velocities in the x direction based off of speed and in the y direction based off of gravity
+  // Terminal velocities in the x direction based off of speed and in the y direction based off of gravity
+  PVector terminal = new PVector(100, 100);
+  // Gravity multiplier (some bodies fall slower than others)
   float gravity = 1;
 
   Body() {
@@ -16,10 +21,16 @@ abstract class Body {
   void init(Controller c) {
   }
 
+  // Not quite sure what this is
   void controlOverride() {
   }
 }
 
+/**
+ * Standard Body
+ * Durability : ***
+ * Gravity    : ***
+ */
 class Standard extends Body {
 
   Standard(Object p) {
@@ -43,6 +54,11 @@ class Standard extends Body {
   }
 };
 
+/**
+ * Heavy Frame
+ * Durability : ****
+ * Gravity    : **
+ */
 class Heavy extends Body {
   Heavy(Object p) {
     platform = p;
@@ -74,6 +90,11 @@ class Heavy extends Body {
   }
 };
 
+/**
+ * Slim Body
+ * Durability : **
+ * Gravity    : ****
+ */
 class Slim extends Body {
   Slim(Object p) {
     platform = p;

@@ -163,11 +163,11 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
 
     parts = new ArrayList();
 
-    for (int i = 0; i < effectsDensity*size/32; i++)
-      parts.add(new Smoke(xpos+random(-size, size), ypos+random(-size, size), random(size/4, size/2), color(0, 0, int(random(128, 255))), int(random(40, 60))));
     for (int i = 0; i < effectsDensity*size/48; i++)
+      parts.add(new Smoke(xpos+random(-size, size), ypos+random(-size, size), random(size/4, size/2), color(0, 0, int(random(128, 255))), int(random(40, 60))));
+    for (int i = 0; i < effectsDensity*size/64; i++)
       parts.add(new Eclipse(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size/4, size/2), color(int(random(0, 255)), 255, 255), int(random(30, 45))));
-    for (int i = 0; i < effectsDensity*size/24; i++)
+    for (int i = 0; i < effectsDensity*size/32; i++)
       parts.add(new Spark(xpos+random(-size/2, size/2), ypos+random(-size/2, size/2), random(size, 2*size), color(int(random(0, 255)), 255, 255), int(random(30, 45)), random(0, 2*PI)));
     remaining = parts.size(); // Lifetime is number of particles remaining in the explosion
   }

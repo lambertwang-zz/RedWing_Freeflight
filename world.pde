@@ -1,5 +1,3 @@
-// Currently implements a cell based hitscan system; however, it isn't used because there aren't any other objects to collide with.
-
 final int FIELDX = 768; // Number of cells in the x and y directions of the field
 final int FIELDY = 256;
 final int CELLSIZE = 16; // Pixel size of each cell
@@ -212,15 +210,13 @@ class World {
     fill(75, 255, 64);
     pushMatrix();
     translate(width-160, height-16);
-    textSize(12);
+    textFont(f12);
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
     //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
 
-
-
+    textFont(f12);
     translate(-80, -160);
-    textSize(18);
     text("Instructions:", 0, 0);
     text("'Z' : Fire", 0, 24);
     text("'X' : Special", 0, 48);
