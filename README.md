@@ -6,11 +6,7 @@ A processing project that occupied my spare time
 
 # Screenshots
 ![](screenshots/screenshot-D7M4Y2015-H12M33S47.png)
-![](screenshots/screenshot-D7M4Y2015-H12M33S51.png)
-![](screenshots/screenshot-D7M4Y2015-H12M34S4.png)
 ![](screenshots/screenshot-D7M4Y2015-H12M34S23.png)
-![](screenshots/screenshot-D7M4Y2015-H12M34S25.png)
-![](screenshots/screenshot-D7M4Y2015-H12M34S55.png)
 ![](screenshots/screenshot-D7M4Y2015-H12M34S59.png)
 ![](screenshots/screenshot-D7M4Y2015-H12M35S0.png)
 
