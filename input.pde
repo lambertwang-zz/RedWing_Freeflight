@@ -55,6 +55,10 @@ void keyPressed() {
         pause();
       }
     }
+  } else {
+    if (key == 'o' || key == 'O') {
+      screenShot();
+    } 
   }
 }
 

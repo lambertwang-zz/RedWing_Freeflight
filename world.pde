@@ -309,7 +309,7 @@ class World extends HasButtons{
     pushMatrix();
     translate(width-160, height-16);
     textFont(f12);
-    text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    //text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     //text("redwing.dir: "+redWing.dir, -128, -12);
     //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
     //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
@@ -340,7 +340,7 @@ class Cell {
   Cell(int x, int y) {
     xi = x;
     yi = y;
-    col = color(random(1*y, 16+1*y)%255, 64+64*sin(2*PI*x/FIELDX), random(208, 224));
+    col = color(random(1*y, 16+1*y)%255, 96+48*sin(2*PI*x/FIELDX), random(208, 224));
     occupants = new ArrayList();
   }
 
