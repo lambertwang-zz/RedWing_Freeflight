@@ -30,9 +30,11 @@ class Computer extends Controller {
     v.engine.speed *= random(0.6, 0.8);
     v.gun.firerate *= random(2.4, 3.2);
     if (v.gun instanceof MachineGun || v.gun instanceof ChainGun) {
-      v.gun.multiplier = random(0.6, 0.8);
+      v.gun.multiplier = 0.75;
     } else if (v.gun instanceof LaserBeam) {
-      v.gun.multiplier = random(0.1, 0.13);
+      v.gun.multiplier = 0.2;
+    } else if (v.gun instanceof GrenadeLauncher) {
+      v.gun.multiplier = 1;
     }
   }
 

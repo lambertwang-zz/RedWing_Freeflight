@@ -6,8 +6,8 @@ final float CHAINVEL = 32;
 final float CHAINDAM = 2.2;
 
 final float GRENADEVEL = 12;
-final float GRENADEGRAV = .2;
-final float GRENADEDAM = 3;
+final float GRENADEGRAV = .1;
+final float GRENADEDAM = 1.2;
 
 class Bullet extends Object {
 
@@ -15,6 +15,7 @@ class Bullet extends Object {
     pos = new PVector(origin.pos.x, origin.pos.y);
     dir = origin.dir;
     last = new PVector(origin.last.x-cos(dir)*BULLETVEL, origin.last.y-sin(dir)*BULLETVEL);
+    col = origin.col;
   }
 
   void tick() {
@@ -47,7 +48,7 @@ class Bullet extends Object {
     translate(pos.x, pos.y);
     rotate(dir);
     strokeWeight(2);
-    stroke(255);
+    stroke(col);
     line(0, 0, 16, 0);
     popMatrix();
   }
@@ -102,7 +103,13 @@ class BulletController extends Controller {
     c.life -= BULLETDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
-    world.removal.add(this);
+    if(c.vehicle.body instanceof Reflector){
+      origin = c;
+      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
+      damage *= 0.5;
+    } else {
+      world.removal.add(this);
+    }  
   }
 };
 
@@ -129,7 +136,7 @@ class Beam extends Object {
     float xi = cos(dir);
     float yi = sin(dir);
 
-    for (int i = 32; i < sizex; i+= 32) {
+    for (int i = 16; i < sizex; i+= 48) {
       world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(8, 16), color(int(random(0, 255)), 255, 255), int(random(6, 8)), random(0, 2*PI)));
     }
 
@@ -194,7 +201,8 @@ class BeamController extends Controller {
 
   void collide(Controller c) {
     c.life -= damage*len/1024;
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
+    for(int i = 0; i < 4; i++)
+      world.effects.add(new Spark(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12), color(int(random(0, 255)), 255, 255), int(random(30, 45)), random(0, 2*PI)));
   }
 };
 
@@ -203,7 +211,8 @@ class Grenade extends Object {
   Grenade(Object origin) {
     pos = new PVector(origin.pos.x, origin.pos.y);
     dir = origin.dir;
-    roll = 0;
+    dir += (abs(origin.dir-PI) > PI/2 ? -1 : 1)*0.2;
+    roll = random(0, PI);
     last = new PVector(origin.last.x-cos(dir)*GRENADEVEL, origin.last.y-sin(dir)*GRENADEVEL);
   }
 
@@ -226,7 +235,7 @@ class Grenade extends Object {
     }
 
     last.add(0, -GRENADEGRAV, 0);
-
+    roll -= 0.1;
 
     // Simple verlet integration for movement
     // Velocity is calculated from the delta of the last position and current position. 
@@ -240,8 +249,13 @@ class Grenade extends Object {
     translate(pos.x, pos.y);
     rotate(roll);
     noStroke();
-    fill(60, 255, 96);
-    ellipse(0, 0, 16, 16);
+    fill(frameCount%256, 255, 255);
+    rect(-4, -8, 8, 16);
+    fill(64, 128);
+    rect(-5, -9, 10, 2);
+    rect(-5, -3, 10, 6);
+    rect(-5, 7, 10, 2);
+
     popMatrix();
   }
 };
@@ -251,7 +265,7 @@ class GrenadeController extends Controller {
 
   GrenadeController(Grenade b, Controller c, float d) {
     vehicle = b;
-    life = 180;
+    life = 90;
     damage = d;
 
     location = new ArrayList();
@@ -293,12 +307,39 @@ class GrenadeController extends Controller {
 
   void collide(Controller c) {
     c.life -= GRENADEDAM*damage;
+    detonate();
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
-    world.removal.add(this);
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(24, 32)));
+    if(c.vehicle.body instanceof Reflector){
+      origin = c;
+      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
+      damage *= 0.5;
+    } else {
+      world.removal.add(this);
+    }
   }
 
   void detonate() {
+    ArrayList<Controller> collateral = new ArrayList();
+    checkx = 3;
+    checky = 3;
+    update();
+    for(Cell c: location){
+      for(Controller n: c.occupants){
+        if(!collateral.contains(n)){
+          if(origin instanceof Player) {
+            if(!(n instanceof Player)){
+              collateral.add(n);
+            }
+          } else if (n instanceof Player){
+            collateral.add(n);
+          }
+        }
+      }
+    }
+    for(Controller c: collateral){
+      c.life -= GRENADEDAM*damage*.5;
+    }
   }
 };
 
@@ -340,7 +381,7 @@ class Chain extends Object {
     translate(pos.x, pos.y);
     rotate(dir);
     strokeWeight(3);
-    stroke(30, 128, 255, 192+64*controller.life/120);
+    stroke(30, 255, 255, 192+64*controller.life/120);
     line(0, 0, CHAINVEL, 0);
     popMatrix();
   }
@@ -394,8 +435,14 @@ class ChainController extends Controller {
   void collide(Controller c) {
     c.life -= CHAINDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 16)));
-    world.removal.add(this);
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
+    if(c.vehicle.body instanceof Reflector){
+      origin = c;
+      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
+      damage *= 0.5;
+    } else {
+      world.removal.add(this);
+    }  
   }
 };
 

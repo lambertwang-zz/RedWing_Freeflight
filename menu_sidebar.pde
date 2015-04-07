@@ -12,20 +12,20 @@ class SideBar {
     pos = tn;
     target = ttar;
     neutral = tn;
-    side = int(signum(neutral - target));
+    side = int(signum(target-neutral));
     type = tt;
-    speed = (neutral - target)/20;
+    speed = (target-neutral)/20;
   }
 
   void render() {
-    if (mouseX*side > pos*side && pos*side > target*side)
-      pos -= speed;
-    else if (pos*side < neutral*side && mouseX*side < pos*side)
+    if (mouseX*side > (width-pos)*side && (width-pos)*side > (width-target)*side)
       pos += speed;
+    else if ((width-pos)*side < (width-neutral)*side && mouseX*side < (width-pos)*side)
+      pos -= speed;
 
     switch(type) {
     case 0:
-      instructions(pos);
+      instructions(width-pos);
       break;
     }
   }

@@ -1,11 +1,15 @@
-final int NUMGUN = 3;
+// Number of gun components (used for randomly generating planes)
+final int NUMGUN = 4;
 
 abstract class Gun {
+  // Vehicle the gun is tied to
   Object platform;
-  int firerate; // The minimum number of frames between shots
-  int cooldown; // The number of frames remaining before a shot can be made
+  // The minimum number of frames between shots
+  int firerate; 
+  // The number of frames remaining before a shot can be made
+  int cooldown; 
+  // Damage multiplier
   float multiplier;
-
 
   Gun() {
   }
@@ -16,11 +20,19 @@ abstract class Gun {
   void render() {
   }
 
+  // Whether or not a charge weapon is 'ready' to fire
   boolean max() {
     return false;
   }
 }
 
+/**
+ * Machine Gun
+ * Damage   : **
+ * Speed    : ****
+ * Reload   : *****
+ * Area     : *
+ */
 class MachineGun extends Gun {
 
   MachineGun(int fire, Object p) {
@@ -44,6 +56,13 @@ class MachineGun extends Gun {
   }
 };
 
+/**
+ * Laser Beam
+ * Damage   : ****
+ * Speed    : N/A
+ * Reload   : *
+ * Area     : ****
+ */
 class LaserBeam extends Gun {
   float charge;
   boolean lastCharged = false;
@@ -80,6 +99,13 @@ class LaserBeam extends Gun {
   }
 };
 
+/**
+ * Grenade Launcher
+ * Damage   : ****
+ * Speed    : **
+ * Reload   : ***
+ * Area     : ***
+ */
 class GrenadeLauncher extends Gun {
 
   GrenadeLauncher(int fire, Object p) {
@@ -103,7 +129,13 @@ class GrenadeLauncher extends Gun {
   }
 };
 
-
+/**
+ * ChainGun
+ * Damage   : ***
+ * Speed    : *****
+ * Reload   : *
+ * Area     : ***
+ */
 class ChainGun extends Gun {
   int count;
   int cmax = 100;

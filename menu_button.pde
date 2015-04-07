@@ -16,10 +16,10 @@ class Button {
     hover = false;
   }
 
-  void render(Menu screen) {
+  void render(HasButtons screen) {
     pushMatrix();
-    translate(posx, posy);
-    if (mouseX > posx && mouseX < posx+size && mouseY > posy && mouseY < posy+64) // Check hover
+    translate(width/2+posx, height/2+posy);
+    if (mouseX > width/2+posx && mouseX < width/2+posx+size && mouseY > height/2+posy && mouseY < height/2+posy+64) // Check hover
       hover = true;
     else {
       hover = false;
@@ -52,7 +52,7 @@ class Button {
   void click() {
     switch(button) {
     case 0: // Begin game
-      world = new World();
+      world.beginGame(2);
       screen = 0;
       break;
     /*case 1: // Stats
@@ -113,3 +113,8 @@ class Button {
       */
   }
 };
+
+abstract class HasButtons{
+  Button target;
+}
+

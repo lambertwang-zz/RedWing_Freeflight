@@ -117,39 +117,28 @@ class Slim extends Body {
   }
 };
 
-class Mellee extends Body {
-  Mellee(Object p) {
-    platform = p;
-  }
-
-  void render(float yplane) {  
-    beginShape();
-    vertex(32, 0);
-    vertex(16, -8*yplane);
-    vertex(-16, -4*yplane);
-    vertex(-36, -16*yplane);
-    vertex(-32, 0);
-    vertex(-34, 4*yplane);
-    vertex(-24, 0);
-    endShape();
-  }
-};
-
 class Reflector extends Body {
   Reflector(Object p) {
     platform = p;
+    gravity = 0.7;
   }
 
   void render(float yplane) {  
     beginShape();
-    vertex(32, 0);
-    vertex(16, -8*yplane);
+    fill(160, 255, 255);
+    vertex(48, 0);
+    vertex(16, -16*yplane);
     vertex(-16, -4*yplane);
     vertex(-36, -16*yplane);
     vertex(-32, 0);
     vertex(-34, 4*yplane);
     vertex(-24, 0);
     endShape();
+  }
+
+  void init(Controller c) {
+    c.maxLife *= 0.8;
+    c.life = c.maxLife;
   }
 };
 

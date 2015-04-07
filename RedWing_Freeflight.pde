@@ -16,8 +16,11 @@ final String VERSION = "Beta 0.2";
 
 // Game uses 'screens' to change between states
 int screen;
-World world;  // 0 = playing the game
-Menu menu;    // 1 = main menu
+World world;  
+// 0 = playing the game
+// 1 = main menu
+
+boolean paused = false;
 
 // Input method for players to control the game
 Input keyboard;
@@ -45,16 +48,17 @@ void setup() {
 
   // Active resizing works fine during gameplay
   // Need to re-initialize menus when screen is resized on a menu screen
+  // Each time the frame size changes, draw() is called once
   if (frame != null) {
     frame.setResizable(true);
   }
 
   // Initialize game
   keyboard = new Input();
-  menu = new Menu();
   world = new World();
 
   // Default screen is menu
+  world.menuMain();
   screen = 1;
 }
 
@@ -62,10 +66,41 @@ void draw() {
   // Determines which screen to show
   switch(screen){
     case 0: 
-      world.render();
+      if(paused) {
+        // Placeholder background
+        background(255);
+        pauseText();
+      } else {
+        world.render();
+      }
       break;
     case 1:
-      menu.render();
+      world.menuMainRender();
       break;
   }
 }
+
+public void pause() { // Toggles paused and unpaused states
+  if (paused) {
+    loop();
+    paused = false;
+  } else {
+    noLoop();
+    paused = true;
+    pauseText();
+  }
+}
+
+public void pauseText() {
+    noStroke();
+    fill(128, 255, 255);
+    redWing(width/4, height/8, min(width*7/(2*26.5), height/4+32));
+    
+    textFont(f24);
+    fill(0);
+    text("PAUSED", width/2-46, height/2-64);
+    text("R restart", width/2-70, height/2);
+    text("P unpause", width/2-70, height/2+32);
+    text("M to menu", width/2-70, height/2+64);
+}
+

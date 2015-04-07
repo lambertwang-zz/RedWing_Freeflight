@@ -47,7 +47,7 @@ class Player extends Controller {
       if (c.origin instanceof Computer) {
         c.collide(this);
         vehicle.col = color(0, 255*life/maxLife, 255*life/maxLife);
-        world.bleed = (world.bleed & 0xffffff) | (int(128*(1-life/maxLife)) << 24);
+        world.bleed = (world.bleed & 0xffffff) | (int(64*(1-life/maxLife)) << 24);
         if (life <= 0) {
           world.shake.add(signum(random(-1, 1))*random(16, 32), signum(random(-1, 1))*random(16, 32), 0);
           world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(120, 160)));
