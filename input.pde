@@ -41,7 +41,6 @@ void keyPressed() {
     } else if (key == 'o' || key == 'O') {
       screenShot();
     } else if (key == 'r' || key == 'R') {
-      world = new World();
       world.beginGame(2);
       if(paused) {
         pause();

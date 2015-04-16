@@ -75,12 +75,31 @@ class Computer extends Controller {
         }
       }
 
-      if (dist(0, 0, tempx, tempy) > width+height) {
+      float tempd = dist(0, 0, tempx, tempy);
+
+      comp.xkey = false;
+
+      if (tempd > width+height) {
         if (abs(tempa) > 1)
           comp.upkey = 0;
-        else comp.upkey = 1;
-      } else
+        else {
+          comp.upkey = 1;
+        }
+      } else {
         comp.upkey = 1;
+      }
+
+
+      if (vehicle.engine instanceof Jet) {
+        if(tempd > 100 && abs(tempa) < .4)
+          comp.xkey = true;
+      } else if(vehicle.engine instanceof Chaos) {
+        if(tempd < 100)
+          comp.xkey = true;
+      } else if(vehicle.engine instanceof Prop) {
+        if(tempd < 200)
+          comp.xkey = true;
+      }
 
       vehicle.controls(comp);
 

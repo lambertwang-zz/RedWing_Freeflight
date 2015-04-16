@@ -82,7 +82,7 @@ class World extends HasButtons{
     addition = new ArrayList();
     removal = new ArrayList();
 
-    redWing = new Plane(0, 0, floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
+    redWing = new Plane(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
     
     actors.add(new Player(redWing));
 
