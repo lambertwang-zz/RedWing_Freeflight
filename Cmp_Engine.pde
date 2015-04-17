@@ -4,8 +4,11 @@ final int NUMENG = 3;
 abstract class Engine {
   // Amount of radians the vehicle is capable of changing its facing direction by in each frame
   float turnspd;
+  float fturnspd;
   // speed is misleading, this actually refers to the change in velocity each frame while the plane is accelerating
   float speed;
+  // Stored variable for base speed
+  float fspeed;
 
   // Vehicle the engine is tied to
   Object platform;
@@ -35,8 +38,6 @@ abstract class Engine {
  * Special  : ***
  */
 class Prop extends Engine {
-  // Stored variable for base speed
-  float fspeed;
 
   Prop(Object p) {
     platform = p;
@@ -73,7 +74,7 @@ class Prop extends Engine {
   void boost(boolean b) {
     if (b) {
       speed = -fspeed*.5;
-      world.effects.add(new Spark(platform.last.x, platform.last.y, random(48, 64), color(int(random(0, 256)), 255, 255), random(80, 100), random(0, 2*PI)));
+      world.effects.add(new Spark(platform.last.x, platform.last.y, random(48, 64), color(int(random(0, 256)), 255, 255), random(20, 25)*effectsDensity, random(0, 2*PI)));
     } else {
       speed = fspeed;
     }
@@ -87,9 +88,7 @@ class Prop extends Engine {
  * Special  : **
  */
 class Jet extends Engine {
-  float fspeed; // Speed (does not vary)
   float turnMult;
-  float fturnspd; // Amount to multiply turnspeed
 
   Jet(Object p) {
     platform = p;
@@ -124,7 +123,7 @@ class Jet extends Engine {
     if (b) {
       speed = 2;
       turnspd = fturnspd/4;
-      world.effects.add(new Smoke(platform.last.x, platform.last.y, random(8, 12), color(int(random(0, 255)), 255, 255), int(random(20, 30))));
+      world.effects.add(new Smoke(platform.last.x, platform.last.y, random(8, 12), color(int(random(0, 255)), 255, 255), random(5, 8)*effectsDensity));
     } else {
       speed = fspeed;
       turnspd = fturnspd;
@@ -141,7 +140,6 @@ class Jet extends Engine {
 class Chaos extends Engine {
   int boostrate;
   int cooldown;
-  float fturnspd;
 
 
   Chaos(Object p) {
@@ -149,7 +147,7 @@ class Chaos extends Engine {
     turnspd = PI/30;
     fturnspd = turnspd;
     speed = 1.2;
-
+    
     boostrate = 180;
     cooldown = 0;
   }
@@ -169,38 +167,33 @@ class Chaos extends Engine {
     endShape();
   }
 
-  void turn(float d, float b) {
-    platform.dir += d*turnspd;
-    platform.roll += d*turnspd;
-  }
-
   // Boost teleports the plane forwards and the plane lands facing the opposite direction
   void boost(boolean b) {
     if (b) {
       if (cooldown == 0) {
         // Turnspeed is halved while teleport is recharging
         turnspd /= 2;
-        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(24, 32)));
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(3, 4)*effectsDensity));
         float cosd = cos(platform.dir);
         float sind = sin(platform.dir);
         // Explosions
-        for (int i = 0; i < 512; i+=32) {
-          world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(10, 16)));
+        for (int i = 0; i < 512; i+=128/effectsDensity) {
+          world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(12, 16)));
         }
         platform.pos.set(platform.pos.x+cosd*512, platform.pos.y+sind*512);
         platform.last.set(platform.last.x+cosd*480, platform.last.y+sind*480);
         platform.dir += PI;
-        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(24, 32)));
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(6, 8)*effectsDensity));
         cooldown = boostrate;
       }
     }
     if (cooldown != 0) {
       // Teleport requires some time to charge. 
       cooldown--;
-      world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(2, 4), color(int(random(0, 256)), 255, 255), int(random(30, 45))));
+      world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(2, 4), color(int(random(0, 256)), 255, 255), random(8, 12)*effectsDensity));
       if (cooldown == 0) {
         turnspd = fturnspd;
-        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, 64));
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(8, 12)*effectsDensity));
       }
     }
   }

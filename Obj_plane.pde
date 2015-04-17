@@ -29,7 +29,7 @@ class Plane extends Object {
       gun = new ChainGun(2, this);
       break;
     case 4:
-      gun = new GrenadeLauncher(24, this);
+      gun = new GrenadeLauncher(20, this);
     }
 
     switch(b) {

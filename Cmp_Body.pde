@@ -30,6 +30,7 @@ abstract class Body {
  * Standard Body
  * Durability : ***
  * Gravity    : ***
+ * Increases turning speed
  */
 class Standard extends Body {
 
@@ -52,17 +53,23 @@ class Standard extends Body {
     vertex(-32, 0);
     endShape();
   }
+
+  void init(Controller c) {
+    c.vehicle.engine.fturnspd *= 1.2;
+    c.vehicle.engine.turnspd = c.vehicle.engine.fturnspd;
+  }
 };
 
 /**
  * Heavy Frame
- * Durability : ****
+ * Durability : *****
  * Gravity    : **
+ * Lots of life
  */
 class Heavy extends Body {
   Heavy(Object p) {
     platform = p;
-    gravity = .8;
+    gravity = .85;
   }
 
   void render(float yplane) {
@@ -85,7 +92,7 @@ class Heavy extends Body {
   }
 
   void init(Controller c) {
-    c.maxLife *= 1.25;
+    c.maxLife *= 1.3;
     c.life = c.maxLife;
   }
 };
@@ -94,6 +101,7 @@ class Heavy extends Body {
  * Slim Body
  * Durability : **
  * Gravity    : ****
+ * Increases speed
  */
 class Slim extends Body {
   Slim(Object p) {
@@ -114,6 +122,8 @@ class Slim extends Body {
   void init(Controller c) {
     c.maxLife *= .8;
     c.life = c.maxLife;
+    c.vehicle.engine.fspeed *= 1.2;
+    c.vehicle.engine.speed = c.vehicle.engine.fspeed;
   }
 };
 

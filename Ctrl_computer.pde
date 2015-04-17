@@ -1,4 +1,4 @@
-final float COMPLIFE = 4;
+final float COMPLIFE = 5;
 
 // This is the enemy
 class Computer extends Controller {
@@ -27,14 +27,15 @@ class Computer extends Controller {
     comp = new Input();
 
     v.col = color(160, 255, 128);
-    v.engine.speed *= random(0.6, 0.8);
-    v.gun.firerate *= random(2.4, 3.2);
+    v.engine.speed *= random(.9, 1.1);
+    v.gun.firerate *= random(2, 2.4);
+    v.engine.turnspd *= random(.8, 1.2);
     if (v.gun instanceof MachineGun || v.gun instanceof ChainGun) {
-      v.gun.multiplier = 0.75;
+      v.gun.multiplier = 0.7;
     } else if (v.gun instanceof LaserBeam) {
       v.gun.multiplier = 0.2;
     } else if (v.gun instanceof GrenadeLauncher) {
-      v.gun.multiplier = 1;
+      v.gun.multiplier = 0.8;
     }
   }
 
@@ -124,7 +125,7 @@ class Computer extends Controller {
         vehicle.col = color(160, 255*life/maxLife, 128*life/maxLife);
         if (life <= 0) {
           world.shake.add(signum(random(-1, 1))*random(8, 16), signum(random(-1, 1))*random(8, 16), 0);
-          world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(32, 48)));
+          world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(10, 16)*effectsDensity));
           world.removal.add(this);
           world.enemies--;
           if (world.enemies == 0) {

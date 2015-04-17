@@ -1,13 +1,13 @@
 // Simple projectile 
 final float BULLETVEL = 16;
-final float BULLETDAM = 2;
+final float BULLETDAM = 2.4;
 
 final float CHAINVEL = 32;
-final float CHAINDAM = 2.2;
+final float CHAINDAM = 2;
 
 final float GRENADEVEL = 12;
 final float GRENADEGRAV = .1;
-final float GRENADEDAM = 1.2;
+final float GRENADEDAM = 2.4;
 
 class Bullet extends Object {
 
@@ -102,7 +102,7 @@ class BulletController extends Controller {
   void collide(Controller c) {
     c.life -= BULLETDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(16, 24)));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(4, 6)*effectsDensity));
     if(c.vehicle.body instanceof Reflector){
       origin = c;
       vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
@@ -136,8 +136,8 @@ class Beam extends Object {
     float xi = cos(dir);
     float yi = sin(dir);
 
-    for (int i = 16; i < sizex; i+= 48) {
-      world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(8, 16), color(int(random(0, 255)), 255, 255), int(random(6, 8)), random(0, 2*PI)));
+    for (int i = (int)random(0, 32); i < sizex; i+= 128/effectsDensity) {
+      world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(8, 16), color(int(random(0, 255)), 255, 255), random(3, 4), random(0, 2*PI)));
     }
 
 
@@ -201,8 +201,8 @@ class BeamController extends Controller {
 
   void collide(Controller c) {
     c.life -= damage*len/1024;
-    for(int i = 0; i < 4; i++)
-      world.effects.add(new Spark(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12), color(int(random(0, 255)), 255, 255), int(random(30, 45)), random(0, 2*PI)));
+    for(int i = 0; i < effectsDensity; i++)
+      world.effects.add(new Spark(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12), color(int(random(0, 255)), 255, 255), random(8, 12)*effectsDensity, random(0, 2*PI)));
   }
 };
 
@@ -309,7 +309,7 @@ class GrenadeController extends Controller {
     c.life -= GRENADEDAM*damage;
     detonate();
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(24, 32)));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, 40));
     if(c.vehicle.body instanceof Reflector){
       origin = c;
       vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
@@ -435,7 +435,7 @@ class ChainController extends Controller {
   void collide(Controller c) {
     c.life -= CHAINDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12)));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(3, 4)*effectsDensity));
     if(c.vehicle.body instanceof Reflector){
       origin = c;
       vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);

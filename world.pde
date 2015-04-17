@@ -47,17 +47,20 @@ class World extends HasButtons{
     removal = new ArrayList();
 
     effects = new ArrayList();
-    for(int i = 0; i < 64; i++)
+    for(int i = 0; i < 20*effectsDensity; i++)
       effects.add(new Cloud(random(x), random(y), random(4, 10), random(120, 180)));
 
     shake = new PVector(0, 0);
 
     bleed = color(160, 255, 255, 0);
 
+    buttons = new ArrayList();
+    target = null;
   }
 
   ArrayList<Button> buttons;
   SideBar sidebar;
+  PVector menuScroll;
 
   void menuMain() {
     actors = new ArrayList();
@@ -66,13 +69,34 @@ class World extends HasButtons{
 
     sidebar = new SideBar(320, 32, 0);
 
-    buttons = new ArrayList(); // Adding buttons
+    buttons.clear(); // Adding buttons
     buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
-    buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 11));
+    buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
     buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
     buttons.add(new Button(64, 96, 256, color(0, 192, 255), "Quit", 3));
-    target = null;
+    
+    screenPos.set(0, 0);
+    menuScroll = new PVector(-3, -4);
   }
+
+  void menuSettings() {
+    actors = new ArrayList();
+    addition = new ArrayList();
+    removal = new ArrayList();
+
+    sidebar = new SideBar(320, 32, 0);
+
+    buttons.clear(); // Adding buttons
+    buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
+    buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
+    buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
+    buttons.add(new Button(64, 96, 256, color(0, 192, 255), "Main Menu", 4));
+    println("Settings Set");
+    
+    screenPos.set(x/2, y/2);
+    menuScroll = new PVector(4, -3);
+  }
+
 
   void beginGame(int tdiff){
     buttons = new ArrayList();
@@ -99,8 +123,7 @@ class World extends HasButtons{
 
   void menuMainRender() {
     background(0);
-    screenPos.x -= 4;
-    screenPos.y -= 3;
+    screenPos.add(menuScroll);
 
 
     pushMatrix();
@@ -124,7 +147,7 @@ class World extends HasButtons{
     
     // Renders the logo
     noStroke();
-    fill(0, 255, 255);
+    fill(0, 224+32*sin((frameCount/60.0)%(2*PI)), 255);
     redWing(width/4, height/8, min(width*7/(2*26.5), height/4+32));
     textFont(f24);
     text(VERSION, width/4, height/8+32+min(width*7/(2*26.5), height/4+32));
@@ -141,7 +164,7 @@ class World extends HasButtons{
     // Renders all of the special effects
     for (Particle p : effects)
       p.render(xsplit, ysplit);
-
+    
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
         Cell e = getCell(floor(effects.get(i).xpos/CELLSIZE), floor(effects.get(i).ypos/CELLSIZE));
@@ -151,7 +174,7 @@ class World extends HasButtons{
         } else if (effects.get(i) instanceof Spark) {
           magnitude = 4;
         } else if (effects.get(i) instanceof Eclipse) {
-          magnitude = 32;
+          magnitude = 24;
         }
         e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
         effects.remove(i);
@@ -160,10 +183,10 @@ class World extends HasButtons{
 
     popMatrix();
 
-    sidebar.render();
-
     for (Button b : buttons)
       b.render(this);
+    if(sidebar != null)
+      sidebar.render();
 
     fps();
   }
@@ -237,15 +260,17 @@ class World extends HasButtons{
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
         Cell e = getCell(floor(effects.get(i).xpos/CELLSIZE), floor(effects.get(i).ypos/CELLSIZE));
-        float magnitude = 32;
-        if (effects.get(i) instanceof Smoke) {
-          magnitude = 4;
-        } else if (effects.get(i) instanceof Spark) {
-          magnitude = 4;
-        } else if (effects.get(i) instanceof Eclipse) {
-          magnitude = 32;
+        if(actors.contains(redWing)){
+          float magnitude = 32;
+          if (effects.get(i) instanceof Smoke) {
+            magnitude = 4;
+          } else if (effects.get(i) instanceof Spark) {
+            magnitude = 4;
+          } else if (effects.get(i) instanceof Eclipse) {
+            magnitude = 32;
+          }
+          e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
         }
-        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
         effects.remove(i);
       }
     }

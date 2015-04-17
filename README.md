@@ -1,6 +1,6 @@
 RedWing-Freeflight
 ==================
-Version: Beta 0.21  
+Version: Beta 0.22  
 Author: Lambert Wang  
 A processing project that occupied my spare time  
 

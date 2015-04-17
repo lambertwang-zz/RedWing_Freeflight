@@ -12,7 +12,7 @@
  * Heavily inspired by the game Luftrausers.
  */
 
-final String VERSION = "Beta 0.21";
+final String VERSION = "Beta 0.22";
 
 // Game uses 'screens' to change between states
 int screen;

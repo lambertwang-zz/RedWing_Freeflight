@@ -1,7 +1,10 @@
 final float recoveryTime = 60;
+final int stallTime = 90;
 
 // This is you
 class Player extends Controller {
+  int stall;
+
   Player(Object v) {
     vehicle = v;
     location = new ArrayList();
@@ -11,6 +14,7 @@ class Player extends Controller {
 
     maxLife = 16;
     life = maxLife;
+    stall = stallTime;
 
     v.controller = this;
     v.body.init(this);
@@ -22,11 +26,23 @@ class Player extends Controller {
 
   void tick() {
     vehicle.controls(keyboard);
+    if(keyboard.upkey == 0) {
+      if(stall > 0) {
+        stall--;
+      } else {
+        if(abs(vehicle.dir) < PI/2)
+          vehicle.dir += 0.02;
+        else
+          vehicle.dir -= 0.02;
+      }
+    } else {
+      stall = stallTime;
+    }
 
     // Changes the hitbox to match the profile of the plane
     recheck();
 
-    if (life < maxLife) {
+    if (life < maxLife && stall > 0) {
       life += min(1/recoveryTime, maxLife-life);
       vehicle.col = color(0, 255*life/maxLife, 255*life/maxLife);
       // Bit level alpha change
@@ -50,7 +66,7 @@ class Player extends Controller {
         world.bleed = (world.bleed & 0xffffff) | (int(64*(1-life/maxLife)) << 24);
         if (life <= 0) {
           world.shake.add(signum(random(-1, 1))*random(16, 32), signum(random(-1, 1))*random(16, 32), 0);
-          world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(120, 160)));
+          world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(30, 40)*effectsDensity));
           world.removal.add(this);
         }
       }
@@ -70,6 +86,13 @@ class Player extends Controller {
       translate(0, -FIELDY*CELLSIZE);
 
     vehicle.render();
+    
+    translate(vehicle.pos.x, vehicle.pos.y);
+    if(stall <= 0){
+      fill(0, 255, 255, (frameCount%60) > 30 ? 0 : 255);
+      textFont(f12);
+      text("STALLING", -38, 44);
+    }
 
     popMatrix();
   }

@@ -56,22 +56,21 @@ class Button {
       screen = 0;
       break;
     /*case 1: // Stats
-      break;
+      break;*/
     case 2: // Settings
-      switchtoSettings();
+      world.menuSettings();
+      screen = 1;
       break;
-    */
     case 3: // exit game
       //saveOptions();
       //saveStats();
       exit();
-    }
-      /*
-
     case 4: // Main Menu
-      switchtoMenu();
+      world.menuMain();
+      screen = 1;
       break;
-    case 5: // Increase graphics
+    }
+    /*case 5: // Increase graphics
       GRAPHICS = GRAPHICS% 5 + 1;
       switchtoSettings();
       break;
