@@ -11,11 +11,14 @@ final float GRENADEDAM = 2.4;
 
 class Bullet extends Object {
 
-  Bullet(Object origin) {
+  Bullet(Object origin, PVector offset) {
     pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir;
+    dir = origin.dir+offset.z;
     last = new PVector(origin.last.x-cos(dir)*BULLETVEL, origin.last.y-sin(dir)*BULLETVEL);
     col = origin.col;
+
+    pos.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
+    last.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
   }
 
   void tick() {
@@ -103,23 +106,21 @@ class BulletController extends Controller {
     c.life -= BULLETDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(4, 6)*effectsDensity));
-    if(c.vehicle.body instanceof Reflector){
-      origin = c;
-      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
-      damage *= 0.5;
-    } else {
-      world.removal.add(this);
-    }  
+    world.removal.add(this); 
   }
 };
 
 // Laser Beam
 
 class Beam extends Object {
+  PVector offset;
 
-  Beam(Object origin) {
+  Beam(Object origin, PVector offset) {
     pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir;
+    dir = origin.dir+offset.z;
+    this.offset = offset;
+    pos = new PVector();
+    pos.set(offset);
   }
 
   void tick() {
@@ -131,7 +132,7 @@ class Beam extends Object {
     rotate(dir);
     strokeWeight(2+sizex/200);
     stroke(frameCount%256, 255, 255);
-    line(24, 0, sizex, 0);
+    line(0, 0, sizex, 0);
 
     float xi = cos(dir);
     float yi = sin(dir);
@@ -148,6 +149,7 @@ class Beam extends Object {
 class BeamController extends Controller {  
   float len;
   float damage;
+  PVector offset;
 
   BeamController(Beam b, Controller c, float l, float d) {
     vehicle = b;
@@ -162,6 +164,7 @@ class BeamController extends Controller {
 
     len = 200+8*l;
     b.sizex = len;
+    offset = b.offset;
   }
 
   void tick() {
@@ -176,7 +179,8 @@ class BeamController extends Controller {
   // Update override because it's a laser beam
   void update() {
     vehicle.pos.set(origin.vehicle.pos.x, origin.vehicle.pos.y);
-    vehicle.dir = origin.vehicle.dir;
+    vehicle.pos.add(offset.x*cos(vehicle.dir)+offset.y*sin(vehicle.dir), offset.x*sin(vehicle.dir)+offset.y*cos(vehicle.dir), 0);
+    vehicle.dir = origin.vehicle.dir+offset.z;
     // Removes contoller from previously occupied cells
     for (Cell c : location)
       c.occupants.remove(this);
@@ -194,6 +198,7 @@ class BeamController extends Controller {
   void render() {
     pushMatrix();
     vehicle.pos.set(origin.vehicle.pos.x, origin.vehicle.pos.y);
+    vehicle.pos.add(offset.x*cos(vehicle.dir)+offset.y*sin(vehicle.dir), offset.x*sin(vehicle.dir)+offset.y*cos(vehicle.dir), 0);
     vehicle.render();
 
     popMatrix();
@@ -208,12 +213,15 @@ class BeamController extends Controller {
 
 class Grenade extends Object {
 
-  Grenade(Object origin) {
+  Grenade(Object origin, PVector offset) {
     pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir;
+    dir = origin.dir+offset.z;
     dir += (abs(origin.dir-PI) > PI/2 ? -1 : 1)*0.2;
     roll = random(0, PI);
     last = new PVector(origin.last.x-cos(dir)*GRENADEVEL, origin.last.y-sin(dir)*GRENADEVEL);
+
+    pos.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
+    last.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
   }
 
   void tick() {
@@ -310,13 +318,7 @@ class GrenadeController extends Controller {
     detonate();
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, 40));
-    if(c.vehicle.body instanceof Reflector){
-      origin = c;
-      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
-      damage *= 0.5;
-    } else {
-      world.removal.add(this);
-    }
+    world.removal.add(this);
   }
 
   void detonate() {
@@ -345,10 +347,13 @@ class GrenadeController extends Controller {
 
 class Chain extends Object {
 
-  Chain(Object origin) {
+  Chain(Object origin, PVector offset) {
     pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir+random(-0.1, 0.1);
+    dir = origin.dir+random(-0.1, 0.1)+offset.z;
     last = new PVector(origin.last.x-cos(dir)*CHAINVEL, origin.last.y-sin(dir)*CHAINVEL);
+
+    pos.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
+    last.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
   }
 
   void tick() {
@@ -436,13 +441,7 @@ class ChainController extends Controller {
     c.life -= CHAINDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
     world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(3, 4)*effectsDensity));
-    if(c.vehicle.body instanceof Reflector){
-      origin = c;
-      vehicle.last.set(2*vehicle.pos.x-vehicle.last.x, 2*vehicle.pos.y-vehicle.last.y);
-      damage *= 0.5;
-    } else {
-      world.removal.add(this);
-    }  
+    world.removal.add(this);
   }
 };
 

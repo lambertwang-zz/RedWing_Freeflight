@@ -17,8 +17,8 @@ class Computer extends Controller {
     life = maxLife;
 
     v.controller = this;
-    v.body.init(this);
-    v.body.terminal = new PVector(FRICTION/(1-FRICTION)*v.engine.speed, FRICTION/(1-FRICTION)*v.body.gravity);
+    ((Plane)v).body.init(this);
+    v.terminal = new PVector(FRICTION/(1-FRICTION)*((Plane)v).engine.speed, FRICTION/(1-FRICTION)*v.gravity);
 
     origin = null;
 
@@ -27,15 +27,15 @@ class Computer extends Controller {
     comp = new Input();
 
     v.col = color(160, 255, 128);
-    v.engine.speed *= random(.9, 1.1);
-    v.gun.firerate *= random(2, 2.4);
-    v.engine.turnspd *= random(.8, 1.2);
-    if (v.gun instanceof MachineGun || v.gun instanceof ChainGun) {
-      v.gun.multiplier = 0.7;
-    } else if (v.gun instanceof LaserBeam) {
-      v.gun.multiplier = 0.2;
-    } else if (v.gun instanceof GrenadeLauncher) {
-      v.gun.multiplier = 0.8;
+    ((Plane)v).engine.speed *= random(.9, 1.1);
+    ((Plane)v).gun.firerate *= random(2, 2.4);
+    ((Plane)v).engine.turnspd *= random(.8, 1.2);
+    if (((Plane)v).gun instanceof MachineGun || ((Plane)v).gun instanceof ChainGun) {
+      ((Plane)v).gun.multiplier = 0.7;
+    } else if (((Plane)v).gun instanceof LaserBeam) {
+      ((Plane)v).gun.multiplier = 0.2;
+    } else if (((Plane)v).gun instanceof GrenadeLauncher) {
+      ((Plane)v).gun.multiplier = 0.8;
     }
   }
 
@@ -57,21 +57,22 @@ class Computer extends Controller {
         tempy += FIELDY*CELLSIZE;
 
       float tempa = atan2(tempy, tempx);
+      ((Player)world.redWing.controller).indicators.add(tempa);
       tempa -= vehicle.dir;
       if (tempa > PI)
         tempa -= 2*PI;
       else if (tempa < -PI)
         tempa += 2*PI;
 
-      if (tempa < -vehicle.engine.turnspd/2)
+      if (tempa < -((Plane)vehicle).engine.turnspd/2)
         comp.dirkey = -1;
-      else if (tempa > vehicle.engine.turnspd/2)
+      else if (tempa > ((Plane)vehicle).engine.turnspd/2)
         comp.dirkey = 1;
 
       if (abs(tempa) < 0.1){
         comp.zkey = true;
-        if(vehicle.gun instanceof LaserBeam || vehicle.gun instanceof ChainGun){
-          if(vehicle.gun.max())
+        if(((Plane)vehicle).gun instanceof LaserBeam || ((Plane)vehicle).gun instanceof ChainGun){
+          if(((Plane)vehicle).gun.max())
             comp.zkey = false;
         }
       }
@@ -91,18 +92,18 @@ class Computer extends Controller {
       }
 
 
-      if (vehicle.engine instanceof Jet) {
+      if (((Plane)vehicle).engine instanceof Jet) {
         if(tempd > 100 && abs(tempa) < .4)
           comp.xkey = true;
-      } else if(vehicle.engine instanceof Chaos) {
+      } else if(((Plane)vehicle).engine instanceof Chaos) {
         if(tempd < 100)
           comp.xkey = true;
-      } else if(vehicle.engine instanceof Prop) {
+      } else if(((Plane)vehicle).engine instanceof Prop) {
         if(tempd < 200)
           comp.xkey = true;
       }
 
-      vehicle.controls(comp);
+      ((Plane)vehicle).controls(comp);
 
       comp.reset();
     }
@@ -128,15 +129,9 @@ class Computer extends Controller {
           world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(10, 16)*effectsDensity));
           world.removal.add(this);
           world.enemies--;
-          if (world.enemies == 0) {
-            world.difficulty++;
-            for (int i = 0; i < world.difficulty; i++) {
-              Object p;
-              p = new Plane(random(world.redWing.pos.x+width/2, world.redWing.pos.x-width/2+FIELDX*CELLSIZE), 
-              random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
-              world.addition.add(new Computer(p));
-              world.enemies++;
-            }
+          world.score++;
+          if(world.score > world.hiscore){
+            world.hiscore = world.score;
           }
         }
       }
@@ -160,6 +155,8 @@ class Computer extends Controller {
     popMatrix();
   }
 
+  /*
+   * Obsolete
   void recheck() {
     // Is this really worth the loss in efficiency?
     // Probably
@@ -172,6 +169,38 @@ class Computer extends Controller {
     // Changes the hitbox to match the vehicle's profile
     checkx = ceil(max(tempax*vehicle.sizex, tempay*tempy)/CELLSIZE);
     checky = ceil(max(tempay*vehicle.sizex, tempax*tempy)/CELLSIZE);
+  }
+  */
+
+  // Cell override for better hit detection
+  void update() {
+    // Removes contoller from previously occupied cells
+    for (Cell c : location)
+      c.occupants.remove(this);
+    // Clears occupied cells
+    location.clear();
+
+    int tlocx = floor(vehicle.pos.x/CELLSIZE);
+    int tlocy = floor(vehicle.pos.y/CELLSIZE);
+    for (float i = -vehicle.sizex/CELLSIZE-.5; i <= vehicle.sizex/CELLSIZE+.5; i++){
+      int cx = int(i*cos(vehicle.dir));
+      int cy = int(i*sin(vehicle.dir));
+      Cell tempc = world.getCell(cx+tlocx, cy+tlocy);
+      if(!location.contains(tempc)){
+        location.add(tempc);
+        tempc.occupants.add(this);
+      }
+    }
+
+    for (float i = -vehicle.sizez/CELLSIZE-.5; i <= vehicle.sizez/CELLSIZE+.5; i++){
+      int cx = int(i*sin(vehicle.dir)*sin(vehicle.roll));
+      int cy = int(i*cos(vehicle.dir)*sin(vehicle.roll));
+      Cell tempc = world.getCell(cx+tlocx, cy+tlocy);
+      if(!location.contains(tempc)){
+        location.add(tempc);
+        tempc.occupants.add(this);
+      }
+    }
   }
 };
 

@@ -1,9 +1,16 @@
 final float FRICTION = .9375; // 15 16ths
-final float gravity = .6;
+//final float FRICTION = 0.96875; // 31 32ths
+final float GRAVITY = .6;
 
 
 // Plane is a standard plane with average turning and speed
 class Plane extends Object {
+
+  // Plane specific fields
+  Gun gun;
+  Body body;
+  Engine engine;
+
   Plane(float x, float y, int g, int b, int e) {
     pos = new PVector(x, y);
     last = new PVector(x, y);
@@ -31,6 +38,7 @@ class Plane extends Object {
     case 4:
       gun = new GrenadeLauncher(20, this);
     }
+    gun.offset.set(32, 0, 0);
 
     switch(b) {
     case 1: 
@@ -41,9 +49,6 @@ class Plane extends Object {
       break;
     case 3:
       body = new Slim(this);
-      break;
-    case 4:
-      body = new Reflector(this);
       break;
     }
 
@@ -79,6 +84,21 @@ class Plane extends Object {
     body.render(yplane);
 
     popMatrix();
+  }
+
+  // input sent from the controller
+  void controls(Input i) {
+    engine.boost(i.xkey);
+    // Turning (or technically, changing pitch)
+    engine.turn(i.dirkey, i.upkey);
+
+    // Accelerating
+    if (i.upkey > 0) {
+      last.add(cos(dir)*-engine.speed*i.upkey, sin(dir)*-engine.speed*i.upkey, 0);
+      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), i.upkey*random(4, 8))); // Contrails
+    }
+
+    gun.shoot(i.zkey);
   }
 };
 

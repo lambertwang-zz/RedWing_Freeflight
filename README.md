@@ -23,3 +23,6 @@ A processing project that occupied my spare time
         Added Menu
     Beta 0.21
         Changed screen state to always on world
+    Beta 0.22
+        Changed particle density
+        Increased AI dificulty

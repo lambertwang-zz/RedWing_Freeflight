@@ -2,8 +2,10 @@ final float recoveryTime = 60;
 final int stallTime = 90;
 
 // This is you
-class Player extends Controller {
+class Player extends Controller{
   int stall;
+
+  ArrayList<Float> indicators;
 
   Player(Object v) {
     vehicle = v;
@@ -15,22 +17,22 @@ class Player extends Controller {
     maxLife = 16;
     life = maxLife;
     stall = stallTime;
+    indicators = new ArrayList();
 
     v.controller = this;
-    v.body.init(this);
+    ((Plane)v).body.init(this);
     origin = null;
-    v.body.terminal = new PVector(FRICTION/(1-FRICTION)*v.engine.speed, FRICTION/(1-FRICTION)*v.body.gravity);
+    v.terminal = new PVector(FRICTION/(1-FRICTION)*((Plane)v).engine.speed, FRICTION/(1-FRICTION)*v.gravity);
 
     v.col = color(0, 255, 255);
   }
 
   void tick() {
-    vehicle.controls(keyboard);
-    if(keyboard.upkey == 0) {
+    if(abs(vehicle.pos.x-vehicle.last.x) < vehicle.terminal.x/2) {
       if(stall > 0) {
         stall--;
       } else {
-        if(abs(vehicle.dir) < PI/2)
+        if(abs(vehicle.dir-PI) > PI/2)
           vehicle.dir += 0.02;
         else
           vehicle.dir -= 0.02;
@@ -38,6 +40,7 @@ class Player extends Controller {
     } else {
       stall = stallTime;
     }
+    ((Plane)vehicle).controls(keyboard);
 
     // Changes the hitbox to match the profile of the plane
     recheck();
@@ -46,7 +49,7 @@ class Player extends Controller {
       life += min(1/recoveryTime, maxLife-life);
       vehicle.col = color(0, 255*life/maxLife, 255*life/maxLife);
       // Bit level alpha change
-      world.bleed = (world.bleed & 0xffffff) | (int(128*(1-life/maxLife)) << 24);
+      world.bleed = (world.bleed & 0xffffff) | (int(64*(1-life/maxLife)) << 24);
     }
 
     ArrayList<Controller> collided = world.collide(this);
@@ -60,7 +63,7 @@ class Player extends Controller {
 
   void collide(Controller c) {
     if (c.origin != null) {
-      if (c.origin instanceof Computer) {
+      if (!(c.origin instanceof Player)) {
         c.collide(this);
         vehicle.col = color(0, 255*life/maxLife, 255*life/maxLife);
         world.bleed = (world.bleed & 0xffffff) | (int(64*(1-life/maxLife)) << 24);
@@ -93,10 +96,26 @@ class Player extends Controller {
       textFont(f12);
       text("STALLING", -38, 44);
     }
+    noStroke();
+    fill(0, 255, 255);
+    for(float f: indicators){
+      pushMatrix();
+      rotate(f+PI);
+      translate(64, 0);
+      beginShape();
+      vertex(2, 0);
+      vertex(-2, 2);
+      vertex(-2, -2);
+      endShape();
+      popMatrix();
+    }
+    indicators.clear();
 
     popMatrix();
   }
 
+  /*
+   * Obsolete
   void recheck() {
     // Is this really worth the loss in efficiency?
     // Probably
@@ -110,5 +129,38 @@ class Player extends Controller {
     checkx = ceil(max(tempax*vehicle.sizex, tempay*tempy)/CELLSIZE);
     checky = ceil(max(tempay*vehicle.sizex, tempax*tempy)/CELLSIZE);
   }
+  */
+
+  // Cell override for better hit detection
+  void update() {
+    // Removes contoller from previously occupied cells
+    for (Cell c : location)
+      c.occupants.remove(this);
+    // Clears occupied cells
+    location.clear();
+
+    int tlocx = floor(vehicle.pos.x/CELLSIZE);
+    int tlocy = floor(vehicle.pos.y/CELLSIZE);
+    for (float i = -vehicle.sizex/CELLSIZE-.5; i <= vehicle.sizex/CELLSIZE+.5; i++){
+      int cx = int(i*cos(vehicle.dir));
+      int cy = int(i*sin(vehicle.dir));
+      Cell tempc = world.getCell(cx+tlocx, cy+tlocy);
+      if(!location.contains(tempc)){
+        location.add(tempc);
+        tempc.occupants.add(this);
+      }
+    }
+
+    for (float i = -vehicle.sizez/CELLSIZE-.5; i <= vehicle.sizez/CELLSIZE+.5; i++){
+      int cx = int(i*sin(vehicle.dir)*sin(vehicle.roll));
+      int cy = int(i*cos(vehicle.dir)*sin(vehicle.roll));
+      Cell tempc = world.getCell(cx+tlocx, cy+tlocy);
+      if(!location.contains(tempc)){
+        location.add(tempc);
+        tempc.occupants.add(this);
+      }
+    }
+  }
+
 };
 

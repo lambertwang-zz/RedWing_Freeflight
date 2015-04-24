@@ -8,6 +8,8 @@ class SideBar {
   int type;
   float speed;
 
+  boolean opened;
+
   SideBar(float ttar, float tn, int tt) {
     pos = tn;
     target = ttar;
@@ -15,27 +17,32 @@ class SideBar {
     side = int(signum(target-neutral));
     type = tt;
     speed = (target-neutral)/20;
+
+    opened = false;
   }
 
   void render() {
-    if (mouseX*side > (width-pos)*side && (width-pos)*side > (width-target)*side)
+    if (mouseX*side > (width-pos)*side && (width-pos)*side > (width-target)*side){
       pos += speed;
-    else if ((width-pos)*side < (width-neutral)*side && mouseX*side < (width-pos)*side)
+      opened = true;
+    }
+    else if ((width-pos)*side < (width-neutral)*side && mouseX*side < (width-pos)*side){
       pos -= speed;
+    }
 
     switch(type) {
     case 0:
-      instructions(width-pos);
+      instructions(width-pos, opened);
       break;
     }
   }
 };
 
-void instructions(float x) {
-  fill(255, 64);
+void instructions(float x, boolean opened) {
+  fill(255, opened ? 64 : (frameCount%60 > 30 ? 64 : 192));
   strokeWeight(3);
   stroke(0, 255, 192);
-  rect(x, -4, width+4, height+8);
+  rect(x, -5, width+5, height+10);
   
   pushMatrix();
   translate(x+28, 500);

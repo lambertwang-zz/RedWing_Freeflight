@@ -15,6 +15,8 @@ class World extends HasButtons{
 
   int enemies;
   int difficulty;
+  int score;
+  int hiscore = 0;
 
   int x = FIELDX*CELLSIZE;
   int y = FIELDY*CELLSIZE;
@@ -59,7 +61,7 @@ class World extends HasButtons{
   }
 
   ArrayList<Button> buttons;
-  SideBar sidebar;
+  SideBar sidebar = new SideBar(320, 32, 0);
   PVector menuScroll;
 
   void menuMain() {
@@ -67,12 +69,11 @@ class World extends HasButtons{
     addition = new ArrayList();
     removal = new ArrayList();
 
-    sidebar = new SideBar(320, 32, 0);
 
     buttons.clear(); // Adding buttons
     buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
-    buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
-    buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
+    //buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
+    //buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
     buttons.add(new Button(64, 96, 256, color(0, 192, 255), "Quit", 3));
     
     screenPos.set(0, 0);
@@ -83,8 +84,6 @@ class World extends HasButtons{
     actors = new ArrayList();
     addition = new ArrayList();
     removal = new ArrayList();
-
-    sidebar = new SideBar(320, 32, 0);
 
     buttons.clear(); // Adding buttons
     buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
@@ -99,12 +98,15 @@ class World extends HasButtons{
 
 
   void beginGame(int tdiff){
-    buttons = new ArrayList();
-    sidebar = null;
+    buttons.clear();
 
-    actors = new ArrayList();
-    addition = new ArrayList();
-    removal = new ArrayList();
+    actors.clear();
+    addition.clear();
+    removal.clear();
+
+    for (int i = 0; i < FIELDX; i++)
+      for (int j = 0; j < FIELDY; j++)
+        cells[i][j].occupants.clear();
 
     redWing = new Plane(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
     
@@ -113,7 +115,9 @@ class World extends HasButtons{
     enemies = 0;
     difficulty = tdiff;
     actors.add(new Computer(new Plane(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)))));
+    //actors.add(new GunshipComp(new Gunship(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, GSNUMBODY+1)), floor(random(1, GSNUMENG+1)))));
     enemies++;
+    score = 0;
 
     shake = new PVector(0, 0);
 
@@ -193,6 +197,8 @@ class World extends HasButtons{
 
   void render() {
     background(0);
+    newWave();
+
     for (Controller c : removal) {
       actors.remove(c);
       for (Cell l : c.location) {
@@ -301,7 +307,7 @@ class World extends HasButtons{
     return cells[x][y];
   }
 
-  // Drawrs a minimap in the bottom left corner
+  // Draws a minimap in the bottom left corner
   void minimap() {
     noFill();
     strokeWeight(2);
@@ -322,9 +328,28 @@ class World extends HasButtons{
     if (tempx2 > FIELDX-tempx1)
       rect(0, max(tempy2, 0), tempx1+tempx2-FIELDX, min(tempy1, FIELDY-tempy2));
 
+    if (tempy2 < 0)
+      rect(max(tempx2, 0), tempy2+FIELDY, min(tempx1, FIELDX-tempx2), -tempy2);
+    if (tempy2 > FIELDY-tempy1)
+      rect(max(tempx2, 0), 0, min(tempx1, FIELDX-tempx2), tempy1+tempy2-FIELDY);
+
+
     stroke(0);
     rect(0, 0, FIELDX, FIELDY);
     popMatrix();
+  }
+
+  void newWave(){
+     if (world.enemies == 0) {
+      world.difficulty++;
+      for (int i = 0; i < world.difficulty; i++) {
+        Object p;
+        p = new Plane(random(world.redWing.pos.x+width/2, world.redWing.pos.x-width/2+FIELDX*CELLSIZE), 
+        random(world.redWing.pos.y+height/2, world.redWing.pos.y-height/2+FIELDY*CELLSIZE), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)));
+        world.addition.add(new Computer(p));
+        world.enemies++;
+      }
+    }
   }
 
   // Displays the active framerate
@@ -334,7 +359,9 @@ class World extends HasButtons{
     pushMatrix();
     translate(width-160, height-16);
     textFont(f12);
-    //text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    text("SCORE:    "+score, 0, -48);
+    text("HI-SCORE: "+hiscore, 0, -24);
     //text("redwing.dir: "+redWing.dir, -128, -12);
     //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
     //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);

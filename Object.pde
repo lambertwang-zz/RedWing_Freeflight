@@ -4,6 +4,9 @@ abstract class Object {
 
   PVector pos; // Current position and previous frame position
   PVector last; // Last is used for verlet integration. See wikipedia for more information
+  // Terminal velocities in the x direction based off of speed and in the y direction based off of gravity
+  PVector terminal = new PVector(100, 100);
+  float gravity = GRAVITY;
 
   // Radii
   float sizex; // Tail to nose /2
@@ -15,11 +18,6 @@ abstract class Object {
   Controller controller; // Controller related to the object
 
   color col; // Color of the object
-
-  // Plane specific fields
-  Gun gun;
-  Body body;
-  Engine engine;
 
   // Constructor
   Object() {
@@ -63,7 +61,7 @@ abstract class Object {
     }
 
     // Gravity
-    last.add(0, -body.gravity*(1-abs(pos.x - last.x)/body.terminal.x), 0); // As the x velocity increases, the plane generates lift, and gravity has less of an effect
+    last.add(0, -gravity*(1-abs(pos.x - last.x)/terminal.x), 0); // As the x velocity increases, the plane generates lift, and gravity has less of an effect
 
     // Simple verlet integration for movement
     // Velocity is calculated from the delta of the last position and current position. 
@@ -73,21 +71,6 @@ abstract class Object {
   }
 
   void render() {
-  }
-
-  // input sent from the controller
-  void controls(Input i) {
-    engine.boost(i.xkey);
-    // Turning (or technically, changing pitch)
-    engine.turn(i.dirkey, i.upkey);
-
-    // Accelerating
-    if (i.upkey > 0) {
-      last.add(cos(dir)*-engine.speed*i.upkey, sin(dir)*-engine.speed*i.upkey, 0);
-      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), i.upkey*random(4, 8))); // Contrails
-    }
-
-    gun.shoot(i.zkey);
   }
 }
 

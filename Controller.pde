@@ -1,6 +1,6 @@
 // Contoller superclass refers to input method for manipulating the movement of vehicles
 abstract class Controller {
-  Object vehicle; // Object being controlled
+  Object vehicle;
   ArrayList<Cell> location; // List of cells occupied by the vehicle
   int checkx, checky; // Number of cells to check in each direction for collision
 

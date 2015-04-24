@@ -72,6 +72,7 @@ void draw() {
         pauseText();
       } else {
         world.render();
+
       }
       break;
     case 1:

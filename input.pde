@@ -47,6 +47,24 @@ void keyPressed() {
       }
     } else if (key == 'p' || key == 'P') {
       pause();
+      /*for(Controller c: world.actors){
+        String cont = "";
+        if(c instanceof Player){
+          cont += "Player: ";
+          cont += "X: ";
+          cont += Float.toString(c.vehicle.pos.x);
+          cont += " Y: ";
+          cont += Float.toString(c.vehicle.pos.y);
+          println(cont);
+        } else if (c instanceof Computer){
+          cont += "Computer: ";
+          cont += "X: ";
+          cont += Float.toString(c.vehicle.pos.x);
+          cont += " Y: ";
+          cont += Float.toString(c.vehicle.pos.y);
+          println(cont);
+        }
+      }*/
     } else if (key == 'm' || key == 'M') {
       if(paused){
         world.menuMain();

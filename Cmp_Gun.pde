@@ -10,6 +10,7 @@ abstract class Gun {
   int cooldown; 
   // Damage multiplier
   float multiplier;
+  PVector offset = new PVector(0, 0, 0);
 
   Gun() {
   }
@@ -46,7 +47,7 @@ class MachineGun extends Gun {
   void shoot(boolean fire) {
     if (fire)
       if (cooldown == 0) {
-        Bullet b = new Bullet(platform);
+        Bullet b = new Bullet(platform, offset);
         world.addition.add(new BulletController(b, platform.controller, multiplier));
         cooldown = firerate;
       }
@@ -80,7 +81,7 @@ class LaserBeam extends Gun {
         charge ++;
     } else {
       if (charge > 20) {
-        Beam b = new Beam(platform);
+        Beam b = new Beam(platform, offset);
         world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
       }
       charge = 0;
@@ -119,7 +120,7 @@ class GrenadeLauncher extends Gun {
   void shoot(boolean fire) {
     if (fire)
       if (cooldown == 0) {
-        Grenade b = new Grenade(platform);
+        Grenade b = new Grenade(platform, offset);
         world.addition.add(new GrenadeController(b, platform.controller, multiplier));
         cooldown = firerate;
       }
@@ -166,7 +167,7 @@ class ChainGun extends Gun {
         firing = false;
       } else {
         if (cooldown == 0){
-          Chain b = new Chain(platform);
+          Chain b = new Chain(platform, offset);
           world.addition.add(new ChainController(b, platform.controller, multiplier));
           cooldown = firerate;
         }

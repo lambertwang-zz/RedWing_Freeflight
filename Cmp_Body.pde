@@ -7,11 +7,6 @@ abstract class Body {
   // The hitpoints of the vehicle
   float life;
 
-  // Terminal velocities in the x direction based off of speed and in the y direction based off of gravity
-  PVector terminal = new PVector(100, 100);
-  // Gravity multiplier (some bodies fall slower than others)
-  float gravity = 1;
-
   Body() {
   }
 
@@ -36,7 +31,7 @@ class Standard extends Body {
 
   Standard(Object p) {
     platform = p;
-    gravity = .6;
+    p.gravity = .6;
   }
 
   void render(float yplane) {
@@ -55,8 +50,8 @@ class Standard extends Body {
   }
 
   void init(Controller c) {
-    c.vehicle.engine.fturnspd *= 1.2;
-    c.vehicle.engine.turnspd = c.vehicle.engine.fturnspd;
+    ((Plane)c.vehicle).engine.fturnspd *= 1.2;
+    ((Plane)c.vehicle).engine.turnspd = ((Plane)c.vehicle).engine.fturnspd;
   }
 };
 
@@ -69,7 +64,7 @@ class Standard extends Body {
 class Heavy extends Body {
   Heavy(Object p) {
     platform = p;
-    gravity = .85;
+    p.gravity = .85;
   }
 
   void render(float yplane) {
@@ -106,7 +101,7 @@ class Heavy extends Body {
 class Slim extends Body {
   Slim(Object p) {
     platform = p;
-    gravity = .5;
+    p.gravity = .5;
   }
 
   void render(float yplane) {  
@@ -122,33 +117,8 @@ class Slim extends Body {
   void init(Controller c) {
     c.maxLife *= .8;
     c.life = c.maxLife;
-    c.vehicle.engine.fspeed *= 1.2;
-    c.vehicle.engine.speed = c.vehicle.engine.fspeed;
-  }
-};
-
-class Reflector extends Body {
-  Reflector(Object p) {
-    platform = p;
-    gravity = 0.7;
-  }
-
-  void render(float yplane) {  
-    beginShape();
-    fill(160, 255, 255);
-    vertex(48, 0);
-    vertex(16, -16*yplane);
-    vertex(-16, -4*yplane);
-    vertex(-36, -16*yplane);
-    vertex(-32, 0);
-    vertex(-34, 4*yplane);
-    vertex(-24, 0);
-    endShape();
-  }
-
-  void init(Controller c) {
-    c.maxLife *= 0.8;
-    c.life = c.maxLife;
+    ((Plane)c.vehicle).engine.fspeed *= 1.2;
+    ((Plane)c.vehicle).engine.speed = ((Plane)c.vehicle).engine.fspeed;
   }
 };
 

@@ -42,6 +42,7 @@ class Prop extends Engine {
   Prop(Object p) {
     platform = p;
     turnspd = PI/60;
+    fturnspd = turnspd;
     speed = 1.2;
     fspeed = speed;
   }
@@ -147,7 +148,7 @@ class Chaos extends Engine {
     turnspd = PI/30;
     fturnspd = turnspd;
     speed = 1.2;
-    
+    fspeed = speed;
     boostrate = 180;
     cooldown = 0;
   }
