@@ -27,7 +27,7 @@ class Plane extends Object {
 
     switch(g) {
     case 1: 
-      gun = new MachineGun(10, this);
+      gun = new MachineGun(8, this);
       break;
     case 2:
       gun = new LaserBeam(this);
@@ -87,18 +87,18 @@ class Plane extends Object {
   }
 
   // input sent from the controller
-  void controls(Input i) {
-    engine.boost(i.xkey);
+  void controls(Input input) {
+    engine.boost(input.xkey);
     // Turning (or technically, changing pitch)
-    engine.turn(i.dirkey, i.upkey);
+    engine.turn(input.dirkey, input.upkey);
 
     // Accelerating
-    if (i.upkey > 0) {
-      last.add(cos(dir)*-engine.speed*i.upkey, sin(dir)*-engine.speed*i.upkey, 0);
-      world.effects.add(new Smoke(last.x, last.y, random(4, 8), color(random(192, 256)), i.upkey*random(4, 8))); // Contrails
+    if (input.upkey > 0) {
+      last.add(cos(dir)*-engine.speed*input.upkey, sin(dir)*-engine.speed*input.upkey, 0);
+      world.effects.add(new Smoke(pos.x-cos(dir)*sizex, pos.y-sin(dir)*sizex, random(4, 8), color(random(192, 256)), input.upkey*random(4, 8))); // Contrails
     }
 
-    gun.shoot(i.zkey);
+    gun.shoot(input.zkey);
   }
 };
 

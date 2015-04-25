@@ -4,6 +4,7 @@ final int stallTime = 90;
 // This is you
 class Player extends Controller{
   int stall;
+  Input input;
 
   ArrayList<Float> indicators;
 
@@ -40,7 +41,7 @@ class Player extends Controller{
     } else {
       stall = stallTime;
     }
-    ((Plane)vehicle).controls(keyboard);
+    ((Plane)vehicle).controls(player);
 
     // Changes the hitbox to match the profile of the plane
     recheck();

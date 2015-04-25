@@ -31,7 +31,6 @@ class World extends HasButtons{
 
   boolean showHitboxes;
 
-
   World() {
     resetWorld();
     showHitboxes = false;
@@ -71,13 +70,14 @@ class World extends HasButtons{
 
 
     buttons.clear(); // Adding buttons
-    buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
+    buttons.add(new Button(-320, 0, 256, color(12, 192, 255), "Play!", 0));
     //buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
-    //buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
-    buttons.add(new Button(64, 96, 256, color(0, 192, 255), "Quit", 3));
+    buttons.add(new Button(64, 0, 256, color(12, 192, 255), "Settings", 2));
+    buttons.add(new Button(64, 96, 256, color(12, 192, 255), "Quit", 3));
     
     screenPos.set(0, 0);
     menuScroll = new PVector(-3, -4);
+
   }
 
   void menuSettings() {
@@ -86,14 +86,15 @@ class World extends HasButtons{
     removal = new ArrayList();
 
     buttons.clear(); // Adding buttons
-    buttons.add(new Button(-320, 0, 256, color(0, 192, 255), "Play!", 0));
-    buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
-    buttons.add(new Button(64, 0, 256, color(0, 192, 255), "Settings", 2));
-    buttons.add(new Button(64, 96, 256, color(0, 192, 255), "Main Menu", 4));
+    buttons.add(new Button(-320, 0, 256, color(32, 192, 255), "Mouse", 5));
+    buttons.add(new Button(-320, 96, 256, color(32, 192, 255), "Keyboard", 6));
+    //buttons.add(new Button(64, 0, 256, color(64, 192, 255), "Settings", 2));
+    buttons.add(new Button(64, 96, 256, color(32, 192, 255), "Main Menu", 4));
     println("Settings Set");
     
     screenPos.set(x/2, y/2);
     menuScroll = new PVector(4, -3);
+    
   }
 
 
@@ -151,7 +152,7 @@ class World extends HasButtons{
     
     // Renders the logo
     noStroke();
-    fill(0, 224+32*sin((frameCount/60.0)%(2*PI)), 255);
+    fill(0, 192+32*sin((frameCount/60.0)%(2*PI)), 255);
     redWing(width/4, height/8, min(width*7/(2*26.5), height/4+32));
     textFont(f24);
     text(VERSION, width/4, height/8+32+min(width*7/(2*26.5), height/4+32));
@@ -191,6 +192,20 @@ class World extends HasButtons{
       b.render(this);
     if(sidebar != null)
       sidebar.render();
+
+
+    fill(0, 192, 255);
+    stroke(0, 192, 255);
+    strokeWeight(3);
+    ellipse(mouseX, mouseY, 4, 4);
+    noFill();
+    ellipse(mouseX, mouseY, 24, 24);
+    fill(0, 255, 255);
+    stroke(0, 255, 255);
+    strokeWeight(1);
+    ellipse(mouseX, mouseY, 4, 4);
+    noFill();
+    ellipse(mouseX, mouseY, 24, 24);
 
     fps();
   }
@@ -233,6 +248,15 @@ class World extends HasButtons{
     screenPos.x -= (screenPos.x-target.x)/16;
     screenPos.y -= (screenPos.y-target.y)/16;
 
+    // Calculate mouse controls
+    float my = mouseY+screenPos.y, mx = mouseX+screenPos.x;
+    float mouseAngle = atan2(my-redWing.pos.y, mx-redWing.pos.x)-redWing.dir;
+    if(mouseAngle < -PI)
+      mouseAngle += 2*PI;
+    mouse.dirkey = max(min(1, mouseAngle), -1);
+    float mouseup = dist(mx, my, redWing.pos.x, redWing.pos.y)/(min(height, width)/5);
+    mouse.upkey = mouseup > 0.5 ? min(1, mouseup) : 0;
+
 
     pushMatrix();
     translate(-screenPos.x, -screenPos.y);
@@ -259,6 +283,10 @@ class World extends HasButtons{
     if(world.screenPos.y < MAXEFFECTSIZE || world.screenPos.y+height > y)
       ysplit = true;
 
+
+    for (Controller c : actors)
+      c.render(); // renders redWing
+
     // Renders all of the special effects
     for (Particle p : effects)
       p.render(xsplit, ysplit);
@@ -281,10 +309,25 @@ class World extends HasButtons{
       }
     }
 
-    for (Controller c : actors)
-      c.render(); // renders redWing
+    if(player == mouse){
+      fill(0, 192, 255);
+      stroke(0, 192, 255);
+      strokeWeight(3);
+      ellipse(mx, my, 4, 4);
+      noFill();
+      ellipse(mx, my, 24, 24);
+      fill(0, 255, 255);
+      stroke(0, 255, 255);
+      strokeWeight(1);
+      ellipse(mx, my, 4, 4);
+      noFill();
+      ellipse(mx, my, 24, 24);
+    }
 
     popMatrix();
+
+    
+
 
     noStroke();
     fill(bleed);
@@ -362,7 +405,10 @@ class World extends HasButtons{
     text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     text("SCORE:    "+score, 0, -48);
     text("HI-SCORE: "+hiscore, 0, -24);
-    //text("redwing.dir: "+redWing.dir, -128, -12);
+    if(redWing != null){
+      text("redwing.dir: "+redWing.dir, -128, -72);
+      text("redwing spd: "+abs(dist(redWing.pos.x, redWing.pos.y, redWing.last.x, redWing.last.y)), -128, -96);
+    }
     //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
     //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
     

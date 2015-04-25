@@ -35,7 +35,11 @@ class Button {
         fill(255, 128);
       }
     }
-    else
+    else if(button == 5 && player == mouse)
+      fill(255, 192);
+    else if(button == 6 && player == keyboard)
+      fill(255, 192);
+    else 
       fill(255, 64); // Transparent
 
     strokeWeight(3.5);
@@ -64,23 +68,21 @@ class Button {
     case 3: // exit game
       //saveOptions();
       //saveStats();
-      exit();
+      //exit();
+      text = "Disabled";
+      break;
     case 4: // Main Menu
       world.menuMain();
       screen = 1;
       break;
+    case 5: // Set controls to mouse
+      player = mouse;
+      break;
+    case 6: // Set controls to keyboard
+      player = keyboard;
+      break;
     }
-    /*case 5: // Increase graphics
-      GRAPHICS = GRAPHICS% 5 + 1;
-      switchtoSettings();
-      break;
-    case 6: // Decrease graphics
-      noLoop();
-      clearGame();
-      GRAPHICS = (GRAPHICS+3)% 5 +1;
-      switchtoSettings();
-      break;
-    case 7:
+    /*case 7:
       debug = !debug;
       text = "Debug:"+(debug ? "ON " : "OFF");
       break;

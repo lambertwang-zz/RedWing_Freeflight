@@ -24,6 +24,8 @@ boolean paused = false;
 
 // Input method for players to control the game
 Input keyboard;
+Input mouse;
+Input player;
 
 void setup() {
   // Drawing parameters
@@ -34,6 +36,8 @@ void setup() {
 
   // Fixedsys in sizes 12, 24, 36, and 48
   setupFont();
+
+  noCursor();
 
   // 4:3
   //size(800, 600);
@@ -55,6 +59,8 @@ void setup() {
 
   // Initialize game
   keyboard = new Input();
+  mouse = new Input();
+  player = keyboard;
   world = new World();
 
   // Default screen is menu

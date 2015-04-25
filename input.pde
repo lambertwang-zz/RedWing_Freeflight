@@ -160,8 +160,30 @@ void keyReleased() {
   }
 }
 
+void mousePressed(){
+  if(screen == 0){
+    switch(mouseButton){
+      case LEFT:
+        mouse.zkey = true;
+        break;
+      case RIGHT:
+        mouse.xkey = true;
+        break;
+    }
+  }
+}
+
 void mouseReleased(){
-  if(screen == 1)
+  if(screen == 0){
+    switch(mouseButton){
+      case LEFT:
+        mouse.zkey = false;
+        break;
+      case RIGHT:
+        mouse.xkey = false;
+        break;
+    }
+  } else if(screen == 1)
     if(world.target != null)
       world.target.click();
 }
