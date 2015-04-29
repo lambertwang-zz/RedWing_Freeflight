@@ -29,13 +29,13 @@ class Computer extends Controller {
     v.col = color(160, 255, 128);
     ((Plane)v).engine.speed *= random(.9, 1.1);
     ((Plane)v).gun.firerate *= random(2, 2.4);
-    ((Plane)v).engine.turnspd *= random(.8, 1.2);
+    ((Plane)v).engine.turnspd *= random(1, 1.4);
     if (((Plane)v).gun instanceof MachineGun || ((Plane)v).gun instanceof ChainGun) {
-      ((Plane)v).gun.multiplier = 0.7;
+      ((Plane)v).gun.multiplier = 0.6;
     } else if (((Plane)v).gun instanceof LaserBeam) {
       ((Plane)v).gun.multiplier = 0.2;
     } else if (((Plane)v).gun instanceof GrenadeLauncher) {
-      ((Plane)v).gun.multiplier = 0.8;
+      ((Plane)v).gun.multiplier = 0.7;
     }
   }
 

@@ -179,7 +179,7 @@ class World extends HasButtons{
 
     // Renders all of the special effects
     for (Particle p : effects)
-      p.render(xsplit, ysplit);
+      p.render(xsplit, ysplit, true);
     
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
@@ -292,16 +292,27 @@ class World extends HasButtons{
       float mouseAngle = atan2(gy, gx)-redWing.dir;
       if(mouseAngle < -PI)
         mouseAngle += 2*PI;
-      gamepad.upkey = sqrt(sq(gx)+sq(gy));
-      if(abs(gx) > 0.1 && abs(gy) > 0.1) {
+      gamepad.upkey = dist(0, 0, gx, gy);
+      if(gx != 0 || gy != 0)
         gamepad.dirkey = max(min(1, mouseAngle), -1);
-      } else {
+      else
         gamepad.dirkey = 0;
-      }
       //gamepad.zkey = gpad.getButton("ABTN").pressed();
       //gamepad.xkey = gpad.getButton("BBTN").pressed();
       gamepad.zkey = gpad.getButton("RTRIG").pressed();
       gamepad.xkey = gpad.getButton("LTRIG").pressed();
+
+      if (gpad.getButton("YBTN").pressed() && gpylast == false){
+        pause();
+      }
+      gpylast = gpad.getButton("YBTN").pressed();
+      if (gpad.getButton("XBTN").pressed() && gpxlast == false){
+        world.beginGame(2);
+        if(paused) {
+          pause();
+        }
+      }
+      gpxlast = gpad.getButton("XBTN").pressed();
     }
 
 
@@ -336,7 +347,7 @@ class World extends HasButtons{
 
     // Renders all of the special effects
     for (Particle p : effects)
-      p.render(xsplit, ysplit);
+      p.render(xsplit, ysplit, true);
 
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
@@ -391,6 +402,99 @@ class World extends HasButtons{
     fps();
 
     //minimap();
+  }
+
+  void justRender(){
+    if(player == mouse){
+      my = mouseY+screenPos.y;
+      mx = mouseX+screenPos.x;
+    } else if(player == gamepad && gpad != null){
+      if (gpad.getButton("YBTN").pressed() && gpylast == false){
+        pause();
+      }
+      gpylast = gpad.getButton("YBTN").pressed();
+      if (gpad.getButton("XBTN").pressed() && gpxlast == false){
+        world.beginGame(2);
+        if(paused) {
+          pause();
+        }
+      }
+      gpxlast = gpad.getButton("XBTN").pressed();
+      if (gpad.getButton("BBTN").pressed()){
+        if(paused) {
+          world.menuMain();
+          screen = 1;
+          pause();
+        }
+      }
+      gpblast = gpad.getButton("BBTN").pressed();
+    }
+    
+    pushMatrix();
+    translate(-screenPos.x, -screenPos.y);
+    translate(shake.x, shake.y);
+
+    // i and j are set to only retrieve relevant cells
+    for (int i = floor (screenPos.x/CELLSIZE)-1; i <= ceil((screenPos.x+width)/CELLSIZE); i++) {
+      pushMatrix();
+      translate((i)*CELLSIZE, 0);
+      for (int j = floor (screenPos.y/CELLSIZE)-1; j <= ceil((screenPos.y+height)/CELLSIZE); j++) {
+        pushMatrix();
+        translate(0, (j)*CELLSIZE);
+        getCell(i, j).render();
+        popMatrix();
+      }
+      popMatrix();
+    }
+    
+    xsplit = false;
+    ysplit = false;
+    if (world.screenPos.x < MAXEFFECTSIZE || world.screenPos.x+width > x)
+      xsplit = true;
+    if(world.screenPos.y < MAXEFFECTSIZE || world.screenPos.y+height > y)
+      ysplit = true;
+
+
+    for (Controller c : actors)
+      c.render(); // renders redWing
+
+    // Renders all of the special effects
+    for (Particle p : effects)
+      p.render(xsplit, ysplit, false);
+
+    if(player == mouse){
+      fill(0, 192, 255);
+      stroke(0, 192, 255);
+      strokeWeight(3);
+      ellipse(mx, my, 4, 4);
+      noFill();
+      ellipse(mx, my, 24, 24);
+      fill(0, 255, 255);
+      stroke(0, 255, 255);
+      strokeWeight(1);
+      ellipse(mx, my, 4, 4);
+      noFill();
+      ellipse(mx, my, 24, 24);
+    }
+
+    popMatrix();
+
+    pushMatrix();
+    if(overlayText != null){
+      textFont(f36);
+      translate(width/2, height/2);
+      fill(0, 255, 255);
+      noStroke();
+      text(overlayText, -14*overlayText.length(), 18);
+    }
+    popMatrix();
+
+
+    noStroke();
+    fill(bleed);
+    rect(0, 0, width, height);
+
+    fps();
   }
 
   // Gets a cell with a specific index

@@ -36,12 +36,13 @@ class Button implements ICanClick{
           fill(255, 128);
         }
       } else if(player == gamepad){
-        if (gpad.getButton("ABTN").pressed()) {
+        if (gpad.getButton("ABTN").pressed() && gpalast == false) {
           world.toClick = this;
           fill(255);
         } else {
           fill(255, 128);
         }
+        gpalast = gpad.getButton("ABTN").pressed();
       } else {
         fill(255, 128);
       }

@@ -18,6 +18,11 @@ class Input {
   }
 };
 
+boolean gpalast = false;
+boolean gpblast = false;
+boolean gpxlast = false;
+boolean gpylast = false;
+
 void keyPressed() {
   if(screen == 0){
     if (key == CODED) // Arrow keys are referred to by a keyCode enum

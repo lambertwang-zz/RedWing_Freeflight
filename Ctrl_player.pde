@@ -30,7 +30,7 @@ class Player extends Controller{
   }
 
   void tick() {
-    if(abs(vehicle.pos.x-vehicle.last.x) < vehicle.terminal.x/2) {
+    if(abs(vehicle.pos.x-vehicle.last.x) < vehicle.terminal.x/3) {
       if(stall > 0) {
         stall--;
       } else {
@@ -73,7 +73,10 @@ class Player extends Controller{
           world.shake.add(signum(random(-1, 1))*random(16, 32), signum(random(-1, 1))*random(16, 32), 0);
           world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(30, 40)*effectsDensity));
           world.removal.add(this);
-          world.overlayText = "R TO RESTART";
+          if(player == keyboard || player == mouse)
+            world.overlayText = "R TO RESTART";
+          else if(player == gamepad)
+            world.overlayText = "X TO RESTART";
         }
       }
     }

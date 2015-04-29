@@ -1,6 +1,6 @@
 RedWing-Freeflight
 ==================
-Version: Beta 0.3  
+Version: Beta 0.31  
 Author: Lambert Wang  
 A processing project that occupied my spare time  
 
@@ -33,3 +33,6 @@ A processing project that occupied my spare time
     Beta 0.3
         Added sounds (soundbible.com)
         Added music (Cave Story)
+    Beta 0.31
+        Fixed issues with gamepad controls
+        Changed controls text to match controls

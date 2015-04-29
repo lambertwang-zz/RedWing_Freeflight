@@ -23,9 +23,9 @@ class Slider implements ICanClick{
   void render(HasButtons screen) {
     pushMatrix();
     translate(width/2+posx, height/2+posy);
-    if (mouseX > width/2+posx && mouseX < width/2+posx+size && mouseY > height/2+posy && mouseY < height/2+posy+64) {// Check hover
+    if (world.mx > width/2+posx && world.mx < width/2+posx+size && world.my > height/2+posy && world.my < height/2+posy+64) {// Check hover
       hover = true;
-      posm = (mouseX-(width/2+posx))/size;
+      posm = (world.mx-(width/2+posx))/size;
     } else {
       hover = false;
       posm = 0;
@@ -34,9 +34,20 @@ class Slider implements ICanClick{
     }
 
     if (hover){
-      screen.target = this;
-      if (mousePressed) {
-        fill(255);
+      screen.target = this;if (player != gamepad) {
+        if (mousePressed) { 
+          fill(255);
+        } else {
+          fill(255, 192);
+        }
+      } else if(player == gamepad){
+        if (gpad.getButton("ABTN").pressed() && gpalast == false) {
+          world.toClick = this;
+          fill(255);
+        } else {
+          fill(255, 192);
+        }
+        gpalast = gpad.getButton("ABTN").pressed();
       } else {
         fill(255, 192);
       }

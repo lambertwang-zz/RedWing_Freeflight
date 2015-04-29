@@ -24,7 +24,7 @@ abstract class Particle {
   Particle() {
   }
 
-  void render(boolean xsplit, boolean ysplit) {
+  void render(boolean xsplit, boolean ysplit, boolean decay) {
     if (xsplit) {
       if (xpos > world.screenPos.x-size || xpos < world.screenPos.x+size+width){
         if(ysplit) {
@@ -46,8 +46,8 @@ abstract class Particle {
         }
       }
     }
-
-    remaining--;
+    if (decay)
+      remaining--;
   }
 
   void transShow(boolean xsplit, boolean ysplit){
@@ -179,27 +179,29 @@ class Explosion extends Particle { // Explosions are complex particles IE they s
     remaining = parts.size(); // Lifetime is number of particles remaining in the explosion
   }
 
-  void render(boolean xsplit, boolean ysplit) { // Essentially same as renderEffects();
+  void render(boolean xsplit, boolean ysplit, boolean decay) { // Essentially same as renderEffects();
     for (Particle p : parts)
-      p.render(xsplit, ysplit); // Boom (Add "Sound effects" to ToDo list
+      p.render(xsplit, ysplit, true); // Boom (Add "Sound effects" to ToDo list
 
-    for (int i = parts.size ()-1; i >= 0; i--) { // When effects time out, they are removed
-      if (parts.get(i).remaining < 0) {
-        Cell e = world.getCell(floor(parts.get(i).xpos/CELLSIZE), floor(parts.get(i).ypos/CELLSIZE));
-        float magnitude = 32;
-        if (parts.get(i) instanceof Smoke) {
-          magnitude = size/3;
-        } else if (parts.get(i) instanceof Spark) {
-          magnitude = size/2;
-        } else if (parts.get(i) instanceof Eclipse) {
-          magnitude = 2*size;
+    if(decay){
+      for (int i = parts.size ()-1; i >= 0; i--) { // When effects time out, they are removed
+        if (parts.get(i).remaining < 0) {
+          Cell e = world.getCell(floor(parts.get(i).xpos/CELLSIZE), floor(parts.get(i).ypos/CELLSIZE));
+          float magnitude = 32;
+          if (parts.get(i) instanceof Smoke) {
+            magnitude = size/3;
+          } else if (parts.get(i) instanceof Spark) {
+            magnitude = size/2;
+          } else if (parts.get(i) instanceof Eclipse) {
+            magnitude = 2*size;
+          }
+          e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
+          parts.remove(i);
         }
-        e.col = color(hue(e.col), saturation(e.col) + min(255-saturation(e.col), int(random(magnitude, magnitude*1.2))), brightness(e.col));
-        parts.remove(i);
       }
+  
+      remaining = parts.size();
     }
-
-    remaining = parts.size();
   }
 };
 
@@ -240,7 +242,7 @@ class Cloud extends Particle { // Cloud is a series of boxes that fade in and ou
     rect(vertices[4][0], vertices[4][1], vertices[5][0], vertices[5][1]);
   }
 
-  void render(boolean xsplit, boolean ysplit) {
+  void render(boolean xsplit, boolean ysplit, boolean decay) {
     if (xsplit) {
       if (xpos > world.screenPos.x-size || xpos < world.screenPos.x+size+width){
         if(ysplit) {
@@ -262,10 +264,13 @@ class Cloud extends Particle { // Cloud is a series of boxes that fade in and ou
         }
       }
     }
-    if(remaining < 1 || remaining > lifetime){
-      fading = !fading;
+    if(decay){
+      if(remaining < 1 || remaining > lifetime){
+          fading = !fading;
+        }
+  
+      remaining += fading? -1: 1;
     }
-    remaining += fading? -1: 1;
     /*
     pushMatrix();
     translate(xpos, ypos);

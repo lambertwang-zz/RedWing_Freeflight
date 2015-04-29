@@ -3,11 +3,11 @@ final float BULLETVEL = 16;
 final float BULLETDAM = 2.4;
 
 final float CHAINVEL = 24;
-final float CHAINDAM = 1.6;
+final float CHAINDAM = 1.8;
 
 final float GRENADEVEL = 15;
 final float GRENADEGRAV = .08;
-final float GRENADEDAM = 2.4;
+final float GRENADEDAM = 2.6;
 
 class Bullet extends Object {
 
@@ -414,7 +414,7 @@ class ChainController extends Controller {
 
   ChainController(Chain b, Controller c, float d) {
     vehicle = b;
-    life = 60;
+    life = 40;
     damage = d;
 
     location = new ArrayList();

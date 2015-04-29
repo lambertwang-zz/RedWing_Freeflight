@@ -17,7 +17,7 @@ import org.gamecontrolplus.*;
 import net.java.games.input.*;
 import ddf.minim.*;
 
-final String VERSION = "Beta 0.30";
+final String VERSION = "Beta 0.31";
 
 Minim minim;
 
@@ -87,8 +87,7 @@ void draw() {
   switch(screen){
     case 0: 
       if(paused) {
-        // Placeholder background
-        background(255);
+        world.justRender();
         pauseText();
       } else {
         world.render();
@@ -104,10 +103,8 @@ void draw() {
 
 public void pause() { // Toggles paused and unpaused states
   if (paused) {
-    loop();
     paused = false;
   } else {
-    noLoop();
     paused = true;
     pauseText();
   }
@@ -121,9 +118,15 @@ public void pauseText() {
     textFont(f24);
     fill(0);
     text("PAUSED", width/2-46, height/2-64);
-    text("R restart", width/2-70, height/2);
-    text("P unpause", width/2-70, height/2+32);
-    text("M to menu", width/2-70, height/2+64);
+    if(player == mouse || player == keyboard) {
+      text("R restart", width/2-70, height/2);
+      text("P unpause", width/2-70, height/2+32);
+      text("M to menu", width/2-70, height/2+64);
+    } else if(player == gamepad){
+      text("X restart", width/2-70, height/2);
+      text("Y unpause", width/2-70, height/2+32);
+      text("B to menu", width/2-70, height/2+64);  
+    }
 }
 
 void setupGamepad(){

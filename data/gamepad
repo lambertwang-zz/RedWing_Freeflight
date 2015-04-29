@@ -1,7 +1,9 @@
 controller
-XPOS	Pupil X position	3	SLIDER	x	0	1.0	0.1
-YPOS	Pupil Y Position	3	SLIDER	y	0	1.0	0.1
+XPOS	Pupil X position	3	SLIDER	x	0	1.0	0.05
+YPOS	Pupil Y Position	3	SLIDER	y	0	1.0	0.05
 ABTN	A Button	1	BUTTON	A	0	0.0	0.0
 BBTN	B Button	1	BUTTON	B	0	0.0	0.0
 RTRIG	Right Trigger	1	BUTTON	Right Thumb	0	0.0	0.0
 LTRIG	Left Trigger	1	BUTTON	Left Thumb	0	0.0	0.0
+YBTN	Y Button	1	BUTTON	Y	0	0.0	0.0
+XBTN	X Button	1	BUTTON	X	0	0.0	0.0

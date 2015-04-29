@@ -170,7 +170,7 @@ class ChainGun extends Gun {
         }
       }
     } else {
-      count -= 3;
+      count -= 2;
       if(count < 0) {
         count = 0;
         firing = false;
