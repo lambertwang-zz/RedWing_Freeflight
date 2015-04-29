@@ -80,7 +80,7 @@ class World extends HasButtons{
     buttons.add(new Button(-320, 0, 256, color(12, 192, 255), "Play!", 0));
     //buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
     buttons.add(new Button(64, 0, 256, color(12, 192, 255), "Settings", 2));
-    buttons.add(new Button(64, 96, 256, color(12, 192, 255), "Quit", 3));
+    //buttons.add(new Button(64, 96, 256, color(12, 192, 255), "Quit", 3));
     
     screenPos.set(0, 0);
     menuScroll = new PVector(-3, -4);
@@ -97,9 +97,9 @@ class World extends HasButtons{
     buttons.add(new Button(-320, 0, 256, color(32, 192, 255), "Mouse", 5));
     buttons.add(new Button(-320, 96, 256, color(32, 192, 255), "Keyboard", 6));
     buttons.add(new Button(-320, 192, 256, color(32, 192, 255), "Gamepad", 7));
-    buttons.add(new Slider(64, 0, 256, color(32, 192, 255), "Effects", 0));
+    //buttons.add(new Slider(64, 0, 256, color(32, 192, 255), "Effects", 0));
     buttons.add(new Button(64, 96, 256, color(32, 192, 255), "Main Menu", 4));
-    buttons.add(new Button(64, 192, 256, color(32, 192, 255), "Show FPS", 8));
+    //buttons.add(new Button(64, 192, 256, color(32, 192, 255), "Show FPS", 8));
     
     screenPos.set(x/2, y/2);
     menuScroll = new PVector(4, -3);
