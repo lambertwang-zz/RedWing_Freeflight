@@ -14,8 +14,8 @@ abstract class Engine {
   Object platform;
 
   Engine() {
-    turnspd = PI/45;
-    speed = 1.2;
+    turnspd = PI/60;
+    speed = 1.0;
   }
 
   void render(float yplane) {
@@ -41,9 +41,9 @@ class Prop extends Engine {
 
   Prop(Object p) {
     platform = p;
-    turnspd = PI/60;
+    turnspd = PI/75;
     fturnspd = turnspd;
-    speed = 1.2;
+    speed = 1.0;
     fspeed = speed;
   }
 
@@ -95,7 +95,7 @@ class Jet extends Engine {
     platform = p;
     turnspd = PI/105;
     fturnspd = turnspd;
-    speed = 1.6;
+    speed = 1.4;
     fspeed = speed;
   }
 
@@ -122,7 +122,7 @@ class Jet extends Engine {
   // Boost is an afterburner that increases acceleration
   void boost(boolean b) {
     if (b) {
-      speed = 2;
+      speed = 1.8;
       turnspd = fturnspd/4;
       world.effects.add(new Smoke(platform.last.x, platform.last.y, random(8, 12), color(int(random(0, 255)), 255, 255), random(5, 8)*effectsDensity));
     } else {
@@ -145,9 +145,9 @@ class Chaos extends Engine {
 
   Chaos(Object p) {
     platform = p;
-    turnspd = PI/30;
+    turnspd = PI/45;
     fturnspd = turnspd;
-    speed = 1.2;
+    speed = 1.1;
     fspeed = speed;
     boostrate = 180;
     cooldown = 0;

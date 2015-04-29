@@ -1,5 +1,6 @@
 final float recoveryTime = 60;
 final int stallTime = 90;
+final float playerLife = 16;
 
 // This is you
 class Player extends Controller{
@@ -15,7 +16,7 @@ class Player extends Controller{
     checkx = ceil(max(v.sizex, v.sizey, v.sizez)/CELLSIZE);
     checky = checkx;
 
-    maxLife = 16;
+    maxLife = playerLife;
     life = maxLife;
     stall = stallTime;
     indicators = new ArrayList();

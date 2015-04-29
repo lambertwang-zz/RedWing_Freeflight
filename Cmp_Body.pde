@@ -87,7 +87,7 @@ class Heavy extends Body {
   }
 
   void init(Controller c) {
-    c.maxLife *= 1.3;
+    c.maxLife *= 1.2;
     c.life = c.maxLife;
   }
 };

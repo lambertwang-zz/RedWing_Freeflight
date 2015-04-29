@@ -30,6 +30,10 @@ class World extends HasButtons{
   color bleed;
 
   boolean showHitboxes;
+  boolean showFps = false;
+
+  float mx, my;
+  ICanClick toClick = null;
 
   World() {
     resetWorld();
@@ -59,7 +63,7 @@ class World extends HasButtons{
     target = null;
   }
 
-  ArrayList<Button> buttons;
+  ArrayList<ICanClick> buttons;
   SideBar sidebar = new SideBar(320, 32, 0);
   PVector menuScroll;
 
@@ -88,9 +92,10 @@ class World extends HasButtons{
     buttons.clear(); // Adding buttons
     buttons.add(new Button(-320, 0, 256, color(32, 192, 255), "Mouse", 5));
     buttons.add(new Button(-320, 96, 256, color(32, 192, 255), "Keyboard", 6));
-    //buttons.add(new Button(64, 0, 256, color(64, 192, 255), "Settings", 2));
+    buttons.add(new Button(-320, 192, 256, color(32, 192, 255), "Gamepad", 7));
+    buttons.add(new Slider(64, 0, 256, color(32, 192, 255), "Effects", 0));
     buttons.add(new Button(64, 96, 256, color(32, 192, 255), "Main Menu", 4));
-    println("Settings Set");
+    buttons.add(new Button(64, 192, 256, color(32, 192, 255), "Show FPS", 8));
     
     screenPos.set(x/2, y/2);
     menuScroll = new PVector(4, -3);
@@ -188,24 +193,38 @@ class World extends HasButtons{
 
     popMatrix();
 
-    for (Button b : buttons)
+    for (ICanClick b : buttons)
       b.render(this);
     if(sidebar != null)
       sidebar.render();
 
-
+    if(player == gamepad && gpad != null){
+      mx += gpad.getSlider("XPOS").getValue()*12;
+      my += gpad.getSlider("YPOS").getValue()*12;
+      if (toClick != null){
+        toClick.click();
+        toClick = null;
+      }
+    } else {
+      if(gpad == null && player == gamepad){
+        player = mouse;
+        gamepad = null;
+      }
+      mx = mouseX;
+      my = mouseY;
+    }
     fill(0, 192, 255);
     stroke(0, 192, 255);
     strokeWeight(3);
-    ellipse(mouseX, mouseY, 4, 4);
+    ellipse(mx, my, 4, 4);
     noFill();
-    ellipse(mouseX, mouseY, 24, 24);
+    ellipse(mx, my, 24, 24);
     fill(0, 255, 255);
     stroke(0, 255, 255);
     strokeWeight(1);
-    ellipse(mouseX, mouseY, 4, 4);
+    ellipse(mx, my, 4, 4);
     noFill();
-    ellipse(mouseX, mouseY, 24, 24);
+    ellipse(mx, my, 24, 24);
 
     fps();
   }
@@ -248,14 +267,36 @@ class World extends HasButtons{
     screenPos.x -= (screenPos.x-target.x)/16;
     screenPos.y -= (screenPos.y-target.y)/16;
 
+    if(gpad == null && player == gamepad){
+      player = mouse;
+      gamepad = null;
+    }
     // Calculate mouse controls
-    float my = mouseY+screenPos.y, mx = mouseX+screenPos.x;
-    float mouseAngle = atan2(my-redWing.pos.y, mx-redWing.pos.x)-redWing.dir;
-    if(mouseAngle < -PI)
-      mouseAngle += 2*PI;
-    mouse.dirkey = max(min(1, mouseAngle), -1);
-    float mouseup = dist(mx, my, redWing.pos.x, redWing.pos.y)/(min(height, width)/5);
-    mouse.upkey = mouseup > 0.5 ? min(1, mouseup) : 0;
+    if(player == mouse){
+      my = mouseY+screenPos.y;
+      mx = mouseX+screenPos.x;
+      float mouseAngle = atan2(my-redWing.pos.y, mx-redWing.pos.x)-redWing.dir;
+      if(mouseAngle < -PI)
+        mouseAngle += 2*PI;
+      mouse.dirkey = max(min(1, mouseAngle), -1);
+      float mouseup = dist(mx, my, redWing.pos.x, redWing.pos.y)/(min(height, width)/5);
+      mouse.upkey = mouseup > 0.5 ? min(1, mouseup) : 0;
+    } if (player == gamepad){
+      float gx = gpad.getSlider("XPOS").getValue(), gy = gpad.getSlider("YPOS").getValue();
+      float mouseAngle = atan2(gy, gx)-redWing.dir;
+      if(mouseAngle < -PI)
+        mouseAngle += 2*PI;
+      gamepad.upkey = sqrt(sq(gx)+sq(gy));
+      if(abs(gx) > 0.1 && abs(gy) > 0.1) {
+        gamepad.dirkey = max(min(1, mouseAngle), -1);
+      } else {
+        gamepad.dirkey = 0;
+      }
+      //gamepad.zkey = gpad.getButton("ABTN").pressed();
+      //gamepad.xkey = gpad.getButton("BBTN").pressed();
+      gamepad.zkey = gpad.getButton("RTRIG").pressed();
+      gamepad.xkey = gpad.getButton("LTRIG").pressed();
+    }
 
 
     pushMatrix();
@@ -402,13 +443,14 @@ class World extends HasButtons{
     pushMatrix();
     translate(width-160, height-16);
     textFont(f12);
-    text("FPS: "+int(frameRate*100)/100.0, 0, 0);
+    if(showFps)
+      text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     text("SCORE:    "+score, 0, -48);
     text("HI-SCORE: "+hiscore, 0, -24);
-    if(redWing != null){
+    /*if(redWing != null){
       text("redwing.dir: "+redWing.dir, -128, -72);
       text("redwing spd: "+abs(dist(redWing.pos.x, redWing.pos.y, redWing.last.x, redWing.last.y)), -128, -96);
-    }
+    }*/
     //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
     //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
     

@@ -26,3 +26,7 @@ A processing project that occupied my spare time
     Beta 0.22
         Changed particle density
         Increased AI dificulty
+    Beta 0.23
+        Added settings 
+        Various balance changes (slowed game pace)
+        Added mouse and gamepad support

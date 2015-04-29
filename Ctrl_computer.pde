@@ -57,7 +57,8 @@ class Computer extends Controller {
         tempy += FIELDY*CELLSIZE;
 
       float tempa = atan2(tempy, tempx);
-      ((Player)world.redWing.controller).indicators.add(tempa);
+      if(tempx > width/2 || tempy > height/2)
+        ((Player)world.redWing.controller).indicators.add(tempa);
       tempa -= vehicle.dir;
       if (tempa > PI)
         tempa -= 2*PI;

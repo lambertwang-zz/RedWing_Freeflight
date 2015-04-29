@@ -2,11 +2,11 @@
 final float BULLETVEL = 16;
 final float BULLETDAM = 2.4;
 
-final float CHAINVEL = 32;
-final float CHAINDAM = 2;
+final float CHAINVEL = 24;
+final float CHAINDAM = 1.6;
 
-final float GRENADEVEL = 12;
-final float GRENADEGRAV = .1;
+final float GRENADEVEL = 15;
+final float GRENADEGRAV = .08;
 final float GRENADEDAM = 2.4;
 
 class Bullet extends Object {
@@ -243,6 +243,7 @@ class Grenade extends Object {
     }
 
     last.add(0, -GRENADEGRAV, 0);
+    dir -= 0.1;
     roll -= 0.1;
 
     // Simple verlet integration for movement
@@ -255,15 +256,31 @@ class Grenade extends Object {
   void render() {
     pushMatrix();
     translate(pos.x, pos.y);
-    rotate(roll);
+    rotate(dir);
     noStroke();
+    fill(frameCount%256, 128, 128);
+    float xr = cos(roll);
+    float yr = sin(roll);
+    beginShape();
+    beginShape();
+    vertex(8*xr, 2);
+    vertex(2*xr, -8);
+    vertex(-8*xr, -2);
+    vertex(-2*xr, 8);
+    endShape();
     fill(frameCount%256, 255, 255);
+    beginShape();
+    vertex(-8*yr, 2);
+    vertex(2*yr, 8);
+    vertex(8*yr, -2);
+    vertex(-2*yr, -8);
+    endShape();/*
     rect(-4, -8, 8, 16);
     fill(64, 128);
     rect(-5, -9, 10, 2);
     rect(-5, -3, 10, 6);
     rect(-5, 7, 10, 2);
-
+    */
     popMatrix();
   }
 };
@@ -279,8 +296,8 @@ class GrenadeController extends Controller {
     location = new ArrayList();
 
     // Sets a static check size
-    checkx = 0;
-    checky = 0;
+    checkx = 1;
+    checky = 1;
 
     b.controller = this;
 
@@ -349,7 +366,7 @@ class Chain extends Object {
 
   Chain(Object origin, PVector offset) {
     pos = new PVector(origin.pos.x, origin.pos.y);
-    dir = origin.dir+random(-0.1, 0.1)+offset.z;
+    dir = origin.dir+random(-PI/8, PI/8)+offset.z;
     last = new PVector(origin.last.x-cos(dir)*CHAINVEL, origin.last.y-sin(dir)*CHAINVEL);
 
     pos.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
@@ -397,7 +414,7 @@ class ChainController extends Controller {
 
   ChainController(Chain b, Controller c, float d) {
     vehicle = b;
-    life = 120;
+    life = 60;
     damage = d;
 
     location = new ArrayList();

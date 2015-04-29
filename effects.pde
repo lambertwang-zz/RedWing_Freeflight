@@ -10,7 +10,7 @@
  
 // Determines how long the shaking lasts for
 final float shakeReduction = -0.95;
-final float effectsDensity = 2.5; // range from 1 to 6 inclusive
+float effectsDensity = 2.5; // range from 1 to 6 inclusive
 
 abstract class Particle {
   float size;

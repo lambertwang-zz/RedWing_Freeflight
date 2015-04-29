@@ -1,5 +1,5 @@
 // Square buttons for the menu
-class Button {
+class Button implements ICanClick{
   float posx, posy, size; // Size is width
   color col; // Color
   String text;
@@ -19,7 +19,7 @@ class Button {
   void render(HasButtons screen) {
     pushMatrix();
     translate(width/2+posx, height/2+posy);
-    if (mouseX > width/2+posx && mouseX < width/2+posx+size && mouseY > height/2+posy && mouseY < height/2+posy+64) // Check hover
+    if (world.mx > width/2+posx && world.mx < width/2+posx+size && world.my > height/2+posy && world.my < height/2+posy+64) // Check hover
       hover = true;
     else {
       hover = false;
@@ -29,8 +29,19 @@ class Button {
 
     if (hover){
       screen.target = this;
-      if (mousePressed) { 
-        fill(255);
+      if (player != gamepad) {
+        if (mousePressed) { 
+          fill(255);
+        } else {
+          fill(255, 128);
+        }
+      } else if(player == gamepad){
+        if (gpad.getButton("ABTN").pressed()) {
+          world.toClick = this;
+          fill(255);
+        } else {
+          fill(255, 128);
+        }
       } else {
         fill(255, 128);
       }
@@ -38,6 +49,10 @@ class Button {
     else if(button == 5 && player == mouse)
       fill(255, 192);
     else if(button == 6 && player == keyboard)
+      fill(255, 192);
+    else if(button == 7 && player == gamepad)
+      fill(255, 192);
+    else if(button == 8 && world.showFps == true)
       fill(255, 192);
     else 
       fill(255, 64); // Transparent
@@ -81,15 +96,16 @@ class Button {
     case 6: // Set controls to keyboard
       player = keyboard;
       break;
-    }
-    /*case 7:
-      debug = !debug;
-      text = "Debug:"+(debug ? "ON " : "OFF");
+    case 7:
+      setupGamepad();
+      if(gamepad != null)
+        player = gamepad;
       break;
     case 8:
-      showCells = !showCells;
-      text = "Cells:"+(showCells ? "ON " : "OFF");
+      world.showFps = !world.showFps;
       break;
+    }
+    /*  
     case 9:
       showGrid = !showGrid;
       text = "Grid :"+(showGrid ? "ON " : "OFF");
@@ -116,6 +132,11 @@ class Button {
 };
 
 abstract class HasButtons{
-  Button target;
+  ICanClick target;
+}
+
+interface ICanClick{
+  void click();
+  void render(HasButtons screen);
 }
 

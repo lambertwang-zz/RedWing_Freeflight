@@ -12,7 +12,11 @@
  * Heavily inspired by the game Luftrausers.
  */
 
-final String VERSION = "Beta 0.22";
+import org.gamecontrolplus.gui.*;
+import org.gamecontrolplus.*;
+import net.java.games.input.*;
+
+final String VERSION = "Beta 0.23";
 
 // Game uses 'screens' to change between states
 int screen;
@@ -25,6 +29,10 @@ boolean paused = false;
 // Input method for players to control the game
 Input keyboard;
 Input mouse;
+ControlIO control;
+Configuration config;
+ControlDevice gpad;
+Input gamepad = null;
 Input player;
 
 void setup() {
@@ -109,5 +117,18 @@ public void pauseText() {
     text("R restart", width/2-70, height/2);
     text("P unpause", width/2-70, height/2+32);
     text("M to menu", width/2-70, height/2+64);
+}
+
+void setupGamepad(){
+  if (gpad == null) {
+    control = ControlIO.getInstance(this);
+      gpad = control.getMatchedDevice("gamepad");
+  
+    if (gpad == null) {
+      println("No suitable device configured");
+    } else {
+      gamepad = new Input();
+    }
+  }
 }
 

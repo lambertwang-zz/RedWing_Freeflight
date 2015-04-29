@@ -139,7 +139,7 @@ class GrenadeLauncher extends Gun {
  */
 class ChainGun extends Gun {
   int count;
-  int cmax = 100;
+  int cmax = 90;
   boolean firing = false;
 
   ChainGun(int fire, Object p) {
@@ -161,7 +161,7 @@ class ChainGun extends Gun {
         }
       }
     } else {
-      count -= 5;
+      count -= 3;
       if(count < 0) {
         count = 0;
         firing = false;
