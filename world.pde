@@ -35,6 +35,8 @@ class World extends HasButtons{
   float mx, my;
   ICanClick toClick = null;
 
+  String overlayText = null;
+
   World() {
     resetWorld();
     showHitboxes = false;
@@ -61,6 +63,7 @@ class World extends HasButtons{
 
     buttons = new ArrayList();
     target = null;
+    overlayText = null;
   }
 
   ArrayList<ICanClick> buttons;
@@ -82,6 +85,7 @@ class World extends HasButtons{
     screenPos.set(0, 0);
     menuScroll = new PVector(-3, -4);
 
+    overlayText = null;
   }
 
   void menuSettings() {
@@ -100,6 +104,7 @@ class World extends HasButtons{
     screenPos.set(x/2, y/2);
     menuScroll = new PVector(4, -3);
     
+    overlayText = null;
   }
 
 
@@ -129,6 +134,7 @@ class World extends HasButtons{
 
     bleed = color(160, 255, 255, 0);
 
+    overlayText = null;
   }
 
   void menuMainRender() {
@@ -367,7 +373,15 @@ class World extends HasButtons{
 
     popMatrix();
 
-    
+    pushMatrix();
+    if(overlayText != null){
+      textFont(f36);
+      translate(width/2, height/2);
+      fill(0, 255, 255);
+      noStroke();
+      text(overlayText, -14*overlayText.length(), 18);
+    }
+    popMatrix();
 
 
     noStroke();

@@ -15,8 +15,11 @@
 import org.gamecontrolplus.gui.*;
 import org.gamecontrolplus.*;
 import net.java.games.input.*;
+import ddf.minim.*;
 
-final String VERSION = "Beta 0.23";
+final String VERSION = "Beta 0.30";
+
+Minim minim;
 
 // Game uses 'screens' to change between states
 int screen;
@@ -58,6 +61,9 @@ void setup() {
   size(1366, 768);
   //size(1440, 810);
 
+  minim = new Minim(this);
+  setupAudio();
+
   // Active resizing works fine during gameplay
   // Need to re-initialize menus when screen is resized on a menu screen
   // Each time the frame size changes, draw() is called once
@@ -93,6 +99,7 @@ void draw() {
       world.menuMainRender();
       break;
   }
+  playMusic();
 }
 
 public void pause() { // Toggles paused and unpaused states

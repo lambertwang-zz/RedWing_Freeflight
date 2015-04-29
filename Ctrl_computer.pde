@@ -80,6 +80,8 @@ class Computer extends Controller {
 
       float tempd = dist(0, 0, tempx, tempy);
 
+      ((Plane)vehicle).gun.gain = -tempd/256;
+
       comp.xkey = false;
 
       if (tempd > width+height) {

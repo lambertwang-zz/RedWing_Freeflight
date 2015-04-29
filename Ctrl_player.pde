@@ -73,6 +73,7 @@ class Player extends Controller{
           world.shake.add(signum(random(-1, 1))*random(16, 32), signum(random(-1, 1))*random(16, 32), 0);
           world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(30, 40)*effectsDensity));
           world.removal.add(this);
+          world.overlayText = "R TO RESTART";
         }
       }
     }

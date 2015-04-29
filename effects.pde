@@ -8,6 +8,8 @@
  Explosion (compound effect)
  */
  
+final float expGain = -24;
+
 // Determines how long the shaking lasts for
 final float shakeReduction = -0.95;
 float effectsDensity = 2.5; // range from 1 to 6 inclusive
@@ -155,11 +157,16 @@ class Eclipse extends Particle { // Eclipse is a circle that dissolves into a cr
 
 class Explosion extends Particle { // Explosions are complex particles IE they solely consist of primitive particles
   ArrayList<Particle> parts;
+  AudioSample expSound;
 
   Explosion (float tx, float ty, float ts) {
     xpos = tx;
     ypos = ty;
     size = ts;
+
+    AudioSample tempAS = explosion[floor(random(0, 3))];
+    tempAS.setGain(expGain-max(0, (64-ts)/4));
+    tempAS.trigger();
 
     parts = new ArrayList();
 
