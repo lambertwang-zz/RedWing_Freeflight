@@ -84,8 +84,7 @@ class Button implements ICanClick{
     case 3: // exit game
       //saveOptions();
       //saveStats();
-      //exit();
-      text = "Disabled";
+      exit();
       break;
     case 4: // Main Menu
       world.menuMain();
