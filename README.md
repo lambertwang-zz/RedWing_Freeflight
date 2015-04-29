@@ -4,9 +4,9 @@ Version: Beta 0.31
 Author: Lambert Wang  
 A processing project that occupied my spare time  
 
-# Download Links
-[Windows 32 bit](https://www.dropbox.com/s/ge0ah8w8c1485u3/Redwing-0.21-windows32.zip?dl=0)  
-[Windows 64 bit (Embedded Java)](https://www.dropbox.com/s/oim9ekxauk0pat7/Redwing-0.21-windows64.zip?dl=0)  
+# Download Links v0.31
+[Linux 64 bit](https://www.dropbox.com/s/hstzhffte9clr1b/Redwing-0.31-linux64.zip?dl=0)  
+[Windows 64 bit](https://www.dropbox.com/s/3hr272jb7ctaceh/Redwing-0.31-windows64.zip?dl=0)  
 
 # Screenshots
 ![](screenshots/screenshot-D7M4Y2015-H12M33S47.png)
