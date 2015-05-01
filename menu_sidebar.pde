@@ -82,14 +82,16 @@ void instructions(float x, boolean opened) {
   } else if(player == gamepad){
     text("Left Stick:",12, 28);
     text("Move", 24, 56);
-    text("Right Trigger:", 12, 92);
+    text("Right Bumper:", 12, 92);
     text("Shoot Weapon", 24, 120);
-    text("Left Trigger:", 12, 156);
+    text("Left Bumper:", 12, 156);
     text("Special Move", 24, 184);
     text("Y Button:", 12, 220);
     text("Pause",   24, 248);
     text("X Button:", 12, 284);
     text("Restart",   24, 312);
+    text("A Button:", 12, 348);
+    text("Click Button",   24, 376);
   } else 
 
   translate(0, 24);

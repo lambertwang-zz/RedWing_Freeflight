@@ -145,7 +145,7 @@ class Chaos extends Engine {
 
   Chaos(Object p) {
     platform = p;
-    turnspd = PI/45;
+    turnspd = PI/30;
     fturnspd = turnspd;
     speed = 1.1;
     fspeed = speed;
@@ -173,7 +173,7 @@ class Chaos extends Engine {
     if (b) {
       if (cooldown == 0) {
         // Turnspeed is halved while teleport is recharging
-        turnspd /= 2;
+        turnspd /= 1.25;
         world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(3, 4)*effectsDensity));
         float cosd = cos(platform.dir);
         float sind = sin(platform.dir);

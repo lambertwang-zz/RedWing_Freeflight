@@ -205,8 +205,8 @@ class World extends HasButtons{
       sidebar.render();
 
     if(player == gamepad && gpad != null){
-      mx += gpad.getSlider("XPOS").getValue()*12;
-      my += gpad.getSlider("YPOS").getValue()*12;
+      mx = max(0, min(width, gpad.getSlider("XPOS").getValue()*8+mx));
+      my = max(0, min(height, gpad.getSlider("YPOS").getValue()*8+my));
       if (toClick != null){
         toClick.click();
         toClick = null;
