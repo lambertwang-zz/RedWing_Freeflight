@@ -96,6 +96,15 @@ void draw() {
       break;
     case 1:
       world.menuMainRender();
+      textFont(f24);
+      fill(0);
+      if(player == mouse) {
+        text("MOUSE", 32, 56);
+      } else if(player == keyboard) {
+        text("KEYBOARD & MOUSE", 32, 56);
+      } else if(player == gamepad) {
+        text("GAMEPAD", 32, 56);
+      }
       break;
   }
   playMusic();
