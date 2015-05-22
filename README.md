@@ -3,6 +3,7 @@ RedWing-Freeflight
 Version: Beta 0.31  
 Author: Lambert Wang  
 A processing project that occupied my spare time  
+This project is now discontinued as of 5/21/2015. (not that anyone knew about it in the first place)  
 
 # Download Links
 [Windows 32 bit](https://www.dropbox.com/s/ge0ah8w8c1485u3/Redwing-0.21-windows32.zip?dl=0)  
