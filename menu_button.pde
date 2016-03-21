@@ -29,29 +29,13 @@ class Button implements ICanClick{
 
     if (hover){
       screen.target = this;
-      if (player != gamepad) {
-        if (mousePressed) { 
-          fill(255);
-        } else {
-          fill(255, 128);
-        }
-      } else if(player == gamepad){
-        if (gpad.getButton("ABTN").pressed() && gpalast == false) {
-          world.toClick = this;
-          fill(255);
-        } else {
-          fill(255, 128);
-        }
-        gpalast = gpad.getButton("ABTN").pressed();
+      if (mousePressed) { 
+        fill(255);
       } else {
         fill(255, 128);
       }
     }
-    else if(button == 5 && player == mouse)
-      fill(255, 192);
     else if(button == 6 && player == keyboard)
-      fill(255, 192);
-    else if(button == 7 && player == gamepad)
       fill(255, 192);
     else if(button == 8 && world.showFps == true)
       fill(255, 192);
@@ -75,59 +59,10 @@ class Button implements ICanClick{
       world.beginGame(2);
       screen = 0;
       break;
-    /*case 1: // Stats
-      break;*/
-    case 2: // Settings
-      world.menuSettings();
-      screen = 1;
-      break;
     case 3: // exit game
-      //saveOptions();
-      //saveStats();
       exit();
       break;
-    case 4: // Main Menu
-      world.menuMain();
-      screen = 1;
-      break;
-    case 5: // Set controls to mouse
-      player = mouse;
-      break;
-    case 6: // Set controls to keyboard
-      player = keyboard;
-      break;
-    case 7:
-      setupGamepad();
-      if(gamepad != null)
-        player = gamepad;
-      break;
-    case 8:
-      world.showFps = !world.showFps;
-      break;
     }
-    /*  
-    case 9:
-      showGrid = !showGrid;
-      text = "Grid :"+(showGrid ? "ON " : "OFF");
-      break;
-    case 10:
-      showFPS = !showFPS;
-      text = "FPS  :"+(showFPS ? "ON " : "OFF");
-      break;
-    case 11: // Statistics
-      switchtoStats();
-      break;
-    case 12: // Reset Statistics
-      text = "Really?";
-      button = 13;
-      break;
-    case 13: // Confirmation for resetting stats
-      text = "Done!";
-      button = 12;
-      for (int i = 0; i < 4; i++)
-        stats[i] = 0;
-      break;
-      */
   }
 };
 

@@ -50,8 +50,6 @@ class MachineGun extends Gun {
   void shoot(boolean fire) {
     if (fire)
       if (cooldown == 0) {
-        singleGun.setGain(shotGain+gain-3);
-        singleGun.trigger();
         Bullet b = new Bullet(platform, offset);
         world.addition.add(new BulletController(b, platform.controller, multiplier));
         cooldown = firerate;
@@ -86,8 +84,6 @@ class LaserBeam extends Gun {
         charge ++;
     } else {
       if (charge > 20) {
-        beamGun.setGain((charge-cmax*.8)/10+shotGain+gain);
-        beamGun.trigger();
         Beam b = new Beam(platform, offset);
         world.addition.add(new BeamController(b, platform.controller, charge, multiplier));
       }
@@ -127,8 +123,6 @@ class GrenadeLauncher extends Gun {
   void shoot(boolean fire) {
     if (fire)
       if (cooldown == 0) {
-        grenadeLaunch.setGain(shotGain+gain+8);
-        grenadeLaunch.trigger();
         Grenade b = new Grenade(platform, offset);
         world.addition.add(new GrenadeController(b, platform.controller, multiplier));
         cooldown = firerate;
@@ -176,8 +170,6 @@ class ChainGun extends Gun {
         firing = false;
       } else {
         if (cooldown == 0){
-          singleGun.setGain(shotGain+gain-4);
-          singleGun.trigger();
           Chain b = new Chain(platform, offset);
           world.addition.add(new ChainController(b, platform.controller, multiplier));
           cooldown = firerate;

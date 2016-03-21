@@ -68,29 +68,7 @@ void instructions(float x, boolean opened) {
     text("Pause",   24, 312);
     text("R Key:", 12, 348);
     text("Restart",   24, 376);
-  } else if(player == mouse){
-    text("Mouse:",12, 28);
-    text("Move", 24, 56);
-    text("Left Mouse:", 12, 92);
-    text("Shoot Weapon", 24, 120);
-    text("Right Mouse:", 12, 156);
-    text("Special Move", 24, 184);
-    text("P Key:", 12, 220);
-    text("Pause",   24, 248);
-    text("R Key:", 12, 284);
-    text("Restart",   24, 312);
-  } else if(player == gamepad){
-    text("Left Stick:",12, 28);
-    text("Move", 24, 56);
-    text("Right Trigger:", 12, 92);
-    text("Shoot Weapon", 24, 120);
-    text("Left Trigger:", 12, 156);
-    text("Special Move", 24, 184);
-    text("Y Button:", 12, 220);
-    text("Pause",   24, 248);
-    text("X Button:", 12, 284);
-    text("Restart",   24, 312);
-  } else 
+  } 
 
   translate(0, 24);
   textFont(f12);

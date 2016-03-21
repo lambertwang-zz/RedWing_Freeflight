@@ -1,6 +1,6 @@
 final int FIELDX = 768; // Number of cells in the x and y directions of the field
 final int FIELDY = 256;
-final int CELLSIZE = 16; // Pixel size of each cell
+final int CELLSIZE = 4; // Pixel size of each cell
 
 final int SCREENFOLLOW = 8; // Amount to shift the screen by to follow RedWing
 final int MAXEFFECTSIZE = 192;
@@ -78,35 +78,13 @@ class World extends HasButtons{
 
     buttons.clear(); // Adding buttons
     buttons.add(new Button(-320, 0, 256, color(12, 192, 255), "Play!", 0));
-    //buttons.add(new Button(-320, 96, 256, color(0, 192, 255), "Stats", 1));
-    buttons.add(new Button(64, 0, 256, color(12, 192, 255), "Settings", 2));
     buttons.add(new Button(64, 96, 256, color(12, 192, 255), "Quit", 3));
     
     screenPos.set(0, 0);
-    menuScroll = new PVector(-3, -4);
+    menuScroll = new PVector(-.3, -.8);
 
     overlayText = null;
   }
-
-  void menuSettings() {
-    actors = new ArrayList();
-    addition = new ArrayList();
-    removal = new ArrayList();
-
-    buttons.clear(); // Adding buttons
-    buttons.add(new Button(-320, 0, 256, color(32, 192, 255), "Mouse", 5));
-    buttons.add(new Button(-320, 96, 256, color(32, 192, 255), "Keyboard", 6));
-    buttons.add(new Button(-320, 192, 256, color(32, 192, 255), "Gamepad", 7));
-    buttons.add(new Slider(64, 0, 256, color(32, 192, 255), "Effects", 0));
-    buttons.add(new Button(64, 96, 256, color(32, 192, 255), "Main Menu", 4));
-    buttons.add(new Button(64, 192, 256, color(32, 192, 255), "Show FPS", 8));
-    
-    screenPos.set(x/2, y/2);
-    menuScroll = new PVector(4, -3);
-    
-    overlayText = null;
-  }
-
 
   void beginGame(int tdiff){
     buttons.clear();
@@ -126,7 +104,6 @@ class World extends HasButtons{
     enemies = 0;
     difficulty = tdiff;
     actors.add(new Computer(new Plane(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, NUMBODY+1)), floor(random(1, NUMENG+1)))));
-    //actors.add(new GunshipComp(new Gunship(random(x), random(y), floor(random(1, NUMGUN+1)), floor(random(1, GSNUMBODY+1)), floor(random(1, GSNUMENG+1)))));
     enemies++;
     score = 0;
 
@@ -203,35 +180,7 @@ class World extends HasButtons{
       b.render(this);
     if(sidebar != null)
       sidebar.render();
-
-    if(player == gamepad && gpad != null){
-      mx += gpad.getSlider("XPOS").getValue()*12;
-      my += gpad.getSlider("YPOS").getValue()*12;
-      if (toClick != null){
-        toClick.click();
-        toClick = null;
-      }
-    } else {
-      if(gpad == null && player == gamepad){
-        player = mouse;
-        gamepad = null;
-      }
-      mx = mouseX;
-      my = mouseY;
-    }
-    fill(0, 192, 255);
-    stroke(0, 192, 255);
-    strokeWeight(3);
-    ellipse(mx, my, 4, 4);
-    noFill();
-    ellipse(mx, my, 24, 24);
-    fill(0, 255, 255);
-    stroke(0, 255, 255);
-    strokeWeight(1);
-    ellipse(mx, my, 4, 4);
-    noFill();
-    ellipse(mx, my, 24, 24);
-
+    
     fps();
   }
 
@@ -272,48 +221,6 @@ class World extends HasButtons{
 
     screenPos.x -= (screenPos.x-target.x)/16;
     screenPos.y -= (screenPos.y-target.y)/16;
-
-    if(gpad == null && player == gamepad){
-      player = mouse;
-      gamepad = null;
-    }
-    // Calculate mouse controls
-    if(player == mouse){
-      my = mouseY+screenPos.y;
-      mx = mouseX+screenPos.x;
-      float mouseAngle = atan2(my-redWing.pos.y, mx-redWing.pos.x)-redWing.dir;
-      if(mouseAngle < -PI)
-        mouseAngle += 2*PI;
-      mouse.dirkey = max(min(1, mouseAngle), -1);
-      float mouseup = dist(mx, my, redWing.pos.x, redWing.pos.y)/(min(height, width)/5);
-      mouse.upkey = mouseup > 0.5 ? min(1, mouseup) : 0;
-    } if (player == gamepad){
-      float gx = gpad.getSlider("XPOS").getValue(), gy = gpad.getSlider("YPOS").getValue();
-      float mouseAngle = atan2(gy, gx)-redWing.dir;
-      if(mouseAngle < -PI)
-        mouseAngle += 2*PI;
-      gamepad.upkey = dist(0, 0, gx, gy);
-      if(gx != 0 || gy != 0)
-        gamepad.dirkey = max(min(1, mouseAngle), -1);
-      else
-        gamepad.dirkey = 0;
-      //gamepad.zkey = gpad.getButton("ABTN").pressed();
-      //gamepad.xkey = gpad.getButton("BBTN").pressed();
-      gamepad.zkey = gpad.getButton("RTRIG").pressed();
-      gamepad.xkey = gpad.getButton("LTRIG").pressed();
-
-      if (gpad.getButton("YBTN").pressed() && gpylast == false){
-        pause();
-      }
-      gpylast = gpad.getButton("YBTN").pressed();
-      if (gpad.getButton("XBTN").pressed() && gpxlast == false){
-        world.beginGame(2);
-        if(paused) {
-          pause();
-        }
-      }
-      gpxlast = gpad.getButton("XBTN").pressed();
-    }
 
 
     pushMatrix();
@@ -367,21 +274,6 @@ class World extends HasButtons{
       }
     }
 
-    if(player == mouse){
-      fill(0, 192, 255);
-      stroke(0, 192, 255);
-      strokeWeight(3);
-      ellipse(mx, my, 4, 4);
-      noFill();
-      ellipse(mx, my, 24, 24);
-      fill(0, 255, 255);
-      stroke(0, 255, 255);
-      strokeWeight(1);
-      ellipse(mx, my, 4, 4);
-      noFill();
-      ellipse(mx, my, 24, 24);
-    }
-
     popMatrix();
 
     pushMatrix();
@@ -405,31 +297,6 @@ class World extends HasButtons{
   }
 
   void justRender(){
-    if(player == mouse){
-      my = mouseY+screenPos.y;
-      mx = mouseX+screenPos.x;
-    } else if(player == gamepad && gpad != null){
-      if (gpad.getButton("YBTN").pressed() && gpylast == false){
-        pause();
-      }
-      gpylast = gpad.getButton("YBTN").pressed();
-      if (gpad.getButton("XBTN").pressed() && gpxlast == false){
-        world.beginGame(2);
-        if(paused) {
-          pause();
-        }
-      }
-      gpxlast = gpad.getButton("XBTN").pressed();
-      if (gpad.getButton("BBTN").pressed()){
-        if(paused) {
-          world.menuMain();
-          screen = 1;
-          pause();
-        }
-      }
-      gpblast = gpad.getButton("BBTN").pressed();
-    }
-    
     pushMatrix();
     translate(-screenPos.x, -screenPos.y);
     translate(shake.x, shake.y);
@@ -461,21 +328,6 @@ class World extends HasButtons{
     // Renders all of the special effects
     for (Particle p : effects)
       p.render(xsplit, ysplit, false);
-
-    if(player == mouse){
-      fill(0, 192, 255);
-      stroke(0, 192, 255);
-      strokeWeight(3);
-      ellipse(mx, my, 4, 4);
-      noFill();
-      ellipse(mx, my, 24, 24);
-      fill(0, 255, 255);
-      stroke(0, 255, 255);
-      strokeWeight(1);
-      ellipse(mx, my, 4, 4);
-      noFill();
-      ellipse(mx, my, 24, 24);
-    }
 
     popMatrix();
 
@@ -509,38 +361,6 @@ class World extends HasButtons{
     return cells[x][y];
   }
 
-  // Draws a minimap in the bottom left corner
-  void minimap() {
-    noFill();
-    strokeWeight(2);
-    pushMatrix();
-    translate(64, height-64-FIELDY);
-
-    stroke(160, 255, 255);
-    // This math was annoying.
-    // I don't feel like explaining it right now.
-    // If you really care, post something on the repo
-    float tempx1 = width/CELLSIZE;
-    float tempy1 = height/CELLSIZE;
-    float tempx2 = screenPos.x/CELLSIZE;
-    float tempy2 = screenPos.y/CELLSIZE;
-    rect(max(0, tempx2), max(tempy2, 0), min(min(tempx1, tempx1+tempx2), FIELDX-tempx2), min(tempy1, FIELDY-tempy2));
-    if (tempx2 < 0)
-      rect(tempx2+FIELDX, max(tempy2, 0), -tempx2, min(tempy1, FIELDY-tempy2));
-    if (tempx2 > FIELDX-tempx1)
-      rect(0, max(tempy2, 0), tempx1+tempx2-FIELDX, min(tempy1, FIELDY-tempy2));
-
-    if (tempy2 < 0)
-      rect(max(tempx2, 0), tempy2+FIELDY, min(tempx1, FIELDX-tempx2), -tempy2);
-    if (tempy2 > FIELDY-tempy1)
-      rect(max(tempx2, 0), 0, min(tempx1, FIELDX-tempx2), tempy1+tempy2-FIELDY);
-
-
-    stroke(0);
-    rect(0, 0, FIELDX, FIELDY);
-    popMatrix();
-  }
-
   void newWave(){
      if (world.enemies == 0) {
       world.difficulty++;
@@ -556,24 +376,19 @@ class World extends HasButtons{
 
   // Displays the active framerate
   void fps() {
-    noSmooth();
+    // Should only be called in settings()
+    // noSmooth();
     fill(75, 255, 64);
     pushMatrix();
     translate(width-160, height-16);
     textFont(f12);
-    if(showFps)
+    //if(showFps)
       text("FPS: "+int(frameRate*100)/100.0, 0, 0);
     text("SCORE:    "+score, 0, -48);
     text("HI-SCORE: "+hiscore, 0, -24);
-    /*if(redWing != null){
-      text("redwing.dir: "+redWing.dir, -128, -72);
-      text("redwing spd: "+abs(dist(redWing.pos.x, redWing.pos.y, redWing.last.x, redWing.last.y)), -128, -96);
-    }*/
-    //text("Screenpos X: "+(int)screenPos.x + ", Y: " +(int)screenPos.y, -128, -12);
-    //text("Screen Edge X: "+xsplit + ", Y: " +ysplit, -128, -24);
     
     popMatrix();
-    smooth();
+    // smooth();
   }
 
   ArrayList<Controller> collide(Controller obj) {

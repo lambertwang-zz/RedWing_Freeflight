@@ -18,11 +18,6 @@ class Input {
   }
 };
 
-boolean gpalast = false;
-boolean gpblast = false;
-boolean gpxlast = false;
-boolean gpylast = false;
-
 void keyPressed() {
   if(screen == 0){
     if (key == CODED) // Arrow keys are referred to by a keyCode enum
@@ -52,24 +47,6 @@ void keyPressed() {
       }
     } else if (key == 'p' || key == 'P') {
       pause();
-      /*for(Controller c: world.actors){
-        String cont = "";
-        if(c instanceof Player){
-          cont += "Player: ";
-          cont += "X: ";
-          cont += Float.toString(c.vehicle.pos.x);
-          cont += " Y: ";
-          cont += Float.toString(c.vehicle.pos.y);
-          println(cont);
-        } else if (c instanceof Computer){
-          cont += "Computer: ";
-          cont += "X: ";
-          cont += Float.toString(c.vehicle.pos.x);
-          cont += " Y: ";
-          cont += Float.toString(c.vehicle.pos.y);
-          println(cont);
-        }
-      }*/
     } else if (key == 'm' || key == 'M') {
       if(paused){
         world.menuMain();
@@ -165,30 +142,3 @@ void keyReleased() {
   }
 }
 
-void mousePressed(){
-  if(screen == 0){
-    switch(mouseButton){
-      case LEFT:
-        mouse.zkey = true;
-        break;
-      case RIGHT:
-        mouse.xkey = true;
-        break;
-    }
-  }
-}
-
-void mouseReleased(){
-  if(screen == 0){
-    switch(mouseButton){
-      case LEFT:
-        mouse.zkey = false;
-        break;
-      case RIGHT:
-        mouse.xkey = false;
-        break;
-    }
-  } else if(screen == 1)
-    if(world.target != null)
-      world.target.click();
-}

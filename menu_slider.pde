@@ -34,20 +34,9 @@ class Slider implements ICanClick{
     }
 
     if (hover){
-      screen.target = this;if (player != gamepad) {
-        if (mousePressed) { 
-          fill(255);
-        } else {
-          fill(255, 192);
-        }
-      } else if(player == gamepad){
-        if (gpad.getButton("ABTN").pressed() && gpalast == false) {
-          world.toClick = this;
-          fill(255);
-        } else {
-          fill(255, 192);
-        }
-        gpalast = gpad.getButton("ABTN").pressed();
+      screen.target = this;
+      if (mousePressed) { 
+        fill(255);
       } else {
         fill(255, 192);
       }

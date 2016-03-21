@@ -5,4 +5,5 @@
 *.linux32
 *.linux64
 build-tmp
+*.swp
 

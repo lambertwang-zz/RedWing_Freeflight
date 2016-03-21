@@ -73,10 +73,8 @@ class Player extends Controller{
           world.shake.add(signum(random(-1, 1))*random(16, 32), signum(random(-1, 1))*random(16, 32), 0);
           world.effects.add(new Explosion(vehicle.pos.x, vehicle.pos.y, random(30, 40)*effectsDensity));
           world.removal.add(this);
-          if(player == keyboard || player == mouse)
+          if(player == keyboard)
             world.overlayText = "R TO RESTART";
-          else if(player == gamepad)
-            world.overlayText = "X TO RESTART";
         }
       }
     }

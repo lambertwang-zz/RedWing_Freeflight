@@ -12,14 +12,7 @@
  * Heavily inspired by the game Luftrausers.
  */
 
-import org.gamecontrolplus.gui.*;
-import org.gamecontrolplus.*;
-import net.java.games.input.*;
-import ddf.minim.*;
-
-final String VERSION = "Beta 0.31";
-
-Minim minim;
+final String VERSION = "ODROID 0.01";
 
 // Game uses 'screens' to change between states
 int screen;
@@ -31,17 +24,13 @@ boolean paused = false;
 
 // Input method for players to control the game
 Input keyboard;
-Input mouse;
-ControlIO control;
-Configuration config;
-ControlDevice gpad;
-Input gamepad = null;
 Input player;
 
 void setup() {
   // Drawing parameters
   colorMode(HSB);
   smooth();
+  
   // Optimized for 60 fps
   frameRate(60);
 
@@ -50,30 +39,11 @@ void setup() {
 
   noCursor();
 
-  // 4:3
-  //size(800, 600);
-  //size(1024, 768);
-  //size(1280, 960);
-
-  // 16:9
-  //size(800, 450);
-  //size(1280, 720);
-  size(1366, 768);
-  //size(1440, 810);
-
-  minim = new Minim(this);
-  setupAudio();
-
-  // Active resizing works fine during gameplay
-  // Need to re-initialize menus when screen is resized on a menu screen
-  // Each time the frame size changes, draw() is called once
-  if (frame != null) {
-    frame.setResizable(true);
-  }
-
+  // Resolution of the mqp display
+  size(384, 192);
+  
   // Initialize game
   keyboard = new Input();
-  mouse = new Input();
   player = keyboard;
   world = new World();
 
@@ -98,7 +68,6 @@ void draw() {
       world.menuMainRender();
       break;
   }
-  playMusic();
 }
 
 public void pause() { // Toggles paused and unpaused states
@@ -118,27 +87,10 @@ public void pauseText() {
     textFont(f24);
     fill(0);
     text("PAUSED", width/2-46, height/2-64);
-    if(player == mouse || player == keyboard) {
+    if(player == keyboard) {
       text("R restart", width/2-70, height/2);
       text("P unpause", width/2-70, height/2+32);
       text("M to menu", width/2-70, height/2+64);
-    } else if(player == gamepad){
-      text("X restart", width/2-70, height/2);
-      text("Y unpause", width/2-70, height/2+32);
-      text("B to menu", width/2-70, height/2+64);  
     }
-}
-
-void setupGamepad(){
-  if (gpad == null) {
-    control = ControlIO.getInstance(this);
-      gpad = control.getMatchedDevice("gamepad");
-  
-    if (gpad == null) {
-      println("No suitable device configured");
-    } else {
-      gamepad = new Input();
-    }
-  }
 }
 
