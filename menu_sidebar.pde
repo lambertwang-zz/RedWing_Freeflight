@@ -18,20 +18,20 @@ void instructions() {
   pushMatrix();
   translate(0, 8);
   textFont(f6);
-  text("P2 Up:",6, 6);
+  text("Up:",6, 6);
   text("Accel", 12, 18);
-  text("P2 L/R:", 6, 30);
+  text("Left/Right:", 6, 30);
   text("Turn", 12, 42);
-  text("P1 Sq:", 6, 54);
+  text("Square:", 6, 54);
   text("Shoot", 12, 66);
-  text("P1 Tri:", 6, 78);
+  text("Triangle:", 6, 78);
   text("Special", 12, 90);
-  text("P1 Menu:", 6, 102);
+  text("Menu:", 6, 102);
   text("Pause",   12, 114);
-  text("P1 Back:", 6, 126);
+  text("Back:", 6, 126);
   text("Restart",   12, 138);
   popMatrix();
-
+  text("Triangle to start Square to quit", 80, 186);
   pushMatrix();
   translate(width-84, 8);
   text("Paint the", 6, 6);

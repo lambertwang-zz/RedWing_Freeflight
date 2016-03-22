@@ -86,8 +86,8 @@ public void pauseText() {
     textFont(f24);
     fill(0);
     if(player == keyboard) {
-      text("P1 Menu unpause", width/2-128, height/2+32);
-      text("P1 Back to quit", width/2-128, height/2+64);
+      text("Menu unpause", width/2-108, height/2+32);
+      text("Back to quit", width/2-108, height/2+64);
     }
 }
 

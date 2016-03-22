@@ -100,7 +100,7 @@ class Spark extends Particle { // Sparks are circles that fly some distance then
     rotate(ang);
     translate(size*(1-temp), 0);
     noFill();
-    ellipse(0, 0, 3, 3);
+    ellipse(0, 0, 1.5, 1.5);
   }
 };
 

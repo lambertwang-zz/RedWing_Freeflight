@@ -35,28 +35,28 @@ void keyPressed() {
         keyboard.dirkey = 1;
         break;
       } 
-    } else if (key == 't' || key == 'T') {
+    } else if (key == 'w' || key == 't') {
       keyboard.upkey = 1;
-    } else if (key == 'f' || key == 'F') {
+    } else if (key == 'a' || key == 'f') {
       keyboard.dirkey = -1;
-    } else if (key == 'h' || key == 'H') {
+    } else if (key == 'd' || key == 'h') {
       keyboard.dirkey = 1;
-    } else if (key == 'b' || key == 'B') {
+    } else if (key == 'x' || key == 'b') {
       keyboard.dnkey = 1;
-    } else if (key == 'c' || key == 'C') {
+    } else if (key == 'c' || key == 'n') {
       keyboard.zkey = true;
-    } else if (key == 'z' || key == 'Z') {
+    } else if (key == 'z' || key == 'v') {
       keyboard.xkey = true;
     } else if (key == 'o' || key == 'O') {
       screenShot();
-    } else if (key == 'q' || key == 'Q') {
+    } else if (key == 'q' || key == 'r') {
       world.beginGame(2);
       if(paused) {
         world.menuMain();
         screen = 1;
         pause();
       }
-    } else if (key == 'e' || key == 'E') {
+    } else if (key == 'e' || key == 'y') {
       pause();
     }
   } else { // Not in game (menu screen)
@@ -84,24 +84,24 @@ void keyReleased() {
         keyboard.dirkey = 0;
       break;
     } 
-  } else if (key == 't' || key == 'T') {
+  } else if (key == 'w' || key == 't') {
     keyboard.upkey = 0;
-  } else if (key == 'f' || key == 'F') {
+  } else if (key == 'a' || key == 'f') {
     keyboard.dirkey = 0;
-  } else if (key == 'h' || key == 'H') {
+  } else if (key == 'd' || key == 'h') {
     keyboard.dirkey = 0;
-  } else if (key == 'b' || key == 'B') {
+  } else if (key == 'x' || key == 'b') {
     keyboard.dnkey = 0;
-  } else if (key == 'c' || key == 'C') {
-        keyboard.zkey = false;
-  } else if (key == 'z' || key == 'Z') {
+  } else if (key == 'c' || key == 'n') {
+    keyboard.zkey = false;
+  } else if (key == 'z' || key == 'v') {
       keyboard.xkey = false;
   }
   if (screen != 0) {
-    if (key == 'z' || key == 'Z') {
+    if (key == 'z' || key == 'v') {
       world.beginGame(2);
       screen = 0;
-    } else if (key == 'c' || key == 'C') {
+    } else if (key == 'c' || key == 'n') {
       exit();
     }
   }
