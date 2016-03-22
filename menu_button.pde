@@ -44,11 +44,11 @@ class Button implements ICanClick{
 
     strokeWeight(3.5);
     stroke(col);
-    rect(0, 0, size, 56);
+    rect(0, 0, size, 44);
 
     fill(col);
-    textFont(f36);
-    text(text, size/2 - text.length()*13.3, 44);
+    textFont(f24);
+    text(text, size/2 - text.length()*8.9, 32);
 
     popMatrix();
   }

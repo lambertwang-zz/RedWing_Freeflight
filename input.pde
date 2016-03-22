@@ -20,7 +20,7 @@ class Input {
 
 void keyPressed() {
   if(screen == 0){
-    if (key == CODED) // Arrow keys are referred to by a keyCode enum
+    if (key == CODED) {// Arrow keys are referred to by a keyCode enum
       switch(keyCode) {
       case UP:
         keyboard.upkey = 1;
@@ -34,92 +34,40 @@ void keyPressed() {
       case RIGHT: 
         keyboard.dirkey = 1;
         break;
-      } else if (key == 'z' || key == 'Z') {
+      } 
+    } else if (key == 't' || key == 'T') {
+      keyboard.upkey = 1;
+    } else if (key == 'f' || key == 'F') {
+      keyboard.dirkey = -1;
+    } else if (key == 'h' || key == 'H') {
+      keyboard.dirkey = 1;
+    } else if (key == 'b' || key == 'B') {
+      keyboard.dnkey = 1;
+    } else if (key == 'c' || key == 'C') {
       keyboard.zkey = true;
-    } else if (key == 'x' || key == 'X') {
+    } else if (key == 'z' || key == 'Z') {
       keyboard.xkey = true;
     } else if (key == 'o' || key == 'O') {
       screenShot();
-    } else if (key == 'r' || key == 'R') {
+    } else if (key == 'q' || key == 'Q') {
       world.beginGame(2);
       if(paused) {
-        pause();
-      }
-    } else if (key == 'p' || key == 'P') {
-      pause();
-    } else if (key == 'm' || key == 'M') {
-      if(paused){
         world.menuMain();
         screen = 1;
         pause();
       }
+    } else if (key == 'e' || key == 'E') {
+      pause();
     }
-  } else {
+  } else { // Not in game (menu screen)
     if (key == 'o' || key == 'O') {
       screenShot();
-    } 
-  }
-}
-
-/**
- * Bug with Linux, holding down a key will cause multiple calls of keyReleased and keyPressed.
- * On windows, keyReleased will only call once, but keyPressed will call multiple times.
- */
-/*
-long upTimer = 0;
-long downTimer = 0;
-long leftTimer = 0;
-long rightTimer = 0;
-long zTimer = 0;
-long xTimer = 0;
-long repeatThreshold = 80;
-
-void keyReleased() {
-  if (key == CODED)
-    switch(keyCode) {
-    case UP:
-      if(System.currentTimeMillis() - upTimer > repeatThreshold){
-        keyboard.upkey = 0;
-      }
-      upTimer = System.currentTimeMillis();
-      break;
-    case DOWN:
-      if(System.currentTimeMillis() - downTimer > repeatThreshold){
-        keyboard.dnkey = 0;
-      }
-      downTimer = System.currentTimeMillis();
-      break;
-    case LEFT:
-      if(System.currentTimeMillis() - leftTimer > repeatThreshold){
-        if (keyboard.dirkey == -1)
-          keyboard.dirkey = 0;
-      }
-      leftTimer = System.currentTimeMillis();
-      
-      break;
-    case RIGHT:
-      if(System.currentTimeMillis() - rightTimer > repeatThreshold){
-        if (keyboard.dirkey == 1)
-          keyboard.dirkey = 0;
-      }
-      rightTimer = System.currentTimeMillis();
-      break;
-    } else if (key == 'z' || key == 'Z') {
-      if(System.currentTimeMillis() - zTimer > repeatThreshold){
-        keyboard.zkey = false;
-      }
-      zTimer = System.currentTimeMillis();    
-  } else if (key == 'x' || key == 'X') {
-    if(System.currentTimeMillis() - xTimer > repeatThreshold){
-      keyboard.xkey = false;
     }
-    xTimer = System.currentTimeMillis();
   }
 }
-*/
 
 void keyReleased() {
-  if (key == CODED)
+  if (key == CODED) {
     switch(keyCode) {
     case UP:
       keyboard.upkey = 0;
@@ -135,10 +83,27 @@ void keyReleased() {
       if (keyboard.dirkey == 1)
         keyboard.dirkey = 0;
       break;
-    } else if (key == 'z' || key == 'Z') {
+    } 
+  } else if (key == 't' || key == 'T') {
+    keyboard.upkey = 0;
+  } else if (key == 'f' || key == 'F') {
+    keyboard.dirkey = 0;
+  } else if (key == 'h' || key == 'H') {
+    keyboard.dirkey = 0;
+  } else if (key == 'b' || key == 'B') {
+    keyboard.dnkey = 0;
+  } else if (key == 'c' || key == 'C') {
         keyboard.zkey = false;
-  } else if (key == 'x' || key == 'X') {
+  } else if (key == 'z' || key == 'Z') {
       keyboard.xkey = false;
+  }
+  if (screen != 0) {
+    if (key == 'z' || key == 'Z') {
+      world.beginGame(2);
+      screen = 0;
+    } else if (key == 'c' || key == 'C') {
+      exit();
+    }
   }
 }
 

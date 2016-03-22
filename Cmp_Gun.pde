@@ -1,6 +1,5 @@
 // Number of gun components (used for randomly generating planes)
 final int NUMGUN = 4;
-final float shotGain = -12;
 
 abstract class Gun {
   // Vehicle the gun is tied to
@@ -94,7 +93,7 @@ class LaserBeam extends Gun {
   void render() {
     if (charge > 5) {
       fill(frameCount%256, 255, 255);
-      ellipse(32, 0, 5+charge/5, 5+charge/5);
+      ellipse(4, 0, 1+charge/60, 1+charge/60);
     }
   }
 
@@ -184,7 +183,7 @@ class ChainGun extends Gun {
   void render() {
     if (count > 0) {
       fill(cmax-count, 192, 255);
-      ellipse(32, 0, 10, 10);
+      ellipse(4, 0, 3, 3);
     }
   }
 

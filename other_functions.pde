@@ -1,14 +1,14 @@
 // FixedSys
 /* @pjs font="data/fixed.ttf"; */
-PFont f12, f24, f36, f48;
+PFont f6, f12, f24, f36;
 
 void setupFont() {
   // fonts are different in javascript mode
   // Font used is fixedsys
+  f6 = loadFont("Fixed_6.vlw");
   f12 = loadFont("Fixed_12.vlw");
   f24 = loadFont("Fixed_24.vlw");
   f36 = loadFont("Fixed_36.vlw");
-  f48 = loadFont("Fixed_48.vlw");
   // font = createFont("fixed_v01", 48);
 }
 

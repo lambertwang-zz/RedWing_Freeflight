@@ -24,6 +24,7 @@ class World extends HasButtons{
   int hy =  y/2;
 
   ArrayList<Particle> effects;
+  ArrayList<Cloud> clouds;
   PVector shake;
   boolean xsplit, ysplit;
 
@@ -54,8 +55,9 @@ class World extends HasButtons{
     removal = new ArrayList();
 
     effects = new ArrayList();
+    clouds = new ArrayList();
     for(int i = 0; i < 20*effectsDensity; i++)
-      effects.add(new Cloud(random(x), random(y), random(4, 10), random(120, 180)));
+      clouds.add(new Cloud(random(x), random(y), random(4, 10), random(120, 180)));
 
     shake = new PVector(0, 0);
 
@@ -67,7 +69,7 @@ class World extends HasButtons{
   }
 
   ArrayList<ICanClick> buttons;
-  SideBar sidebar = new SideBar(320, 32, 0);
+  SideBar sidebar = new SideBar();
   PVector menuScroll;
 
   void menuMain() {
@@ -77,8 +79,8 @@ class World extends HasButtons{
 
 
     buttons.clear(); // Adding buttons
-    buttons.add(new Button(-320, 0, 256, color(12, 192, 255), "Play!", 0));
-    buttons.add(new Button(64, 96, 256, color(12, 192, 255), "Quit", 3));
+    buttons.add(new Button(-96, 32, 80, color(0, 192, 255), "Play", 0));
+    buttons.add(new Button(16, 32, 80, color(0, 192, 255), "Quit", 3));
     
     screenPos.set(0, 0);
     menuScroll = new PVector(-.3, -.8);
@@ -157,6 +159,9 @@ class World extends HasButtons{
     // Renders all of the special effects
     for (Particle p : effects)
       p.render(xsplit, ysplit, true);
+    
+    for (Cloud c : clouds)
+      c.render(xsplit, ysplit, true);
     
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
@@ -256,6 +261,9 @@ class World extends HasButtons{
     for (Particle p : effects)
       p.render(xsplit, ysplit, true);
 
+    for (Cloud c : clouds)
+      c.render(xsplit, ysplit, true);
+
     for (int i = effects.size ()-1; i >= 0; i--) { // When effects time out, they are removed
       if (effects.get(i).remaining < 0) {
         Cell e = getCell(floor(effects.get(i).xpos/CELLSIZE), floor(effects.get(i).ypos/CELLSIZE));
@@ -329,6 +337,9 @@ class World extends HasButtons{
     for (Particle p : effects)
       p.render(xsplit, ysplit, false);
 
+    for (Cloud c : clouds)
+      c.render(xsplit, ysplit, false);
+
     popMatrix();
 
     pushMatrix();
@@ -376,19 +387,16 @@ class World extends HasButtons{
 
   // Displays the active framerate
   void fps() {
-    // Should only be called in settings()
-    // noSmooth();
     fill(75, 255, 64);
     pushMatrix();
-    translate(width-160, height-16);
-    textFont(f12);
-    //if(showFps)
-      text("FPS: "+int(frameRate*100)/100.0, 0, 0);
-    text("SCORE:    "+score, 0, -48);
-    text("HI-SCORE: "+hiscore, 0, -24);
+    translate(width-80, height-8);
+    textFont(f6);
+    if(showFps)
+      text("FPS: "+int(frameRate*100)/100.0, 0, -24);
+    text("SCORE:    "+score, 0, -12);
+    text("HI-SCORE: "+hiscore, 0, 0);
     
     popMatrix();
-    // smooth();
   }
 
   ArrayList<Controller> collide(Controller obj) {

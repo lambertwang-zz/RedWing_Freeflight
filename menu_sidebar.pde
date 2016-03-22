@@ -1,82 +1,46 @@
 class SideBar {
-  float pos;
-  float target;
-  float neutral; // Position when not being hovered
-  int side;
-  // -1 = left
-  // 1 = right
-  int type;
-  float speed;
-
-  boolean opened;
-
-  SideBar(float ttar, float tn, int tt) {
-    pos = tn;
-    target = ttar;
-    neutral = tn;
-    side = int(signum(target-neutral));
-    type = tt;
-    speed = (target-neutral)/20;
-
-    opened = false;
+  SideBar() {
   }
 
   void render() {
-    if (world.mx*side > (width-pos)*side && (width-pos)*side > (width-target)*side){
-      pos += speed;
-      opened = true;
-    }
-    else if ((width-pos)*side < (width-neutral)*side && world.mx*side < (width-pos)*side){
-      pos -= speed;
-    }
-
-    switch(type) {
-    case 0:
-      instructions(width-pos, opened);
-      break;
-    }
+    instructions();
   }
 };
 
-void instructions(float x, boolean opened) {
-  fill(255, opened ? 64 : (frameCount%60 > 30 ? 64 : 192));
-  strokeWeight(3);
-  stroke(0, 255, 192);
-  rect(x, -5, width+5, height+10);
-  
+void instructions() {
+  noStroke();
+  fill(255, 64);
+  rect(0, 0, 84, height);
+  rect(width-84, 0, width, height);
+
+  fill(137, 255, 27);
+
   pushMatrix();
-  translate(x+28, 500);
-  rotate(-PI/2);
-  textFont(f24);
-  fill(0);
-  text("HOVER HERE FOR INSTRUCTIONS", 0, 0);
+  translate(0, 8);
+  textFont(f6);
+  text("P2 Up:",6, 6);
+  text("Accel", 12, 18);
+  text("P2 L/R:", 6, 30);
+  text("Turn", 12, 42);
+  text("P1 Sq:", 6, 54);
+  text("Shoot", 12, 66);
+  text("P1 Tri:", 6, 78);
+  text("Special", 12, 90);
+  text("P1 Menu:", 6, 102);
+  text("Pause",   12, 114);
+  text("P1 Back:", 6, 126);
+  text("Restart",   12, 138);
   popMatrix();
 
   pushMatrix();
-  translate(x+36, 0);
-
-  if(player == keyboard){
-    text("Up Arrow:",12, 28);
-    text("Accelerate", 24, 56);
-    text("Left/Right:", 12, 92);
-    text("Turn Plane", 24, 120);
-    text("Z Key:", 12, 156);
-    text("Shoot Weapon", 24, 184);
-    text("X Key:", 12, 220);
-    text("Special Move", 24, 248);
-    text("P Key:", 12, 284);
-    text("Pause",   24, 312);
-    text("R Key:", 12, 348);
-    text("Restart",   24, 376);
-  } 
-
-  translate(0, 24);
-  textFont(f12);
-  text("Paint the world!", 12, 398);
-  text("Thanks for playing!", 12, 412);
-  text("Made by: ", 12, 426);
-  text("Lambert Wang", 24, 440);
-  text("github.com/magellantoo", 24, 454);
+  translate(width-84, 8);
+  text("Paint the", 6, 6);
+  text("world!", 12, 18);
+  text("Thanks for", 6, 36); 
+  text("playing!", 12, 48);
+  text("Made by: ", 6, 66);
+  text("Lambert", 12, 78);
+  text("Wang", 12, 90);
   popMatrix();
 }
 

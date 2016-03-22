@@ -1,11 +1,11 @@
 // Simple projectile 
-final float BULLETVEL = 16;
+final float BULLETVEL = 2;
 final float BULLETDAM = 2.4;
 
-final float CHAINVEL = 24;
+final float CHAINVEL = 3;
 final float CHAINDAM = 1.8;
 
-final float GRENADEVEL = 15;
+final float GRENADEVEL = 4;
 final float GRENADEGRAV = .08;
 final float GRENADEDAM = 2.6;
 
@@ -50,9 +50,9 @@ class Bullet extends Object {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(dir);
-    strokeWeight(2);
+    strokeWeight(.5);
     stroke(col);
-    line(0, 0, 16, 0);
+    line(0, 0, 2, 0);
     popMatrix();
   }
 };
@@ -105,7 +105,7 @@ class BulletController extends Controller {
   void collide(Controller c) {
     c.life -= BULLETDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(4, 6)*effectsDensity));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(1, 2)*effectsDensity));
     world.removal.add(this); 
   }
 };
@@ -130,7 +130,7 @@ class Beam extends Object {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(dir);
-    strokeWeight(2+sizex/200);
+    strokeWeight(.5+sizex/800);
     stroke(frameCount%256, 255, 255);
     line(0, 0, sizex, 0);
 
@@ -138,7 +138,7 @@ class Beam extends Object {
     float yi = sin(dir);
 
     for (int i = (int)random(0, 32); i < sizex; i+= 128/effectsDensity) {
-      world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(8, 16), color(int(random(0, 255)), 255, 255), random(3, 4), random(0, 2*PI)));
+      world.effects.add(new Spark(pos.x+i*xi, pos.y+i*yi, random(1, 2), color(int(random(0, 255)), 255, 255), random(3, 4), random(0, 2*PI)));
     }
 
 
@@ -162,7 +162,7 @@ class BeamController extends Controller {
 
     origin = c;
 
-    len = 200+8*l;
+    len = 25+1*l;
     b.sizex = len;
     offset = b.offset;
   }
@@ -205,9 +205,9 @@ class BeamController extends Controller {
   }
 
   void collide(Controller c) {
-    c.life -= damage*len/1024;
+    c.life -= damage*len/128;
     for(int i = 0; i < effectsDensity; i++)
-      world.effects.add(new Spark(c.vehicle.pos.x, c.vehicle.pos.y, random(8, 12), color(int(random(0, 255)), 255, 255), random(8, 12)*effectsDensity, random(0, 2*PI)));
+      world.effects.add(new Spark(c.vehicle.pos.x, c.vehicle.pos.y, random(1, 2), color(int(random(0, 255)), 255, 255), random(8, 12)*effectsDensity, random(0, 2*PI)));
   }
 };
 
@@ -263,17 +263,17 @@ class Grenade extends Object {
     float yr = sin(roll);
     beginShape();
     beginShape();
-    vertex(8*xr, 2);
-    vertex(2*xr, -8);
-    vertex(-8*xr, -2);
-    vertex(-2*xr, 8);
+    vertex(1.5*xr, .5);
+    vertex(.5*xr, -1.5);
+    vertex(-1.5*xr, -.5);
+    vertex(-.5*xr, 1.5);
     endShape();
     fill(frameCount%256, 255, 255);
     beginShape();
-    vertex(-8*yr, 2);
-    vertex(2*yr, 8);
-    vertex(8*yr, -2);
-    vertex(-2*yr, -8);
+    vertex(-1.5*yr, .5);
+    vertex(.5*yr, 1.5);
+    vertex(1.5*yr, -.5);
+    vertex(-.5*yr, -1.5);
     endShape();/*
     rect(-4, -8, 8, 16);
     fill(64, 128);
@@ -296,8 +296,8 @@ class GrenadeController extends Controller {
     location = new ArrayList();
 
     // Sets a static check size
-    checkx = 1;
-    checky = 1;
+    checkx = 0;
+    checky = 0;
 
     b.controller = this;
 
@@ -334,7 +334,7 @@ class GrenadeController extends Controller {
     c.life -= GRENADEDAM*damage;
     detonate();
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, 40));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, 5));
     world.removal.add(this);
   }
 
@@ -371,6 +371,8 @@ class Chain extends Object {
 
     pos.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
     last.add(offset.x*cos(dir)+offset.y*sin(dir), offset.x*sin(dir)+offset.y*cos(dir), 0);
+    
+    col = origin.col;
   }
 
   void tick() {
@@ -402,8 +404,8 @@ class Chain extends Object {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(dir);
-    strokeWeight(3);
-    stroke(32, 255, 255);
+    strokeWeight(.75);
+    stroke(col);
     line(0, 0, CHAINVEL, 0);
     popMatrix();
   }
@@ -457,7 +459,7 @@ class ChainController extends Controller {
   void collide(Controller c) {
     c.life -= CHAINDAM*damage;
     world.shake.add(signum(random(-1, 1))*random(4, 8), signum(random(-1, 1))*random(4, 8), 0);
-    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, random(3, 4)*effectsDensity));
+    world.effects.add(new Explosion(c.vehicle.pos.x, c.vehicle.pos.y, 1*effectsDensity));
     world.removal.add(this);
   }
 };

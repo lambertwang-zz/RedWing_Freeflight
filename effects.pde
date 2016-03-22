@@ -12,7 +12,7 @@ final float expGain = -24;
 
 // Determines how long the shaking lasts for
 final float shakeReduction = -0.95;
-float effectsDensity = 2.5; // range from 1 to 6 inclusive
+float effectsDensity = 4; // range from 1 to 6 inclusive
 
 abstract class Particle {
   float size;
@@ -95,7 +95,7 @@ class Spark extends Particle { // Sparks are circles that fly some distance then
   void show() {
     float temp = remaining/lifetime; // Slightly reduce computatuions
     stroke(col, 255*temp);
-    strokeWeight(1.5);
+    strokeWeight(1);
     translate(xpos, ypos);
     rotate(ang);
     translate(size*(1-temp), 0);

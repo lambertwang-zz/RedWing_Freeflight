@@ -12,7 +12,7 @@
  * Heavily inspired by the game Luftrausers.
  */
 
-final String VERSION = "ODROID 0.01";
+final String VERSION = "POWER PANEL";
 
 // Game uses 'screens' to change between states
 int screen;
@@ -29,7 +29,7 @@ Input player;
 void setup() {
   // Drawing parameters
   colorMode(HSB);
-  smooth();
+  // smooth();
   
   // Optimized for 60 fps
   frameRate(60);
@@ -41,7 +41,6 @@ void setup() {
 
   // Resolution of the mqp display
   size(384, 192);
-  
   // Initialize game
   keyboard = new Input();
   player = keyboard;
@@ -86,11 +85,9 @@ public void pauseText() {
     
     textFont(f24);
     fill(0);
-    text("PAUSED", width/2-46, height/2-64);
     if(player == keyboard) {
-      text("R restart", width/2-70, height/2);
-      text("P unpause", width/2-70, height/2+32);
-      text("M to menu", width/2-70, height/2+64);
+      text("P1 Menu unpause", width/2-128, height/2+32);
+      text("P1 Back to quit", width/2-128, height/2+64);
     }
 }
 

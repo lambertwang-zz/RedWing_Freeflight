@@ -15,7 +15,7 @@ abstract class Engine {
 
   Engine() {
     turnspd = PI/60;
-    speed = 1.0;
+    speed = .2;
   }
 
   void render(float yplane) {
@@ -43,26 +43,26 @@ class Prop extends Engine {
     platform = p;
     turnspd = PI/75;
     fturnspd = turnspd;
-    speed = 1.0;
+    speed = .2;
     fspeed = speed;
   }
 
   void render(float xplane) {
     beginShape();
-    vertex(32, 0);
-    vertex(16, 4*xplane);
-    vertex(12, 24*xplane);
-    vertex(8, 32*xplane);
-    vertex(0, 32*xplane);
-    vertex(-4, 24*xplane);
-    vertex(-8, 4*xplane);
-    vertex(-32, 0);
-    vertex(-8, -4*xplane);
-    vertex(-4, -24*xplane);
-    vertex(0, -32*xplane);
-    vertex(8, -32*xplane);
-    vertex(12, -24*xplane);
-    vertex(16, -4*xplane);
+    vertex(4, 0);
+    vertex(2, .5*xplane);
+    vertex(1.5, 3*xplane);
+    vertex(1, 4*xplane);
+    vertex(0, 4*xplane);
+    vertex(-.5, 3*xplane);
+    vertex(-1, .5*xplane);
+    vertex(-4, 0);
+    vertex(-1, -.5*xplane);
+    vertex(-.5, -3*xplane);
+    vertex(0, -4*xplane);
+    vertex(1, -4*xplane);
+    vertex(1.5, -3*xplane);
+    vertex(2, -.5*xplane);
     endShape();
   }
 
@@ -95,22 +95,22 @@ class Jet extends Engine {
     platform = p;
     turnspd = PI/105;
     fturnspd = turnspd;
-    speed = 1.4;
+    speed = .28;
     fspeed = speed;
   }
 
   void render(float xplane) {
     beginShape();
-    vertex(32, 0*xplane);
-    vertex(8, 4*xplane);
-    vertex(-16, 32*xplane);
-    vertex(-24, 32*xplane);
-    vertex(-16, 4*xplane);
-    vertex(-32, 0);
-    vertex(-16, -4*xplane);
-    vertex(-24, -32*xplane);
-    vertex(-16, -32*xplane);
-    vertex(8, -4*xplane);
+    vertex(4, 0*xplane);
+    vertex(1, .5*xplane);
+    vertex(-2, 4*xplane);
+    vertex(-3, 4*xplane);
+    vertex(-2, .5*xplane);
+    vertex(-4, 0);
+    vertex(-2, -.5*xplane);
+    vertex(-3, -4*xplane);
+    vertex(-2, -4*xplane);
+    vertex(1, -.5*xplane);
     endShape();
   }
 
@@ -122,9 +122,9 @@ class Jet extends Engine {
   // Boost is an afterburner that increases acceleration
   void boost(boolean b) {
     if (b) {
-      speed = 1.8;
+      speed = .36;
       turnspd = fturnspd/4;
-      world.effects.add(new Smoke(platform.last.x, platform.last.y, random(8, 12), color(int(random(0, 255)), 255, 255), random(5, 8)*effectsDensity));
+      world.effects.add(new Smoke(platform.last.x, platform.last.y, random(1, 2), color(int(random(0, 255)), 255, 255), random(5, 8)*effectsDensity));
     } else {
       speed = fspeed;
       turnspd = fturnspd;
@@ -147,7 +147,7 @@ class Chaos extends Engine {
     platform = p;
     turnspd = PI/45;
     fturnspd = turnspd;
-    speed = 1.1;
+    speed = .22;
     fspeed = speed;
     boostrate = 180;
     cooldown = 0;
@@ -155,16 +155,16 @@ class Chaos extends Engine {
 
   void render(float xplane) {
     beginShape();
-    vertex(32, 0*xplane);
-    vertex(8, 4*xplane);
-    vertex(20, 24*xplane);
-    vertex(0, 20*xplane);
-    vertex(-12, 4*xplane);
-    vertex(-32, 0);
-    vertex(-12, -4*xplane);
-    vertex(0, -20*xplane);
-    vertex(20, -24*xplane);
-    vertex(8, -4*xplane);
+    vertex(4, 0*xplane);
+    vertex(1, .5*xplane);
+    vertex(2.5, 3*xplane);
+    vertex(0, 2.5*xplane);
+    vertex(-1.5, .5*xplane);
+    vertex(-4, 0);
+    vertex(-1.5, -.5*xplane);
+    vertex(0, -2.5*xplane);
+    vertex(2.5, -3*xplane);
+    vertex(1, -.4*xplane);
     endShape();
   }
 
@@ -178,23 +178,23 @@ class Chaos extends Engine {
         float cosd = cos(platform.dir);
         float sind = sin(platform.dir);
         // Explosions
-        for (int i = 0; i < 512; i+=128/effectsDensity) {
-          world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(12, 16)));
+        for (int i = 0; i < 128; i+=64/effectsDensity) {
+          world.effects.add(new Explosion(platform.pos.x+i*cosd, platform.pos.y+i*sind, random(1, 2)));
         }
-        platform.pos.set(platform.pos.x+cosd*512, platform.pos.y+sind*512);
-        platform.last.set(platform.last.x+cosd*480, platform.last.y+sind*480);
+        platform.pos.set(platform.pos.x+cosd*128, platform.pos.y+sind*128);
+        platform.last.set(platform.last.x+cosd*120, platform.last.y+sind*120);
         platform.dir += PI;
-        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(6, 8)*effectsDensity));
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(1, 2)*effectsDensity));
         cooldown = boostrate;
       }
     }
     if (cooldown != 0) {
       // Teleport requires some time to charge. 
       cooldown--;
-      world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(2, 4), color(int(random(0, 256)), 255, 255), random(8, 12)*effectsDensity));
+      world.effects.add(new Eclipse(platform.last.x, platform.last.y, random(.5, 1), color(int(random(0, 256)), 255, 255), random(8, 12)*effectsDensity));
       if (cooldown == 0) {
         turnspd = fturnspd;
-        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(8, 12)*effectsDensity));
+        world.effects.add(new Explosion(platform.pos.x, platform.pos.y, random(2, 3)*effectsDensity));
       }
     }
   }

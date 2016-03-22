@@ -1,6 +1,6 @@
 final float FRICTION = .9375; // 15 16ths
 //final float FRICTION = 0.96875; // 31 32ths
-final float GRAVITY = .6;
+final float GRAVITY = .12;
 
 
 // Plane is a standard plane with average turning and speed
@@ -15,9 +15,9 @@ class Plane extends Object {
     pos = new PVector(x, y);
     last = new PVector(x, y);
 
-    sizex = 32;
-    sizey = 16;
-    sizez = 32;
+    sizex = 4;
+    sizey = 2;
+    sizez = 4;
     dir = 0;
     roll = 0;
 
@@ -38,7 +38,7 @@ class Plane extends Object {
     case 4:
       gun = new GrenadeLauncher(20, this);
     }
-    gun.offset.set(32, 0, 0);
+    gun.offset.set(4, 0, 0);
 
     switch(b) {
     case 1: 
@@ -95,7 +95,7 @@ class Plane extends Object {
     // Accelerating
     if (input.upkey > 0) {
       last.add(cos(dir)*-engine.speed*input.upkey, sin(dir)*-engine.speed*input.upkey, 0);
-      world.effects.add(new Smoke(pos.x-cos(dir)*sizex, pos.y-sin(dir)*sizex, random(4, 8), color(random(192, 256)), input.upkey*random(4, 8))); // Contrails
+      world.effects.add(new Smoke(pos.x-cos(dir)*sizex, pos.y-sin(dir)*sizex, random(1, 2), color(random(192, 256)), input.upkey*random(4, 8))); // Contrails
     }
 
     gun.shoot(input.zkey);

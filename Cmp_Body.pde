@@ -31,21 +31,21 @@ class Standard extends Body {
 
   Standard(Object p) {
     platform = p;
-    p.gravity = .6;
+    p.gravity = .12;
   }
 
   void render(float yplane) {
     beginShape();
-    vertex(32, 0);
-    vertex(32, -4*yplane);
-    vertex(16, -8*yplane);
-    vertex(12, -10*yplane);
-    vertex(4, -10*yplane);
-    vertex(0, -8*yplane);
-    vertex(-20, -4*yplane);
-    vertex(-28, -16*yplane);
-    vertex(-32, -16*yplane);
-    vertex(-32, 0);
+    vertex(4, 0);
+    vertex(4, -.5*yplane);
+    vertex(2, -1*yplane);
+    vertex(1.5, -1.25*yplane);
+    vertex(.5, -1.25*yplane);
+    vertex(0, -1*yplane);
+    vertex(-2.5, -.5*yplane);
+    vertex(-3.5, -2*yplane);
+    vertex(-4, -2*yplane);
+    vertex(-4, 0);
     endShape();
   }
 
@@ -64,25 +64,25 @@ class Standard extends Body {
 class Heavy extends Body {
   Heavy(Object p) {
     platform = p;
-    p.gravity = .85;
+    p.gravity = .17;
   }
 
   void render(float yplane) {
     beginShape();
-    vertex(32, 0);
-    vertex(28, -8*yplane);
-    vertex(16, -8*yplane);
-    vertex(8, -12*yplane);
-    vertex(0, -8*yplane);
-    vertex(-24, -8*yplane);
-    vertex(-28, -16*yplane);
-    vertex(-32, -16*yplane);
-    vertex(-32, 8*yplane);
-    vertex(-28, 8*yplane);
-    vertex(-24, 0);
-    vertex(-16, 0);
-    vertex(-8, 4*yplane);
-    vertex(24, 4*yplane);
+    vertex(4, 0);
+    vertex(3.5, -1*yplane);
+    vertex(2, -1*yplane);
+    vertex(1, -1.5*yplane);
+    vertex(0, -1*yplane);
+    vertex(-3, -1*yplane);
+    vertex(-3.5, -2*yplane);
+    vertex(-4, -2*yplane);
+    vertex(-4, 1*yplane);
+    vertex(-3.5, 1*yplane);
+    vertex(-3, 0);
+    vertex(-2, 0);
+    vertex(-1, .5*yplane);
+    vertex(3, .5*yplane);
     endShape();
   }
 
@@ -101,16 +101,16 @@ class Heavy extends Body {
 class Slim extends Body {
   Slim(Object p) {
     platform = p;
-    p.gravity = .5;
+    p.gravity = .1;
   }
 
   void render(float yplane) {  
     beginShape();
-    vertex(32, 0);
-    vertex(8, -8*yplane);
-    vertex(-24, -4*yplane);
-    vertex(-36, -12*yplane);
-    vertex(-32, 0);
+    vertex(4, 0);
+    vertex(1, -1*yplane);
+    vertex(-3, -.5*yplane);
+    vertex(-4.5, -1.5*yplane);
+    vertex(-4, 0);
     endShape();
   }
   

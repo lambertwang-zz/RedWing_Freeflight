@@ -118,23 +118,6 @@ class Player extends Controller{
     popMatrix();
   }
 
-  /*
-   * Obsolete
-  void recheck() {
-    // Is this really worth the loss in efficiency?
-    // Probably
-    // stored sine and cosine functions to reduce computations
-    float tempax = abs(cos(vehicle.dir));
-    float tempay = abs(sin(vehicle.dir));
-    // Tempy is the visible y profile of the vehicle relative to its local axis based off of the vehicles roll.
-    // The visible x profile will always be vehicle.sizex since the plane's yaw is never changed. 
-    float tempy = max(abs(cos(vehicle.roll)*vehicle.sizey), abs(sin(vehicle.roll)*vehicle.sizez));
-    // Changes the hitbox to match the vehicle's profile
-    checkx = ceil(max(tempax*vehicle.sizex, tempay*tempy)/CELLSIZE);
-    checky = ceil(max(tempay*vehicle.sizex, tempax*tempy)/CELLSIZE);
-  }
-  */
-
   // Cell override for better hit detection
   void update() {
     // Removes contoller from previously occupied cells
